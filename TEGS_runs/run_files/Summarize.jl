@@ -1,4 +1,5 @@
 using CSV
+using JSON3
 using DataFrames
 
 ############################################
@@ -96,7 +97,7 @@ for (loc_name, loc_path) in location_dir
             resource_summ[param] = initresourceresults(resource_names)
         end
 
-        case_results = readdir(result_dir)
+        case_results = basename.(filter(isdir, readdir(result_dir, join=true)))
         for result in case_results
             for result_file in files_to_search
                 result_data = CSV.File(joinpath(result_dir, result, result_file))
@@ -110,5 +111,11 @@ for (loc_name, loc_path) in location_dir
                 end
             end
         end
+        open(joinpath(result_dir, "$(case)_summary.json"), "w") do io
+            JSON3.pretty(io, resource_summ)
+        end
     end
 end
+
+
+
