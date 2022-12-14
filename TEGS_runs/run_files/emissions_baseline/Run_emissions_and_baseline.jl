@@ -98,7 +98,7 @@ for (loc_name, loc_path) in location_dir
 end
 
 # Write logging notes
-open(joinpath(outputs_path, "emissions_and_baseline.log"), "w") do f
+open(joinpath(dirname(@__FILE__), "emissions_and_baseline.log"), "w") do f
     for line in logging_notes
         write(f, line)
     end
