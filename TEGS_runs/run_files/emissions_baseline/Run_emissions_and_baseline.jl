@@ -5,46 +5,13 @@ using DataFrames
 ############################################
 # Some necessary helper functions
 ############################################
+include("../RunTools.jl")
 
-function get_settings_path(case::AbstractString)
-    return joinpath(case, "Settings")
-end
-
-function get_settings_path(case::AbstractString, filename::AbstractString)
-    return joinpath(get_settings_path(case), filename)
-end
-
-function get_default_output_folder(case::AbstractString)
-    return joinpath(case, "Results")
-end
-
-function time_domain_reduced_files_exist(tdrpath)
-    tdr_load = isfile(joinpath(tdrpath,"Load_data.csv"))
-    tdr_genvar = isfile(joinpath(tdrpath,"Generators_variability.csv"))
-    tdr_fuels = isfile(joinpath(tdrpath,"Fuels_data.csv"))
-    return (tdr_load && tdr_genvar && tdr_fuels)
-end
-
-function build_solve_write(outputs_path, mysetup, myinputs, OPTIMIZER)
-    println("Generating the Optimization Model")
-    EP = generate_model(mysetup, myinputs, OPTIMIZER)
-
-    println("Solving Model")
-    EP, solve_time = solve_model(EP, mysetup)
-    myinputs["solve_time"] = solve_time # Store the model solve time in myinputs
-
-    # Run MGA if the MGA flag is set to 1 else only save the least cost solution
-    println("Writing Output")
-    elapsed_time = @elapsed write_outputs(EP, outputs_path, mysetup, myinputs)
-    println("Time elapsed for writing is")
-    println(elapsed_time)
-    return EP
-end
 ############################################
 # Case Definitions 
 # All cases intended to be run from the run-file directory
 ############################################
-root_dir = dirname(dirname(@__FILE__)) # Should be ../TEGS_runs
+root_dir = dirname(dirname(dirname(@__FILE__))) # Should be ../TEGS_runs
 
 location_dir = Dict{String, String}(
     "newEngland" => joinpath(root_dir, "data", "newEngland"),
@@ -54,6 +21,7 @@ location_dir = Dict{String, String}(
 logging_notes = Array{String, 1}()
 
 for (loc_name, loc_path) in location_dir
+    push!(logging_notes, "Running $loc_name case\n")
     case = loc_path
     genx_settings = get_settings_path(case, "genx_settings.yml") #Settings YAML file path
     mysetup = configure_settings(genx_settings) # mysetup dictionary stores settings and GenX-specific parameters
@@ -126,5 +94,12 @@ for (loc_name, loc_path) in location_dir
         EP = build_solve_write(outputs_path, mysetup, myinputs, OPTIMIZER)
 
         push!(logging_notes, "$emiss_target results written to $outputs_path\n")
+    end
+end
+
+# Write logging notes
+open(joinpath(outputs_path, "emissions_and_baseline.log"), "w") do f
+    for line in logging_notes
+        write(f, line)
     end
 end
