@@ -1,0 +1,12 @@
+Region,Resource,Zone,Cluster,AnnualSum
+ERC_REST,ERC_REST_biomass_1,1,1,0.0
+ERC_REST,ERC_REST_conventional_hydroelectric_1,1,1,0.0
+ERC_REST,NaturalGas_CCAvgCF_Moderate,1,1,0.0
+ERC_REST,NaturalGas_CTAvgCF_Moderate,1,1,0.0
+ERC_REST,NaturalGas_CCCCSAvgCF_Moderate,1,1,0.0
+ERC_REST,NaturalGas_CCS100_Moderate,1,1,0.0
+ERC_REST,ERC_nuclear_1,1,1,0.0
+ERC_REST,LandbasedWind_Class3_Moderate_130,1,1,0.0
+ERC_REST,UtilityPV_Class1_Moderate_100_0.2,1,1,0.0
+ERC_REST,Liion_Moderate,1,1,9.819716697327118e8
+ERC_REST,TEGS,1,1,1.1205297971792078e9
