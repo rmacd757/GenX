@@ -72,9 +72,7 @@ function setTEGScosts!(dfGen::DataFrame, stortype::Int, T::Float64, lossrate::Fl
     tegs_costs = TEGS_costs(stortype, T, lossrate, lifetime, discount_rate)
     for (param, value) in tegs_costs
         TEGS_input[!,param] .= value
-    end
-    TEGS_input[!, "Self_Disch"] .= lossrate / 24. # Convert daily loss rate to hourly
-    TEGS_input[!, "STOR"] .= 2
+    end   
 end
 
 ############################################
@@ -161,6 +159,7 @@ for (loc_name, loc_path) in location_dir
     push!(logging_notes, "DISCOUNT_RATE = $DISCOUNT_RATE\n")
     push!(logging_notes, "STOR_TYPE = $STOR_TYPE\n")
 
+    
     #### Running a case
     for (emiss_name, emiss_target) in emiss_targets[loc_name]
         myinputs["dfMaxCO2"] = emiss_target * 1e3 / scale_factor
@@ -168,6 +167,9 @@ for (loc_name, loc_path) in location_dir
             for lossrate in lossrates
                 push!(logging_notes, "Running $(emiss_name)_$(T)_$(lossrate)_stor2 case\n")
                 setTEGScosts!(myinputs["dfGen"], STOR_TYPE, T, lossrate, LIFETIME, DISCOUNT_RATE)
+                TEGS_input = selectresource(myinputs["dfGen"], "TEGS")
+                TEGS_input[!, "Self_Disch"] .= lossrate / 24. # Convert daily loss rate to hourly
+                TEGS_input[!, "STOR"] .= 2
 
                 # Calculate and save baseline emissions
                 outputs_path = joinpath(outputs_path_root, "$(emiss_name)_$(T)_$(lossrate)_stor2")

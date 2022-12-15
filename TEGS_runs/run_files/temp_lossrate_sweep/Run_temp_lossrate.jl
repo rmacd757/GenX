@@ -10,24 +10,24 @@ include("../RunTools.jl")
 function costpermwdischarge(T)
     T = Int(T)
     discharge_vs_temp = Dict{Float64, Float64}(
-        2400 => 0.3097,
-        2300 => 0.3427,
-        2100 => 0.4926,
-        1900 => 0.8924,
+        2400 => 0.3097 * 1e6,
+        2300 => 0.3427 * 1e6,
+        2100 => 0.4926 * 1e6,
+        1900 => 0.8924 * 1e6,
     )
     return discharge_vs_temp[T]
 end
 
 function costpermwcharge(T)
-    return 0.0185
+    return 0.0185 * 1e6
 end
 
 function costpermwhstor(T, lossrate)
     storage_vs_temp = Dict{Float64, Array{Float64}}(
-        2400 => [15.827, 12.0636, 10.8529, 10.2619, 9.9158, 9.6914, 9.5363, 9.4243, 9.3411, 9.2779, 9.2292, 9.1915, 9.1622, 9.1395, 9.122],
-        2300 => [15.1493, 11.7375, 10.6382, 10.1019, 9.7883, 9.5854, 9.4456, 9.3451, 9.2707, 9.2146, 9.1717, 9.1388, 9.1136, 9.0943, 9.0799],
-        2100 => [13.8087, 11.0887, 10.2103, 9.7827, 9.5337, 9.3737, 9.2644, 9.1867, 9.1301, 9.0881, 9.0568, 9.0336, 9.0165, 9.0042, 8.9958],
-        1900 => [12.4875, 10.4445, 9.7845, 9.4646, 9.2799, 9.1626, 9.0836, 9.0287, 8.9897, 8.9618, 8.9421, 8.9284, 8.9194, 8.9141, 8.9117],
+        2400 => 1e3 * [15.827, 12.0636, 10.8529, 10.2619, 9.9158, 9.6914, 9.5363, 9.4243, 9.3411, 9.2779, 9.2292, 9.1915, 9.1622, 9.1395, 9.122],
+        2300 => 1e3 * [15.1493, 11.7375, 10.6382, 10.1019, 9.7883, 9.5854, 9.4456, 9.3451, 9.2707, 9.2146, 9.1717, 9.1388, 9.1136, 9.0943, 9.0799],
+        2100 => 1e3 * [13.8087, 11.0887, 10.2103, 9.7827, 9.5337, 9.3737, 9.2644, 9.1867, 9.1301, 9.0881, 9.0568, 9.0336, 9.0165, 9.0042, 8.9958],
+        1900 => 1e3 * [12.4875, 10.4445, 9.7845, 9.4646, 9.2799, 9.1626, 9.0836, 9.0287, 8.9897, 8.9618, 8.9421, 8.9284, 8.9194, 8.9141, 8.9117],
     )
     return storage_vs_temp[T][floor(Int, lossrate)]
 end
@@ -73,7 +73,6 @@ function setTEGScosts!(dfGen::DataFrame, stortype::Int, T::Float64, lossrate::Fl
     for (param, value) in tegs_costs
         TEGS_input[!,param] .= value
     end
-    TEGS_input[!, "Self_Disch"] .= lossrate / 24 # Convert daily loss rate to hourly
 end
 
 ############################################
@@ -167,6 +166,9 @@ for (loc_name, loc_path) in location_dir
             for lossrate in lossrates
                 push!(logging_notes, "Running $(emiss_name)_$(T)_$(lossrate) case\n")
                 setTEGScosts!(myinputs["dfGen"], STOR_TYPE, T, lossrate, LIFETIME, DISCOUNT_RATE)
+                TEGS_input = selectresource(myinputs["dfGen"], "TEGS")
+                TEGS_input[!, "Self_Disch"] .= lossrate / 24. # Convert daily loss rate to hourly
+                TEGS_input[!, "STOR"] .= 1
 
                 # Calculate and save baseline emissions
                 outputs_path = joinpath(outputs_path_root, "$(emiss_name)_$(T)_$(lossrate)")
