@@ -98,7 +98,6 @@ function summarizerun(
         for result_file in files_to_search
             summarizefile!(
                 resource_summ, 
-                result, 
                 joinpath(result_dir, result, result_file), 
                 resource_cols, 
                 zone_cols)

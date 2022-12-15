@@ -1,0 +1,484 @@
+Emissions cap activated
+LIFETIME = 30.0
+DISCOUNT_RATE = 0.05
+STOR_TYPE = 1
+Running 0.01_2400.0_1.0 case
+0.01_2400.0_1.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2400.0_1.0
+Running 0.01_2400.0_2.0 case
+0.01_2400.0_2.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2400.0_2.0
+Running 0.01_2400.0_3.0 case
+0.01_2400.0_3.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2400.0_3.0
+Running 0.01_2400.0_4.0 case
+0.01_2400.0_4.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2400.0_4.0
+Running 0.01_2400.0_5.0 case
+0.01_2400.0_5.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2400.0_5.0
+Running 0.01_2400.0_6.0 case
+0.01_2400.0_6.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2400.0_6.0
+Running 0.01_2400.0_7.0 case
+0.01_2400.0_7.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2400.0_7.0
+Running 0.01_2400.0_8.0 case
+0.01_2400.0_8.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2400.0_8.0
+Running 0.01_2400.0_9.0 case
+0.01_2400.0_9.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2400.0_9.0
+Running 0.01_2400.0_10.0 case
+0.01_2400.0_10.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2400.0_10.0
+Running 0.01_2400.0_11.0 case
+0.01_2400.0_11.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2400.0_11.0
+Running 0.01_2400.0_12.0 case
+0.01_2400.0_12.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2400.0_12.0
+Running 0.01_2400.0_13.0 case
+0.01_2400.0_13.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2400.0_13.0
+Running 0.01_2400.0_14.0 case
+0.01_2400.0_14.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2400.0_14.0
+Running 0.01_2400.0_15.0 case
+0.01_2400.0_15.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2400.0_15.0
+Running 0.01_2300.0_1.0 case
+0.01_2300.0_1.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2300.0_1.0
+Running 0.01_2300.0_2.0 case
+0.01_2300.0_2.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2300.0_2.0
+Running 0.01_2300.0_3.0 case
+0.01_2300.0_3.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2300.0_3.0
+Running 0.01_2300.0_4.0 case
+0.01_2300.0_4.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2300.0_4.0
+Running 0.01_2300.0_5.0 case
+0.01_2300.0_5.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2300.0_5.0
+Running 0.01_2300.0_6.0 case
+0.01_2300.0_6.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2300.0_6.0
+Running 0.01_2300.0_7.0 case
+0.01_2300.0_7.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2300.0_7.0
+Running 0.01_2300.0_8.0 case
+0.01_2300.0_8.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2300.0_8.0
+Running 0.01_2300.0_9.0 case
+0.01_2300.0_9.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2300.0_9.0
+Running 0.01_2300.0_10.0 case
+0.01_2300.0_10.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2300.0_10.0
+Running 0.01_2300.0_11.0 case
+0.01_2300.0_11.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2300.0_11.0
+Running 0.01_2300.0_12.0 case
+0.01_2300.0_12.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2300.0_12.0
+Running 0.01_2300.0_13.0 case
+0.01_2300.0_13.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2300.0_13.0
+Running 0.01_2300.0_14.0 case
+0.01_2300.0_14.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2300.0_14.0
+Running 0.01_2300.0_15.0 case
+0.01_2300.0_15.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2300.0_15.0
+Running 0.01_2100.0_1.0 case
+0.01_2100.0_1.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2100.0_1.0
+Running 0.01_2100.0_2.0 case
+0.01_2100.0_2.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2100.0_2.0
+Running 0.01_2100.0_3.0 case
+0.01_2100.0_3.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2100.0_3.0
+Running 0.01_2100.0_4.0 case
+0.01_2100.0_4.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2100.0_4.0
+Running 0.01_2100.0_5.0 case
+0.01_2100.0_5.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2100.0_5.0
+Running 0.01_2100.0_6.0 case
+0.01_2100.0_6.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2100.0_6.0
+Running 0.01_2100.0_7.0 case
+0.01_2100.0_7.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2100.0_7.0
+Running 0.01_2100.0_8.0 case
+0.01_2100.0_8.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2100.0_8.0
+Running 0.01_2100.0_9.0 case
+0.01_2100.0_9.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2100.0_9.0
+Running 0.01_2100.0_10.0 case
+0.01_2100.0_10.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2100.0_10.0
+Running 0.01_2100.0_11.0 case
+0.01_2100.0_11.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2100.0_11.0
+Running 0.01_2100.0_12.0 case
+0.01_2100.0_12.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2100.0_12.0
+Running 0.01_2100.0_13.0 case
+0.01_2100.0_13.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2100.0_13.0
+Running 0.01_2100.0_14.0 case
+0.01_2100.0_14.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2100.0_14.0
+Running 0.01_2100.0_15.0 case
+0.01_2100.0_15.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_2100.0_15.0
+Running 0.01_1900.0_1.0 case
+0.01_1900.0_1.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_1900.0_1.0
+Running 0.01_1900.0_2.0 case
+0.01_1900.0_2.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_1900.0_2.0
+Running 0.01_1900.0_3.0 case
+0.01_1900.0_3.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_1900.0_3.0
+Running 0.01_1900.0_4.0 case
+0.01_1900.0_4.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_1900.0_4.0
+Running 0.01_1900.0_5.0 case
+0.01_1900.0_5.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_1900.0_5.0
+Running 0.01_1900.0_6.0 case
+0.01_1900.0_6.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_1900.0_6.0
+Running 0.01_1900.0_7.0 case
+0.01_1900.0_7.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_1900.0_7.0
+Running 0.01_1900.0_8.0 case
+0.01_1900.0_8.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_1900.0_8.0
+Running 0.01_1900.0_9.0 case
+0.01_1900.0_9.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_1900.0_9.0
+Running 0.01_1900.0_10.0 case
+0.01_1900.0_10.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_1900.0_10.0
+Running 0.01_1900.0_11.0 case
+0.01_1900.0_11.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_1900.0_11.0
+Running 0.01_1900.0_12.0 case
+0.01_1900.0_12.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_1900.0_12.0
+Running 0.01_1900.0_13.0 case
+0.01_1900.0_13.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_1900.0_13.0
+Running 0.01_1900.0_14.0 case
+0.01_1900.0_14.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_1900.0_14.0
+Running 0.01_1900.0_15.0 case
+0.01_1900.0_15.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.01_1900.0_15.0
+Running 0.10_2400.0_1.0 case
+0.10_2400.0_1.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2400.0_1.0
+Running 0.10_2400.0_2.0 case
+0.10_2400.0_2.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2400.0_2.0
+Running 0.10_2400.0_3.0 case
+0.10_2400.0_3.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2400.0_3.0
+Running 0.10_2400.0_4.0 case
+0.10_2400.0_4.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2400.0_4.0
+Running 0.10_2400.0_5.0 case
+0.10_2400.0_5.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2400.0_5.0
+Running 0.10_2400.0_6.0 case
+0.10_2400.0_6.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2400.0_6.0
+Running 0.10_2400.0_7.0 case
+0.10_2400.0_7.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2400.0_7.0
+Running 0.10_2400.0_8.0 case
+0.10_2400.0_8.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2400.0_8.0
+Running 0.10_2400.0_9.0 case
+0.10_2400.0_9.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2400.0_9.0
+Running 0.10_2400.0_10.0 case
+0.10_2400.0_10.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2400.0_10.0
+Running 0.10_2400.0_11.0 case
+0.10_2400.0_11.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2400.0_11.0
+Running 0.10_2400.0_12.0 case
+0.10_2400.0_12.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2400.0_12.0
+Running 0.10_2400.0_13.0 case
+0.10_2400.0_13.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2400.0_13.0
+Running 0.10_2400.0_14.0 case
+0.10_2400.0_14.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2400.0_14.0
+Running 0.10_2400.0_15.0 case
+0.10_2400.0_15.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2400.0_15.0
+Running 0.10_2300.0_1.0 case
+0.10_2300.0_1.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2300.0_1.0
+Running 0.10_2300.0_2.0 case
+0.10_2300.0_2.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2300.0_2.0
+Running 0.10_2300.0_3.0 case
+0.10_2300.0_3.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2300.0_3.0
+Running 0.10_2300.0_4.0 case
+0.10_2300.0_4.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2300.0_4.0
+Running 0.10_2300.0_5.0 case
+0.10_2300.0_5.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2300.0_5.0
+Running 0.10_2300.0_6.0 case
+0.10_2300.0_6.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2300.0_6.0
+Running 0.10_2300.0_7.0 case
+0.10_2300.0_7.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2300.0_7.0
+Running 0.10_2300.0_8.0 case
+0.10_2300.0_8.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2300.0_8.0
+Running 0.10_2300.0_9.0 case
+0.10_2300.0_9.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2300.0_9.0
+Running 0.10_2300.0_10.0 case
+0.10_2300.0_10.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2300.0_10.0
+Running 0.10_2300.0_11.0 case
+0.10_2300.0_11.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2300.0_11.0
+Running 0.10_2300.0_12.0 case
+0.10_2300.0_12.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2300.0_12.0
+Running 0.10_2300.0_13.0 case
+0.10_2300.0_13.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2300.0_13.0
+Running 0.10_2300.0_14.0 case
+0.10_2300.0_14.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2300.0_14.0
+Running 0.10_2300.0_15.0 case
+0.10_2300.0_15.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2300.0_15.0
+Running 0.10_2100.0_1.0 case
+0.10_2100.0_1.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2100.0_1.0
+Running 0.10_2100.0_2.0 case
+0.10_2100.0_2.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2100.0_2.0
+Running 0.10_2100.0_3.0 case
+0.10_2100.0_3.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2100.0_3.0
+Running 0.10_2100.0_4.0 case
+0.10_2100.0_4.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2100.0_4.0
+Running 0.10_2100.0_5.0 case
+0.10_2100.0_5.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2100.0_5.0
+Running 0.10_2100.0_6.0 case
+0.10_2100.0_6.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2100.0_6.0
+Running 0.10_2100.0_7.0 case
+0.10_2100.0_7.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2100.0_7.0
+Running 0.10_2100.0_8.0 case
+0.10_2100.0_8.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2100.0_8.0
+Running 0.10_2100.0_9.0 case
+0.10_2100.0_9.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2100.0_9.0
+Running 0.10_2100.0_10.0 case
+0.10_2100.0_10.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2100.0_10.0
+Running 0.10_2100.0_11.0 case
+0.10_2100.0_11.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2100.0_11.0
+Running 0.10_2100.0_12.0 case
+0.10_2100.0_12.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2100.0_12.0
+Running 0.10_2100.0_13.0 case
+0.10_2100.0_13.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2100.0_13.0
+Running 0.10_2100.0_14.0 case
+0.10_2100.0_14.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2100.0_14.0
+Running 0.10_2100.0_15.0 case
+0.10_2100.0_15.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_2100.0_15.0
+Running 0.10_1900.0_1.0 case
+0.10_1900.0_1.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_1900.0_1.0
+Running 0.10_1900.0_2.0 case
+0.10_1900.0_2.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_1900.0_2.0
+Running 0.10_1900.0_3.0 case
+0.10_1900.0_3.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_1900.0_3.0
+Running 0.10_1900.0_4.0 case
+0.10_1900.0_4.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_1900.0_4.0
+Running 0.10_1900.0_5.0 case
+0.10_1900.0_5.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_1900.0_5.0
+Running 0.10_1900.0_6.0 case
+0.10_1900.0_6.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_1900.0_6.0
+Running 0.10_1900.0_7.0 case
+0.10_1900.0_7.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_1900.0_7.0
+Running 0.10_1900.0_8.0 case
+0.10_1900.0_8.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_1900.0_8.0
+Running 0.10_1900.0_9.0 case
+0.10_1900.0_9.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_1900.0_9.0
+Running 0.10_1900.0_10.0 case
+0.10_1900.0_10.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_1900.0_10.0
+Running 0.10_1900.0_11.0 case
+0.10_1900.0_11.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_1900.0_11.0
+Running 0.10_1900.0_12.0 case
+0.10_1900.0_12.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_1900.0_12.0
+Running 0.10_1900.0_13.0 case
+0.10_1900.0_13.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_1900.0_13.0
+Running 0.10_1900.0_14.0 case
+0.10_1900.0_14.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_1900.0_14.0
+Running 0.10_1900.0_15.0 case
+0.10_1900.0_15.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.10_1900.0_15.0
+Running 0.05_2400.0_1.0 case
+0.05_2400.0_1.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2400.0_1.0
+Running 0.05_2400.0_2.0 case
+0.05_2400.0_2.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2400.0_2.0
+Running 0.05_2400.0_3.0 case
+0.05_2400.0_3.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2400.0_3.0
+Running 0.05_2400.0_4.0 case
+0.05_2400.0_4.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2400.0_4.0
+Running 0.05_2400.0_5.0 case
+0.05_2400.0_5.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2400.0_5.0
+Running 0.05_2400.0_6.0 case
+0.05_2400.0_6.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2400.0_6.0
+Running 0.05_2400.0_7.0 case
+0.05_2400.0_7.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2400.0_7.0
+Running 0.05_2400.0_8.0 case
+0.05_2400.0_8.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2400.0_8.0
+Running 0.05_2400.0_9.0 case
+0.05_2400.0_9.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2400.0_9.0
+Running 0.05_2400.0_10.0 case
+0.05_2400.0_10.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2400.0_10.0
+Running 0.05_2400.0_11.0 case
+0.05_2400.0_11.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2400.0_11.0
+Running 0.05_2400.0_12.0 case
+0.05_2400.0_12.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2400.0_12.0
+Running 0.05_2400.0_13.0 case
+0.05_2400.0_13.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2400.0_13.0
+Running 0.05_2400.0_14.0 case
+0.05_2400.0_14.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2400.0_14.0
+Running 0.05_2400.0_15.0 case
+0.05_2400.0_15.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2400.0_15.0
+Running 0.05_2300.0_1.0 case
+0.05_2300.0_1.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2300.0_1.0
+Running 0.05_2300.0_2.0 case
+0.05_2300.0_2.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2300.0_2.0
+Running 0.05_2300.0_3.0 case
+0.05_2300.0_3.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2300.0_3.0
+Running 0.05_2300.0_4.0 case
+0.05_2300.0_4.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2300.0_4.0
+Running 0.05_2300.0_5.0 case
+0.05_2300.0_5.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2300.0_5.0
+Running 0.05_2300.0_6.0 case
+0.05_2300.0_6.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2300.0_6.0
+Running 0.05_2300.0_7.0 case
+0.05_2300.0_7.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2300.0_7.0
+Running 0.05_2300.0_8.0 case
+0.05_2300.0_8.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2300.0_8.0
+Running 0.05_2300.0_9.0 case
+0.05_2300.0_9.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2300.0_9.0
+Running 0.05_2300.0_10.0 case
+0.05_2300.0_10.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2300.0_10.0
+Running 0.05_2300.0_11.0 case
+0.05_2300.0_11.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2300.0_11.0
+Running 0.05_2300.0_12.0 case
+0.05_2300.0_12.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2300.0_12.0
+Running 0.05_2300.0_13.0 case
+0.05_2300.0_13.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2300.0_13.0
+Running 0.05_2300.0_14.0 case
+0.05_2300.0_14.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2300.0_14.0
+Running 0.05_2300.0_15.0 case
+0.05_2300.0_15.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2300.0_15.0
+Running 0.05_2100.0_1.0 case
+0.05_2100.0_1.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2100.0_1.0
+Running 0.05_2100.0_2.0 case
+0.05_2100.0_2.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2100.0_2.0
+Running 0.05_2100.0_3.0 case
+0.05_2100.0_3.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2100.0_3.0
+Running 0.05_2100.0_4.0 case
+0.05_2100.0_4.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2100.0_4.0
+Running 0.05_2100.0_5.0 case
+0.05_2100.0_5.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2100.0_5.0
+Running 0.05_2100.0_6.0 case
+0.05_2100.0_6.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2100.0_6.0
+Running 0.05_2100.0_7.0 case
+0.05_2100.0_7.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2100.0_7.0
+Running 0.05_2100.0_8.0 case
+0.05_2100.0_8.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2100.0_8.0
+Running 0.05_2100.0_9.0 case
+0.05_2100.0_9.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2100.0_9.0
+Running 0.05_2100.0_10.0 case
+0.05_2100.0_10.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2100.0_10.0
+Running 0.05_2100.0_11.0 case
+0.05_2100.0_11.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2100.0_11.0
+Running 0.05_2100.0_12.0 case
+0.05_2100.0_12.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2100.0_12.0
+Running 0.05_2100.0_13.0 case
+0.05_2100.0_13.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2100.0_13.0
+Running 0.05_2100.0_14.0 case
+0.05_2100.0_14.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2100.0_14.0
+Running 0.05_2100.0_15.0 case
+0.05_2100.0_15.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_2100.0_15.0
+Running 0.05_1900.0_1.0 case
+0.05_1900.0_1.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_1900.0_1.0
+Running 0.05_1900.0_2.0 case
+0.05_1900.0_2.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_1900.0_2.0
+Running 0.05_1900.0_3.0 case
+0.05_1900.0_3.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_1900.0_3.0
+Running 0.05_1900.0_4.0 case
+0.05_1900.0_4.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_1900.0_4.0
+Running 0.05_1900.0_5.0 case
+0.05_1900.0_5.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_1900.0_5.0
+Running 0.05_1900.0_6.0 case
+0.05_1900.0_6.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_1900.0_6.0
+Running 0.05_1900.0_7.0 case
+0.05_1900.0_7.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_1900.0_7.0
+Running 0.05_1900.0_8.0 case
+0.05_1900.0_8.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_1900.0_8.0
+Running 0.05_1900.0_9.0 case
+0.05_1900.0_9.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_1900.0_9.0
+Running 0.05_1900.0_10.0 case
+0.05_1900.0_10.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_1900.0_10.0
+Running 0.05_1900.0_11.0 case
+0.05_1900.0_11.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_1900.0_11.0
+Running 0.05_1900.0_12.0 case
+0.05_1900.0_12.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_1900.0_12.0
+Running 0.05_1900.0_13.0 case
+0.05_1900.0_13.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_1900.0_13.0
+Running 0.05_1900.0_14.0 case
+0.05_1900.0_14.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_1900.0_14.0
+Running 0.05_1900.0_15.0 case
+0.05_1900.0_15.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.05_1900.0_15.0
+Running 0.20_2400.0_1.0 case
+0.20_2400.0_1.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2400.0_1.0
+Running 0.20_2400.0_2.0 case
+0.20_2400.0_2.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2400.0_2.0
+Running 0.20_2400.0_3.0 case
+0.20_2400.0_3.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2400.0_3.0
+Running 0.20_2400.0_4.0 case
+0.20_2400.0_4.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2400.0_4.0
+Running 0.20_2400.0_5.0 case
+0.20_2400.0_5.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2400.0_5.0
+Running 0.20_2400.0_6.0 case
+0.20_2400.0_6.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2400.0_6.0
+Running 0.20_2400.0_7.0 case
+0.20_2400.0_7.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2400.0_7.0
+Running 0.20_2400.0_8.0 case
+0.20_2400.0_8.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2400.0_8.0
+Running 0.20_2400.0_9.0 case
+0.20_2400.0_9.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2400.0_9.0
+Running 0.20_2400.0_10.0 case
+0.20_2400.0_10.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2400.0_10.0
+Running 0.20_2400.0_11.0 case
+0.20_2400.0_11.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2400.0_11.0
+Running 0.20_2400.0_12.0 case
+0.20_2400.0_12.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2400.0_12.0
+Running 0.20_2400.0_13.0 case
+0.20_2400.0_13.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2400.0_13.0
+Running 0.20_2400.0_14.0 case
+0.20_2400.0_14.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2400.0_14.0
+Running 0.20_2400.0_15.0 case
+0.20_2400.0_15.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2400.0_15.0
+Running 0.20_2300.0_1.0 case
+0.20_2300.0_1.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2300.0_1.0
+Running 0.20_2300.0_2.0 case
+0.20_2300.0_2.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2300.0_2.0
+Running 0.20_2300.0_3.0 case
+0.20_2300.0_3.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2300.0_3.0
+Running 0.20_2300.0_4.0 case
+0.20_2300.0_4.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2300.0_4.0
+Running 0.20_2300.0_5.0 case
+0.20_2300.0_5.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2300.0_5.0
+Running 0.20_2300.0_6.0 case
+0.20_2300.0_6.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2300.0_6.0
+Running 0.20_2300.0_7.0 case
+0.20_2300.0_7.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2300.0_7.0
+Running 0.20_2300.0_8.0 case
+0.20_2300.0_8.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2300.0_8.0
+Running 0.20_2300.0_9.0 case
+0.20_2300.0_9.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2300.0_9.0
+Running 0.20_2300.0_10.0 case
+0.20_2300.0_10.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2300.0_10.0
+Running 0.20_2300.0_11.0 case
+0.20_2300.0_11.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2300.0_11.0
+Running 0.20_2300.0_12.0 case
+0.20_2300.0_12.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2300.0_12.0
+Running 0.20_2300.0_13.0 case
+0.20_2300.0_13.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2300.0_13.0
+Running 0.20_2300.0_14.0 case
+0.20_2300.0_14.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2300.0_14.0
+Running 0.20_2300.0_15.0 case
+0.20_2300.0_15.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2300.0_15.0
+Running 0.20_2100.0_1.0 case
+0.20_2100.0_1.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2100.0_1.0
+Running 0.20_2100.0_2.0 case
+0.20_2100.0_2.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2100.0_2.0
+Running 0.20_2100.0_3.0 case
+0.20_2100.0_3.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2100.0_3.0
+Running 0.20_2100.0_4.0 case
+0.20_2100.0_4.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2100.0_4.0
+Running 0.20_2100.0_5.0 case
+0.20_2100.0_5.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2100.0_5.0
+Running 0.20_2100.0_6.0 case
+0.20_2100.0_6.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2100.0_6.0
+Running 0.20_2100.0_7.0 case
+0.20_2100.0_7.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2100.0_7.0
+Running 0.20_2100.0_8.0 case
+0.20_2100.0_8.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2100.0_8.0
+Running 0.20_2100.0_9.0 case
+0.20_2100.0_9.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2100.0_9.0
+Running 0.20_2100.0_10.0 case
+0.20_2100.0_10.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2100.0_10.0
+Running 0.20_2100.0_11.0 case
+0.20_2100.0_11.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2100.0_11.0
+Running 0.20_2100.0_12.0 case
+0.20_2100.0_12.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2100.0_12.0
+Running 0.20_2100.0_13.0 case
+0.20_2100.0_13.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2100.0_13.0
+Running 0.20_2100.0_14.0 case
+0.20_2100.0_14.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2100.0_14.0
+Running 0.20_2100.0_15.0 case
+0.20_2100.0_15.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_2100.0_15.0
+Running 0.20_1900.0_1.0 case
+0.20_1900.0_1.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_1900.0_1.0
+Running 0.20_1900.0_2.0 case
+0.20_1900.0_2.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_1900.0_2.0
+Running 0.20_1900.0_3.0 case
+0.20_1900.0_3.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_1900.0_3.0
+Running 0.20_1900.0_4.0 case
+0.20_1900.0_4.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_1900.0_4.0
+Running 0.20_1900.0_5.0 case
+0.20_1900.0_5.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_1900.0_5.0
+Running 0.20_1900.0_6.0 case
+0.20_1900.0_6.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_1900.0_6.0
+Running 0.20_1900.0_7.0 case
+0.20_1900.0_7.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_1900.0_7.0
+Running 0.20_1900.0_8.0 case
+0.20_1900.0_8.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_1900.0_8.0
+Running 0.20_1900.0_9.0 case
+0.20_1900.0_9.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_1900.0_9.0
+Running 0.20_1900.0_10.0 case
+0.20_1900.0_10.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_1900.0_10.0
+Running 0.20_1900.0_11.0 case
+0.20_1900.0_11.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_1900.0_11.0
+Running 0.20_1900.0_12.0 case
+0.20_1900.0_12.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_1900.0_12.0
+Running 0.20_1900.0_13.0 case
+0.20_1900.0_13.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_1900.0_13.0
+Running 0.20_1900.0_14.0 case
+0.20_1900.0_14.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_1900.0_14.0
+Running 0.20_1900.0_15.0 case
+0.20_1900.0_15.0 results written to D:\github_copies\GenX-rmacd\TEGS_runs\outputs\newEngland\temp_lossrate_sweep\0.20_1900.0_15.0

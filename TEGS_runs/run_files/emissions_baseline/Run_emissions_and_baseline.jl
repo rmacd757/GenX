@@ -60,7 +60,6 @@ for (loc_name, loc_path) in location_dir
     outputs_path = joinpath(outputs_path_root, "baseline")
     EP = build_solve_write(outputs_path, mysetup, myinputs, OPTIMIZER)
 
-    println
     push!(logging_notes, "Baseline results written to $outputs_path\n")
 
     # Find the emissions level

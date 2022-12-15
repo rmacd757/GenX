@@ -73,7 +73,8 @@ function setTEGScosts!(dfGen::DataFrame, stortype::Int, T::Float64, lossrate::Fl
     for (param, value) in tegs_costs
         TEGS_input[!,param] .= value
     end
-    TEGS_input[!, "Self_Disch"] .= lossrate / 24 # Convert daily loss rate to hourly
+    TEGS_input[!, "Self_Disch"] .= lossrate / 24. # Convert daily loss rate to hourly
+    TEGS_input[!, "STOR"] .= 2
 end
 
 ############################################
@@ -81,10 +82,10 @@ end
 # All cases intended to be run from the run-file directory
 ############################################
 root_dir = dirname(dirname(dirname(@__FILE__))) # Should be ../TEGS_runs
-run_name = "temp_lossrate_sweep"
+run_name = "temp_lossrate_sweep_stor2"
 
 location_dir = Dict{String, String}(
-    # "newEngland" => joinpath(root_dir, "data", "newEngland"),
+    "newEngland" => joinpath(root_dir, "data", "newEngland"),
     "texas" => joinpath(root_dir, "data", "texas"),
 )
 
@@ -154,7 +155,7 @@ for (loc_name, loc_path) in location_dir
 
     LIFETIME = 30.
     DISCOUNT_RATE = 0.05
-    STOR_TYPE = 1
+    STOR_TYPE = 2
 
     push!(logging_notes, "LIFETIME = $LIFETIME\n")
     push!(logging_notes, "DISCOUNT_RATE = $DISCOUNT_RATE\n")
@@ -165,14 +166,14 @@ for (loc_name, loc_path) in location_dir
         myinputs["dfMaxCO2"] = emiss_target * 1e3 / scale_factor
         for T in temperatures
             for lossrate in lossrates
-                push!(logging_notes, "Running $(emiss_name)_$(T)_$(lossrate) case\n")
+                push!(logging_notes, "Running $(emiss_name)_$(T)_$(lossrate)_stor2 case\n")
                 setTEGScosts!(myinputs["dfGen"], STOR_TYPE, T, lossrate, LIFETIME, DISCOUNT_RATE)
 
                 # Calculate and save baseline emissions
-                outputs_path = joinpath(outputs_path_root, "$(emiss_name)_$(T)_$(lossrate)")
+                outputs_path = joinpath(outputs_path_root, "$(emiss_name)_$(T)_$(lossrate)_stor2")
                 EP = build_solve_write(outputs_path, mysetup, myinputs, OPTIMIZER)
 
-                push!(logging_notes, "$(emiss_name)_$(T)_$(lossrate) results written to $outputs_path\n")
+                push!(logging_notes, "$(emiss_name)_$(T)_$(lossrate)_stor2 results written to $outputs_path\n")
 
                 # We could add a break statement to avoid needless runs, as the loss rate is increasing.
                 # However, unclear how performance and cost trade-off
