@@ -167,7 +167,7 @@ for (loc_name, loc_path) in location_dir
                 push!(logging_notes, "Running $(emiss_name)_$(T)_$(lossrate) case\n")
                 setTEGScosts!(myinputs["dfGen"], STOR_TYPE, T, lossrate, LIFETIME, DISCOUNT_RATE)
                 TEGS_input = selectresource(myinputs["dfGen"], "TEGS")
-                TEGS_input[!, "Self_Disch"] .= lossrate / 24. # Convert daily loss rate to hourly
+                TEGS_input[!, "Self_Disch"] .= lossrate / 100 / 24. # Convert daily loss rate to hourly
                 TEGS_input[!, "STOR"] .= 1
 
                 # Calculate and save baseline emissions

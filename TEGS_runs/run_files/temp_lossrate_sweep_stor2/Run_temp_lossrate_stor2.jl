@@ -167,12 +167,12 @@ for (loc_name, loc_path) in location_dir
                 push!(logging_notes, "Running $(emiss_name)_$(T)_$(lossrate)_stor2 case\n")
                 setTEGScosts!(myinputs["dfGen"], STOR_TYPE, T, lossrate, LIFETIME, DISCOUNT_RATE)
                 TEGS_input = selectresource(myinputs["dfGen"], "TEGS")
-                TEGS_input[!, "Self_Disch"] .= lossrate / 24. # Convert daily loss rate to hourly
+                TEGS_input[!, "Self_Disch"] .= lossrate / 100 / 24. # Convert daily loss rate to hourly
                 TEGS_input[!, "STOR"] .= 2
 
                 # This doesn't work properly right now because it's hard to overwrite certain changes in the model
                 # It would be worth figuring this out for future run files
-                
+
                 # # Correct GenX index set
                 # deleteat!(myinputs["STOR_SYMMETRIC"], myinputs["STOR_SYMMETRIC"].==TEGS_input.R_ID)
                 # if !(TEGS_input.R_ID[1] in myinputs["STOR_ASYMMETRIC"])
