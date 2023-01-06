@@ -105,6 +105,7 @@ emiss_targets = Dict{String, Dict{String, Float64}}(
 for (loc_name, loc_emiss) in emiss_targets
     outputs_path = joinpath(dropbox_path, "outputs", loc_name, "emissions_and_baseline", "baseline")
     # outputs_path = joinpath(root_dir, "outputs", loc_name, "emissions_and_baseline", "baseline")
+    emissions_df = DataFrame(CSV.File(joinpath(outputs_path, "emissions.csv")))
     baseline_emiss = emissions_df.Total[1]
     for (emiss_name, emiss_level) in emissions_levels
         loc_emiss[emiss_name] = baseline_emiss * emiss_level
