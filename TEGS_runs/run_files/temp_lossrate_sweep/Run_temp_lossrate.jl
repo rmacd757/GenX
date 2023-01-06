@@ -81,7 +81,7 @@ end
 ############################################
 root_dir = dirname(dirname(dirname(@__FILE__))) # Should be ../TEGS_runs
 run_name = "temp_lossrate_sweep"
-dropbox_path = "/media/rmacd/LargeHD/Dropbox/1_Academics/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs"
+dropbox_path = "/media/rmacd/LargeHD/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs"
 
 location_dir = Dict{String, String}(
     "newEngland" => joinpath(root_dir, "data", "newEngland_stor1"),
@@ -105,6 +105,7 @@ emiss_targets = Dict{String, Dict{String, Float64}}(
 for (loc_name, loc_emiss) in emiss_targets
     outputs_path = joinpath(dropbox_path, "outputs", loc_name, "emissions_and_baseline", "baseline")
     # outputs_path = joinpath(root_dir, "outputs", loc_name, "emissions_and_baseline", "baseline")
+    emissions_df = DataFrame(CSV.File(joinpath(outputs_path, "emissions.csv")))
     baseline_emiss = emissions_df.Total[1]
     for (emiss_name, emiss_level) in emissions_levels
         loc_emiss[emiss_name] = baseline_emiss * emiss_level
