@@ -83,8 +83,8 @@ root_dir = dirname(dirname(dirname(@__FILE__))) # Should be ../TEGS_runs
 run_name = "temp_lossrate_sweep"
 
 location_dir = Dict{String, String}(
-    # "newEngland" => joinpath(root_dir, "data", "newEngland"),
-    "texas" => joinpath(root_dir, "data", "texas"),
+    "newEngland" => joinpath(root_dir, "data", "newEngland_stor1"),
+    "texas" => joinpath(root_dir, "data", "texas_stor1"),
 )
 
 logging_notes = Array{String, 1}()
