@@ -81,6 +81,7 @@ end
 ############################################
 root_dir = dirname(dirname(dirname(@__FILE__))) # Should be ../TEGS_runs
 run_name = "temp_lossrate_sweep_stor2"
+dropbox_path = "D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs"
 
 location_dir = Dict{String, String}(
     "newEngland" => joinpath(root_dir, "data", "newEngland"),
@@ -102,7 +103,8 @@ emiss_targets = Dict{String, Dict{String, Float64}}(
 )
 
 for (loc_name, loc_emiss) in emiss_targets
-    outputs_path = joinpath(root_dir, "outputs", loc_name, "emissions_and_baseline", "baseline")
+    outputs_path = joinpath(dropbox_path, "outputs", loc_name, "emissions_and_baseline", "baseline")
+    # outputs_path = joinpath(root_dir, "outputs", loc_name, "emissions_and_baseline", "baseline")
     emissions_df = DataFrame(CSV.File(joinpath(outputs_path, "emissions.csv")))
     baseline_emiss = emissions_df.Total[1]
     for (emiss_name, emiss_level) in emissions_levels
@@ -126,7 +128,9 @@ for (loc_name, loc_path) in location_dir
     inputs_path = case
     settings_path = get_settings_path(case)
 
-    outputs_path_root = joinpath(root_dir, "outputs", loc_name, run_name)
+    
+    # outputs_path_root = joinpath(root_dir, "outputs", loc_name, run_name)
+    outputs_path_root = joinpath(dropbox_path, "outputs", loc_name, run_name)
     if !isdir(outputs_path_root)
         mkpath(outputs_path_root)
     end
