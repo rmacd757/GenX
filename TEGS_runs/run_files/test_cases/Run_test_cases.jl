@@ -28,7 +28,7 @@ end
 # Case Definitions 
 # All cases intended to be run from the run-file directory
 ############################################
-root_dir = dirname(dirname(@__FILE__)) # Should be ../TEGS_runs
+root_dir = dirname(dirname(dirname(@__FILE__))) # Should be ../TEGS_runs
 
 location_dir = Dict{String, String}(
     "newEngland" => joinpath(root_dir, "data", "newEngland"),
@@ -72,15 +72,15 @@ OPTIMIZER = configure_solver(mysetup["Solver"], settings_path)
 println("Loading Inputs")
 myinputs = load_inputs(mysetup, case)
 
-# println("Generating the Optimization Model")
-# EP = generate_model(mysetup, myinputs, OPTIMIZER)
+println("Generating the Optimization Model")
+EP = generate_model(mysetup, myinputs, OPTIMIZER)
 
-# println("Solving Model")
-# EP, solve_time = solve_model(EP, mysetup)
-# myinputs["solve_time"] = solve_time # Store the model solve time in myinputs
+println("Solving Model")
+EP, solve_time = solve_model(EP, mysetup)
+myinputs["solve_time"] = solve_time # Store the model solve time in myinputs
 
-# # Run MGA if the MGA flag is set to 1 else only save the least cost solution
-# println("Writing Output")
-# elapsed_time = @elapsed write_outputs(EP, outputs_path, mysetup, myinputs)
-# println("Time elapsed for writing is")
-# println(elapsed_time)
+# Run MGA if the MGA flag is set to 1 else only save the least cost solution
+println("Writing Output")
+elapsed_time = @elapsed write_outputs(EP, outputs_path, mysetup, myinputs)
+println("Time elapsed for writing is")
+println(elapsed_time)
