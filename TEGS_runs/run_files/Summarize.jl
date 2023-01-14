@@ -100,7 +100,8 @@ function summarizerun(
                 resource_summ, 
                 joinpath(result_dir, result, result_file), 
                 resource_cols, 
-                zone_cols)
+                zone_cols
+            )
         end
     end
     return resource_summ
@@ -114,8 +115,24 @@ function summarizerunandsave(
     """Summarize all the results from the series of optimizations in result_dir and save them to a JSON file"""
     resource_summ = summarizerun(result_dir, resource_cols, zone_cols)
     case_name = basename(result_dir)
-    open(joinpath(result_dir, "$(case_name)_summary.json"), "w") do io
+    summ_file_name = joinpath(result_dir, "$(case_name)_summary.json")
+    open(summ_file_name, "w") do io
         JSON3.pretty(io, resource_summ)
+    end
+    return summ_file_name
+end
+
+############################################
+# Loading functions
+############################################
+function getlocsummaryfiles!(summ_paths::Dict{String, String}, loc_path::String, loc_name::String)
+    for (root, _, files) in walkdir(loc_path)
+        for file in files
+            if endswith(file, "_summary.json")
+                shortened_file = split(file, "_summary.json")[1]
+                summ_paths["$(loc_name)_$(shortened_file)"] = joinpath(root, file)
+            end
+        end
     end
 end
 
