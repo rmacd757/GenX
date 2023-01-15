@@ -64,10 +64,26 @@ function summarizefile!(
     path_comp = splitpath(result_filepath)
     result_name = path_comp[end-1]
     result_file = path_comp[end] # aka: basename(result_filepath)
-    summ_params = intersect(string.(propertynames(result_data)), resource_cols[result_file])
-    for param in summ_params
-        for (idx, resource) in enumerate(result_data.Resource)
-            resource_summ[param][resource][result_name] = result_data[param][idx]
+    if haskey(resource_cols, result_file)
+        resource_params = intersect(string.(propertynames(result_data)), resource_cols[result_file])
+        for param in resource_params
+            for (idx, resource) in enumerate(result_data.Resource)
+                resource_summ[param][resource][result_name] = result_data[param][idx]
+            end
+        end
+    end
+    # This is a mess which only works for costs.csv
+    # The output file formatting needs to be made consistent
+    if haskey(zone_cols, result_file)
+        zone_params = intersect(result_data.Costs, zone_cols[result_file])
+        for param in zone_params
+            for (idx, zone) in enumerate(string.(propertynames(result_data))[2:end])
+                res = result_data[zone][idx]
+                if !(typeof(res) == Float64)
+                    res = parse(Float64, res)
+                end
+                resource_summ[param][zone][result_name] = res
+            end
         end
     end
 end
@@ -82,15 +98,24 @@ function summarizerun(
 
     files_to_search = union(collect(keys(resource_cols)), collect(keys(zone_cols)))
 
-    param_names = String[]
+    resource_params = String[]
     for params in values(resource_cols)
-        param_names = union(param_names, params)
+        resource_params = union(resource_params, params)
     end
-    resource_summ = initparamresults(param_names)
+    zone_params = String[]
+    for params in values(zone_cols)
+        zone_params = union(zone_params, params)
+    end
+
+    resource_summ = initparamresults(union(resource_params))
 
     resource_names = getresourcenames(result_dir)
-    for param in keys(resource_summ)
+    for param in resource_params
         resource_summ[param] = initresourceresults(resource_names)
+    end
+    zone_names = ["Total", "Zone1"]
+    for param in zone_params
+        resource_summ[param] = initresourceresults(zone_names)
     end
 
     case_results = shortdirnames(result_dir)
@@ -99,7 +124,7 @@ function summarizerun(
             summarizefile!(
                 resource_summ, 
                 joinpath(result_dir, result, result_file), 
-                resource_cols, 
+                resource_cols,
                 zone_cols
             )
         end

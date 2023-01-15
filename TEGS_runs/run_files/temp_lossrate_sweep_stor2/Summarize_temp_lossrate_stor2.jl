@@ -5,7 +5,9 @@ using DataFrames
 include("../Summarize.jl")
 
 # root_dir = dirname(dirname(dirname(@__FILE__))) # Should be ../TEGS_runs
-root_dir = "/Users/rmacd/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs"
+# root_dir = "/Users/rmacd/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs"
+dropbox_dir = joinpath("D:/", "Dropbox")
+root_dir = joinpath(dropbox_dir, "1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs")
 outputs_dir = joinpath(root_dir, "outputs")
 
 location_dir = Dict{String, String}(
