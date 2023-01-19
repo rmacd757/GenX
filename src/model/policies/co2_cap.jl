@@ -72,10 +72,21 @@ function co2_cap!(EP::Model, inputs::Dict, setup::Dict)
 
 	## Mass-based: Emissions constraint in absolute emissions limit (tons)
 	if setup["CO2Cap"] == 1
-		@constraint(EP, cCO2Emissions_systemwide[cap=1:inputs["NCO2Cap"]],
-			sum(inputs["omega"][t] * EP[:eEmissionsByZone][z,t] for z=findall(x->x==1, inputs["dfCO2CapZones"][:,cap]), t=1:T) <=
-			sum(inputs["dfMaxCO2"][z,cap] for z=findall(x->x==1, inputs["dfCO2CapZones"][:,cap]))
-		)
+		if setup["CO2CapPeriods"] <= 1
+			# CO2 cap based on a single period
+			@constraint(EP, cCO2Emissions_systemwide[cap=1:inputs["NCO2Cap"]],
+				sum(inputs["omega"][t] * EP[:eEmissionsByZone][z,t] for z=findall(x->x==1, inputs["dfCO2CapZones"][:,cap]), t=1:T) <=
+				sum(inputs["dfMaxCO2"][z,cap] for z=findall(x->x==1, inputs["dfCO2CapZones"][:,cap]))
+			)
+		else
+			# Breaking up into the timeseries into CO2CapPeriods periods
+			# If periods are uneven, make the first period longest
+			period_times = timeseries2periods(T, setup["CO2CapPeriods"])
+			@constraint(EP, cCO2Emissions_systemwide[cap=1:inputs["NCO2Cap"], p=1:setup["CO2CapPeriods"]],
+				sum(inputs["omega"][t] * EP[:eEmissionsByZone][z,t] for z=findall(x->x==1, inputs["dfCO2CapZones"][:,cap]), t=period_times[p,1]:period_times[p,2]) <=
+				sum(inputs["dfMaxCO2"][z,cap] for z=findall(x->x==1, inputs["dfCO2CapZones"][:,cap])) / setup["CO2CapPeriods"]
+			)
+		end
 
 	## Load + Rate-based: Emissions constraint in terms of rate (tons/MWh)
 	elseif setup["CO2Cap"] == 2 ##This part moved to non_served_energy.jl
@@ -94,3 +105,18 @@ function co2_cap!(EP::Model, inputs::Dict, setup::Dict)
 	end 
 
 end
+
+function timeseries2periods(T::Int64, numperiods::Int64)
+	# Breaks up the timeseries into numperiods periods
+	# If periods are uneven, make the first period longest
+	period_times = Array{Int64}(undef, numperiods, 2)
+	min_period_length = Int64(floor(T/numperiods))
+	remainder = T % numperiods
+	for p in 1:numperiods
+		period_times[p,1] = (p-1)*min_period_length + 1 + remainder
+		period_times[p,2] = p*min_period_length + remainder
+	end
+	period_times[1,1] = 1
+	return period_times
+end
+

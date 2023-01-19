@@ -109,8 +109,6 @@ function generate_model(setup::Dict,inputs::Dict,OPTIMIZER::MOI.OptimizerWithAtt
 	# Initialize Objective Function Expression
 	@expression(EP, eObj, 0)
 
-
-	#@expression(EP, :eCO2Cap[cap=1:inputs["NCO2Cap"]], 0)
 	@expression(EP, eGenerationByZone[z=1:Z, t=1:T], 0)
 	# Initialize Capacity Reserve Margin Expression
 	if setup["CapacityReserveMargin"] > 0
