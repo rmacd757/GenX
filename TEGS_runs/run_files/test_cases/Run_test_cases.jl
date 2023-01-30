@@ -30,12 +30,8 @@ end
 ############################################
 root_dir = dirname(dirname(dirname(@__FILE__))) # Should be ../TEGS_runs
 
-location_dir = Dict{String, String}(
-    "newEngland" => joinpath(root_dir, "data", "newEngland"),
-    # "texas" => joinpath(root_dir, "data", "texas"),
-)
 loc_name = "newEngland"
-loc_path = joinpath(root_dir, "data", "newEngland")
+loc_path = joinpath(root_dir, "data", "newEngland_stor2_mod")
 
 scenarios = ["results"]
 scenario = "results"
