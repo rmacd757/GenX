@@ -85,6 +85,13 @@ function load_generators_data!(setup::Dict, path::AbstractString, inputs_gen::Di
 	end
 	inputs_gen["THERM_ALL"] = union(inputs_gen["THERM_COMMIT"],inputs_gen["THERM_NO_COMMIT"])
 
+	# Set of fusion resources
+	if ("FUSION" in names(gen_in))
+		inputs_gen["FUSION"] = gen_in[gen_in.FUSION.==1,:R_ID]
+	else
+		inputs_gen["FUSION"] = Int64[]
+	end
+
 	# For now, the only resources eligible for UC are themal resources
 	inputs_gen["COMMIT"] = inputs_gen["THERM_COMMIT"]
 

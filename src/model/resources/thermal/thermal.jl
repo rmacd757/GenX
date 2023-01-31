@@ -27,9 +27,16 @@ function thermal!(EP::Model, inputs::Dict, setup::Dict)
 
 	THERM_COMMIT = inputs["THERM_COMMIT"]
 	THERM_NO_COMMIT = inputs["THERM_NO_COMMIT"]
+	FUSION = inputs["FUSION"]
 	THERM_ALL = inputs["THERM_ALL"]
 
 	dfGen = inputs["dfGen"]
+
+	
+	# Model constraints, variables, expression related to fusion power technologies
+	if !isempty(FUSION)
+		fusion!(EP, inputs, setup)
+	end
 
 	if !isempty(THERM_COMMIT)
 		thermal_commit!(EP, inputs, setup)
