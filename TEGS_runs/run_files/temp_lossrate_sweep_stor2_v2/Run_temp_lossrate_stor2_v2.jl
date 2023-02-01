@@ -81,7 +81,8 @@ end
 ############################################
 root_dir = dirname(dirname(dirname(@__FILE__))) # Should be ../TEGS_runs
 run_name = "temp_lossrate_sweep_stor2_v2"
-dropbox_path = "D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs"
+# dropbox_path = "D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs"
+dropbox_path = "/media/rmacd/LargeHD/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs"
 
 location_dir = Dict{String, String}(
     "newEngland" => joinpath(root_dir, "data", "newEngland_stor2_v2"),
@@ -99,7 +100,7 @@ emissions_levels = Dict{String, Float64}(
 
 emiss_targets = Dict{String, Dict{String, Float64}}(
     "newEngland" => Dict{String, Float64}(),
-    "texas" => Dict{String, Float64}(),
+    # "texas" => Dict{String, Float64}(),
 )
 
 for (loc_name, loc_emiss) in emiss_targets
