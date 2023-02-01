@@ -80,13 +80,13 @@ end
 # All cases intended to be run from the run-file directory
 ############################################
 root_dir = dirname(dirname(dirname(@__FILE__))) # Should be ../TEGS_runs
-run_name = "temp_lossrate_sweep_stor2_v2"
+run_name = "temp_lossrate_sweep_stor1_v2"
 # dropbox_path = "D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs"
 dropbox_path = "/media/rmacd/LargeHD/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs"
 
 location_dir = Dict{String, String}(
-    "newEngland" => joinpath(root_dir, "data", "newEngland_stor2_v2"),
-    "texas" => joinpath(root_dir, "data", "texas_stor2"),
+    "newEngland" => joinpath(root_dir, "data", "newEngland_stor1_v2"),
+    "texas" => joinpath(root_dir, "data", "texas_stor1"),
 )
 
 logging_notes = Array{String, 1}()
@@ -158,7 +158,7 @@ for (loc_name, loc_path) in location_dir
 
     LIFETIME = 30.
     DISCOUNT_RATE = 0.05
-    STOR_TYPE = 2
+    STOR_TYPE = 1
 
     push!(logging_notes, "LIFETIME = $LIFETIME\n")
     push!(logging_notes, "DISCOUNT_RATE = $DISCOUNT_RATE\n")
