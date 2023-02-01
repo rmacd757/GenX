@@ -1,0 +1,14 @@
+Region,Resource,Zone,Cluster,AnnualSum
+NENGREST,NENGREST_biomass_1,1,1,0.0
+NENGREST,NENGREST_conventional_hydroelectric_1,1,1,0.0
+NENGREST,NENGREST_hydroelectric_pumped_storage_1,1,1,0.0
+NENGREST,NaturalGas_CCAvgCF_Moderate,1,1,3.5497022703250785e9
+NENGREST,NaturalGas_CTAvgCF_Moderate,1,1,4.553994972796577e8
+NENGREST,NaturalGas_CCCCSAvgCF_Moderate,1,1,0.0
+NENGREST,NaturalGas_CCS100_Moderate,1,1,0.0
+NENGREST,NENGREST_nuclear_1,1,1,0.0
+NENGREST,OffShoreWind_Class3_Moderate_fixed_1,1,1,0.0
+NENGREST,LandbasedWind_Class3_Moderate_130,1,1,8.648446529276607e8
+NENGREST,UtilityPV_Class1_Moderate_100_0.2,1,1,1.195755550430085e8
+NENGREST,Liion_Moderate,1,1,0.0
+NENGREST,TEGS,1,1,1.1441682341193321e8

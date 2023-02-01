@@ -14,13 +14,16 @@ include("../RunTools.jl")
 root_dir = dirname(dirname(dirname(@__FILE__))) # Should be ../TEGS_runs
 
 location_dir = Dict{String, String}(
-    "newEngland" => joinpath(root_dir, "data", "newEngland"),
-    "texas" => joinpath(root_dir, "data", "texas"),
+    "newEngland" => joinpath(root_dir, "data", "newEngland_stor2_v2"),
+    # "texas" => joinpath(root_dir, "data", "texas"),
 )
 
 logging_notes = Array{String, 1}()
 
 for (loc_name, loc_path) in location_dir
+    run_name = "emissions_and_baseline_v2"
+    dropbox_path = "D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs"
+
     push!(logging_notes, "Running $loc_name case\n")
     case = loc_path
     genx_settings = get_settings_path(case, "genx_settings.yml") #Settings YAML file path
@@ -29,7 +32,7 @@ for (loc_name, loc_path) in location_dir
     inputs_path = case
     settings_path = get_settings_path(case)
 
-    outputs_path_root = joinpath(root_dir, "outputs", loc_name, "emissions_and_baseline")
+    outputs_path_root = joinpath(dropbox_path, "outputs", loc_name, run_name)
     if !isdir(outputs_path_root)
         mkpath(outputs_path_root)
     end
