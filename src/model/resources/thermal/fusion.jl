@@ -31,13 +31,13 @@ function fusionthermalpower(EP::Model, inputs::Dict, setup::Dict)
 	# commitment state variable
 
     ## Expression to represent the commitment state of the fusion power generators
-    @expression(EP, eFusionCommit[y in FUSION, t=1:T], vCOMMIT[y,t])
+    @expression(EP, eFusionCommit[y in FUSION, t=1:T], EP[:vCOMMIT][y,t])
 
     # ## Initialize the variable for the reactor being on/standby (CAN probably find a way to call the inputs to get this value - most likely the COMMIT variable)
     # @variable(EP, fusioncommit[t=1:T], Bin)
 
     ## Fusion Power Nameplate Capacity
-    NameplateCap = dfGen[y in FUSION, :Cap_Size]
+    NameplateCap = dfGen[FUSION,:Cap_Size]
 
     ## Convert nameplate capacity to effective thermal power capacity
     # Effective capacity is a constant fraction of the nameplate capacity
@@ -46,10 +46,10 @@ function fusionthermalpower(EP::Model, inputs::Dict, setup::Dict)
     @expression(EP, eEffectiveCap, NameplateCap*(20/21))
 
     ## Reactor Thermal Output
-    @variable(EP, eThermOutput[y in FUSION,t=1:T] >= 0)
+    @variable(EP, vThermOutput[y in FUSION,t=1:T] >= 0)
 
     ## Constrain the Thermal Output with the Effective Capacity
-    @constraint(EP, [y in FUSION,t=1:T], eThermOutput[y,t] <= eEffectiveCap*eFusionCommit[y,t])
+    @constraint(EP, [y in FUSION,t=1:T], eEffectiveCap*eFusionCommit[y,t] >= vThermOutput[y,t])
 end
 
 ### This function will calculate the power provided by the reactor to the grid
@@ -60,7 +60,7 @@ function fusiongridpower(EP::Model, inputs::Dict, setup::Dict)
     magcool = 10  #Amount of power (MW) being delivered to cool the magnets
 
     @expression(EP, eplantfix[y in FUSION,t=1:T], 10*eFusionCommit[y,t])  # Fixed power being delivered to the power plant (Number multiplied with the binary variable for start)
-    @expression(EP, eplantvar[y in FUSION,t=1:T], 10*ThermOutput[y,t])  # Variable power being delivered to the power plant (Function of the ThermalOutput of the power plant)
+    @expression(EP, eplantvar[y in FUSION,t=1:T], 10*vThermOutput[y,t])  # Variable power being delivered to the power plant (Function of the ThermalOutput of the power plant)
     
     @expression(EP, esaltpwr[y in FUSION,t=1:T], 10)  # Power being used to heat the salt 
 
@@ -73,14 +73,13 @@ function fusiongridpower(EP::Model, inputs::Dict, setup::Dict)
     saltLosses = 2     ## Hourly Thermal losses from salt loop (2 MW/hr)
 
     ## Expression for the thermal energy entering the turbine 
-    @expression(EP, eTurbThermal[y in FUSION,t=1:T], vsaltpwr[y,t]*salteff + eThermOutput[y,t] - saltLosses)
+    @expression(EP, eTurbThermal[y in FUSION,t=1:T], vsaltpwr[y,t]*salteff + vThermOutput[y,t] - saltLosses)
 
     ## Define the turbine efficiency
     turbeff = 0.90
 
     ## Expression for the total amount of power delivered by the power plants to the grid
     @expression(EP, eFusionPower[y in FUSION,t=1:T], eTurbThermal[y,t]*turbeff - eRecircpwr[y,t])
-
     
 end
 
