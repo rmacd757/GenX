@@ -1,0 +1,7 @@
+cd("emissions_baseline")
+include("Run_emissions_and_baseline_v2.jl")
+cd("../temp_lossrate_stor2_v2")
+include("Run_temp_lossrate_stor2_v2.jl")
+cd("../temp_lossrate_stor1_v2")
+include("Run_temp_lossrate_stor1_v2.jl")
+cd("..")
