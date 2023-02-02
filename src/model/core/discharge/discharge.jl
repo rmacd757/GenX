@@ -47,12 +47,16 @@ function discharge!(EP::Model, inputs::Dict, setup::Dict)
 
 	# Variable Costs of Fusion
 	## Variable Cost of Fusion technologies
-    @expression(EP, eFusionVarCost[y in FUSION,t=1:T], 15)
+    # @expression(EP, eFusionVarCost[y in FUSION,t=1:T], 15)
 
 	## Initialize empty 
 	
 	# Variable costs of "generation" for resource "y" during hour "t" = variable O&M plus fuel cost
 	@expression(EP, eCVar_out[y=1:G,t=1:T], (inputs["omega"][t]*(dfGen[y,:Var_OM_Cost_per_MWh]+inputs["C_Fuel_per_MWh"][y,t])*vP[y,t]))
+
+	# for y in FUSION
+	# 	eCVar_out[y,1:T] += eFusionVarCost[y,1:T]
+	# end
 
 	#@expression(EP, eCVar_out[y=1:G,t=1:T], (round(inputs["omega"][t]*(dfGen[y,:Var_OM_Cost_per_MWh]+inputs["C_Fuel_per_MWh"][y,t]), digits=RD)*vP[y,t]))
 	# Sum individual resource contributions to variable discharging costs to get total variable discharging costs

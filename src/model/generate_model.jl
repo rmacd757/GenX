@@ -178,6 +178,7 @@ function generate_model(setup::Dict,inputs::Dict,OPTIMIZER::MOI.OptimizerWithAtt
 	if !isempty(inputs["FLEX"])
 		flexible_demand!(EP, inputs, setup)
 	end
+	
 	# Model constraints, variables, expression related to thermal resource technologies
 	if !isempty(inputs["THERM_ALL"])
 		thermal!(EP, inputs, setup)
