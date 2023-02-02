@@ -6,14 +6,14 @@ using Plots; pythonplot()
 include("Summarize.jl")
 
 # Find all summary files below this
-# dropbox_dir = "/Users/rmacd/Dropbox/"
-dropbox_dir = "D:/Dropbox"
+dropbox_dir = "/Users/rmacd/Dropbox/"
+# dropbox_dir = "D:/Dropbox"
 root_dir = joinpath(dropbox_dir, "1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs")
 outputs_dir = joinpath(root_dir, "outputs")
 
 location_dir = Dict{String, String}(
     "newEngland" => joinpath(outputs_dir, "newEngland"),
-    "texas" => joinpath(outputs_dir, "texas"),
+    # "texas" => joinpath(outputs_dir, "texas"),
 )
 
 summ_paths = Dict{String, String}()
@@ -22,13 +22,13 @@ for (loc_name, loc_path) in location_dir
 end
 
 for loc_name in collect(keys(location_dir))
-    json_string = read(summ_paths["$(loc_name)_emissions_and_baseline"], String)
+    json_string = read(summ_paths["$(loc_name)_emissions_and_baseline_v2"], String)
     example_result = JSON3.read(json_string, Dict)
 
     json_string = read(summ_paths["$(loc_name)_temp_lossrate_sweep"], String)
     example_result1 = JSON3.read(json_string, Dict)
 
-    json_string = read(summ_paths["$(loc_name)_temp_lossrate_sweep_stor2"], String)
+    json_string = read(summ_paths["$(loc_name)_temp_lossrate_sweep_stor2_v2"], String)
     example_result2 = JSON3.read(json_string, Dict)
 
     # function getmatch(result, idx)

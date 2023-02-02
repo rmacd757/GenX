@@ -5,16 +5,17 @@ using DataFrames
 include("../Summarize.jl")
 
 # root_dir = dirname(dirname(dirname(@__FILE__))) # Should be ../TEGS_runs
-# root_dir = "/Users/rmacd/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs"
-dropbox_dir = joinpath("D:/", "Dropbox")
-root_dir = joinpath(dropbox_dir, "1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs")
+root_dir = "/Users/rmacd/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs"
+# dropbox_dir = joinpath("D:/", "Dropbox")
+# root_dir = joinpath(dropbox_dir, "1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs")
 outputs_dir = joinpath(root_dir, "outputs")
 
 location_dir = Dict{String, String}(
     "newEngland" => joinpath(root_dir, "outputs", "newEngland"),
-    "texas" => joinpath(root_dir, "outputs", "texas"),
+    # "texas" => joinpath(root_dir, "outputs", "texas"),
 )
-cases = ["emissions_and_baseline", "temp_lossrate_sweep", "temp_lossrate_sweep_stor2"]
+# cases = ["emissions_and_baseline", "temp_lossrate_sweep", "temp_lossrate_sweep_stor2"]
+cases = ["emissions_and_baseline_v2", "temp_lossrate_sweep_stor2_v2"]
 
 # Info to summarize for each resource
 resource_cols = Dict{String, Array{String}}(
