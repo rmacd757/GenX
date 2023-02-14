@@ -25,6 +25,7 @@ function write_power_balance(path::AbstractString, inputs::Dict, setup::Dict, EP
 	HYDRO_RES = inputs["HYDRO_RES"]
 	STOR_ALL = inputs["STOR_ALL"]
 	FLEX = inputs["FLEX"]
+	FUSION = inputs["FUSION"]
 	## Power balance for each zone
 	# dfPowerBalance = Array{Any}
 	Com_list = ["Generation", "Storage_Discharge", "Storage_Charge",
@@ -57,6 +58,9 @@ function write_power_balance(path::AbstractString, inputs::Dict, setup::Dict, EP
 		if Z >= 2
 		    powerbalance[(z-1)*10+8, :] = (value.(EP[:ePowerBalanceNetExportFlows][:, z]))' # Transpose
 		    powerbalance[(z-1)*10+9, :] = (-0.5) * (value.(EP[:eLosses_By_Zone][z, :]))
+		end
+		if !isempty(intersect(dfGen[dfGen.Zone.==z, :R_ID], FUSION))
+			powerbalance[(z-1)*10+10, :] = (value.(EP[:efusionimports][:, z]))' # Transpose
 		end
 		powerbalance[(z-1)*10+10, :] = (((-1) * inputs["pD"][:, z]))' # Transpose
 	end

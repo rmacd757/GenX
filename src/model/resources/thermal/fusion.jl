@@ -29,7 +29,7 @@ function fusionthermalpower(EP::Model, inputs::Dict, setup::Dict)
 
     hr_unit = 3.412 ### hard coded mmbtu to mwh conversion
 
-    con_eff = (dfGen[!,:Heat_Rate_MMBTU_per_MWh])./hr_unit   # Heat Rate of the technology is always greater than the mmbtu to mwh conversion
+    con_mWh_heatrt = (dfGen[!,:Heat_Rate_MMBTU_per_MWh])./hr_unit   # Heat Rate of the technology is always greater than the mmbtu to mwh conversion
 	## Decision variables for unit commitment
 	# commitment state variable
 
@@ -40,7 +40,7 @@ function fusionthermalpower(EP::Model, inputs::Dict, setup::Dict)
     # @variable(EP, fusioncommit[t=1:T], Bin)
 
     ## Fusion Power Nameplate Capacity (this is gross cap size)
-    NameplateCap = (dfGen[!,:Cap_Size]).*con_eff   ## Convert gross capacity to thermal capacity (still keeping it in MW)
+    NameplateCap = (dfGen[!,:Cap_Size]).*con_mWh_heatrt   ## Convert gross capacity to thermal capacity (still keeping it in MW)
 
     ## Convert nameplate capacity to effective thermal power capacity
     # Effective capacity is a constant fraction of the nameplate capacity
@@ -66,7 +66,7 @@ function fusiongridpower(EP::Model, inputs::Dict, setup::Dict)
     FUSION = inputs["FUSION"]
     
     hr_unit = 3.412 ### hard coded mmbtu to mwh conversion
-    # con_eff = (dfGen[!,:Heat_Rate_MMBTU_per_MWh])./hr_unit   # Heat Rate of the technology is always greater than the mmbtu to mwh conversion
+    # con_mWh_heatrt = (dfGen[!,:Heat_Rate_MMBTU_per_MWh])./hr_unit   # Heat Rate of the technology is always greater than the mmbtu to mwh conversion
 
     ## Define key variables
     magcool = dfFusion[!,:Mag_Cool]  #Amount of power (MW) being delivered to cool the magnets
@@ -77,7 +77,7 @@ function fusiongridpower(EP::Model, inputs::Dict, setup::Dict)
     @variable(EP, vsaltpwr[y in FUSION,t=1:T] >= 0)  # Variable of the electric power being delivered to heat the salt
 
     ## Combine to make recirculating power expression
-    @expression(EP, eRecircpwr[y in FUSION,t=1:T], magcool + eplantfix[y,t] + eplantvar[y,t] + vsaltpwr[y,t])
+    @expression(EP, eRecircpwr[y in FUSION,t=1:T], magcool[y] + eplantfix[y,t] + eplantvar[y,t] + vsaltpwr[y,t])
 
     ### Calculation for the thermal balance of the salt loop
     salteff = dfFusion[!,:Salt_Eff]      ## Salt electric heating efficiency (already converts MW to thermal)
@@ -85,7 +85,7 @@ function fusiongridpower(EP::Model, inputs::Dict, setup::Dict)
     saltLosses = dfFusion[!,:Salt_Loss]     ## Hourly Thermal losses from salt loop (2 MW/hr)
 
     ## Expression for the thermal energy entering the turbine 
-    @expression(EP, eTurbThermal[y in FUSION,t=1:T], vsaltpwr[y,t]*salteff + EP[:vThermOutput][y,t] - saltLosses)
+    @expression(EP, eTurbThermal[y in FUSION,t=1:T], vsaltpwr[y,t]*salteff[y] + EP[:vThermOutput][y,t] - saltLosses[y])
 
     ## Define the turbine efficiency
     # turbeff = 0.40 #(Change out for heat rate in gen_data)
@@ -121,33 +121,41 @@ function fusionfuel(EP::Model, inputs::Dict, setup::Dict)
     trit_stor_cap = dfFusion[!,:Tritium_Cap]
 
     # Tritium inventory
-    @variable(EP, trit_inventory[y in FUSION, t=0:T], lower_bound == 0, upper_bound == trit_stor_cap)
+    @variable(EP, vtrit_inventory[y in FUSION, t=1:T], lower_bound = 0, upper_bound = trit_stor_cap[y])
   
+    # Tritium exports
+    @variable(EP, vtrit_exports[y in FUSION, t=1:T])
+
     # Fuel Coefficient, Breeding Coefficient, Loss Rate
-    trit_fuel = dfFusion[!,:Trit_Fuel]
-    trit_breed = dfFusion[!,:Trit_Breed]
-    trit_loss = dfFusion[!,:Trit_Loss]
+    @expression(EP, etrit_fuel[y in FUSION,t=1:T], dfFusion[y,:Trit_Fuel])
+    @expression(EP, etrit_breed[y in FUSION,t=1:T], dfFusion[y,:Trit_Breed])
+    @expression(EP, etrit_loss[y in FUSION,t=1:T], dfFusion[y,:Trit_Loss])
 
     # Tritium Balance
-    @expression(EP, trit_balance[y in FUSION, t=1:T], trit_inventory[y,t-1] + EP[:vThermOutput][y,t]*(trit_breed[y,t] - trit_fuel[y,t]) - trit_loss[y,t])
-    
+    @expression(EP, etrit_balance[y in FUSION, t=1:T], 0)
+    etrit_balance[FUSION,2:T] .+= vtrit_inventory[FUSION,1:T-1] .- etrit_loss[FUSION,2:T] .+ EP[:vThermOutput][FUSION,2:T].*(etrit_breed[FUSION,2:T] .- etrit_fuel[FUSION,2:T]) .- vtrit_exports[FUSION,2:T]
+    etrit_balance[FUSION, 1] += vtrit_inventory[FUSION,T] - trit_loss[FUSION,1] + EP[:vThermOutput][FUSION,1]*(trit_breed[FUSION,1] - trit_fuel[FUSION,1]) - vtrit_exports[FUSION,1]
+    @constraint(EP, ctrit_balance[y in FUSION, t=1:T], etrit_balance[y,t] == 0)
 
     ##### Deuterium Balance #####
 
     deu_stor_cap = dfFusion[!,:Deu_Cap]
 
     # Deuterium inventory
-    @variable(EP, deu_inventory[y in FUSION, t=0:T], lower_bound == 0, upper_bound == deu_stor_cap)
+    @variable(EP, vdeu_inventory[y in FUSION, t=0:T], lower_bound = 0, upper_bound = deu_stor_cap[y])
 
     # Fuel Coefficient, Loss Rate
     deu_fuel = dfFusion[!,:Deu_Fuel]
     deu_loss = dfFusion[!,:Deu_Loss]
 
     # Deuterium exports
-    @variable(EP, deu_exports[y in FUSION, t=1:T])
+    @variable(EP, vdeu_exports[y in FUSION, t=1:T])
 
     # Deuterium balance
-    @expression(EP, deu_balance[y in FUSION, t=1:T], due_inventory[y,t-1] - EP[:vThermOutput][y,t]*(deu_fuel[y,t]) - deu_loss[y,t] - deu_exports[y,t])
+    @expression(EP, edeu_balance[y in FUSION, t=1:T], 0)
+    edeu_balance[FUSION, t=2:T] += vdeu_inventory[FUSION,1:T-1] - EP[:vThermOutput][FUSION,2:T]*(deu_fuel[FUSION,2:T]) - deu_loss[FUSION,2:T] - vdeu_exports[FUSION,2:T]
+    edeu_balance[FUSION, 1] += vdeu_inventory[FUSION,T] - EP[:vThermOutput][FUSION,1]*(deu_fuel[FUSION,1]) - deu_loss[FUSION,1] - vdeu_exports[FUSION,1]
+    @constraint(EP, cdeu_balance[y in FUSION, t=1:T], edeu_balance[y,t] == 0)
 end
 
 ## This function is the overall function for fusion power 

@@ -47,6 +47,7 @@ function load_inputs(setup::Dict,path::AbstractString)
 	load_generators_data!(setup, path, inputs, cost_fuel, CO2_fuel)
 	# Read in fusion fuel related inputs
 	load_fusion_data!(setup,path,inputs)
+	println("LOADED FUSION")
 	# Read in generator/resource availability profiles
 	load_generators_variability!(setup, path, inputs)
 

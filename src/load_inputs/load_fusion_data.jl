@@ -20,14 +20,8 @@ function load_fusion_data!(setup::Dict, path::AbstractString, inputs_ffuel::Dict
 	fusion_in = DataFrame(CSV.File(joinpath(path, filename), header=true), copycols=true)
 
 	# Add Resource IDs after reading to prevent user errors
-	fusion_in[!,:R_ID] = 1:length(collect(skipmissing(gen_in[!,1])))
+	fusion_in[!,:R_ID] = 1:length(collect(skipmissing(fusion_in[!,1])))
 
 	# Store DataFrame of generators/resources input data for use in model
 	inputs_ffuel["dfFusion"] = fusion_in
-
-	# Separates the values of the fusion fuel information 
-	inputs_ffuel["Salt_Loss"] = fusion_in[!,:Salt_Loss]
-	inputs_ffuel["Salt_Eff"] = fusion_in[!,:Salt_Eff]
-	inputs_ffuel["Tritium_Cap"] = fusion_in[!,:Tritium_Cap]
-	inputs_ffuel["Trit_Fuel"] = fusion_in[!,:Trit_Fuel]
-	inputs_ffuel[""]
+end
