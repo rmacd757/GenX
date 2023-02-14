@@ -1,6 +1,6 @@
 Resource,Zone,THERM,FUSION,Mag_Cool,Salt_Loss,Salt_Eff,Tritium_Cap,Trit_Fuel,Trit_Breed,Trit_Loss,Deu_Cap,Deu_Fuel,Deu_Loss
-natural_gas_combined_cycle,1,1,0,0,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2
-solar_pv,1,0,0,0,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2
-onshore_wind,1,0,0,0,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2
-battery,1,0,0,0,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2
-fusion,1,1,1,10.01,0.95,0.95,0.95,0.95,0.95,0.95,0.95,0.95,0.95
+natural_gas_combined_cycle,1,1,0,0,0,0,0,0,0,0,0,0,0
+solar_pv,1,0,0,0,0,0,0,0,0,0,0,0,0
+onshore_wind,1,0,0,0,0,0,0,0,0,0,0,0,0
+battery,1,0,0,0,0,0,0,0,0,0,0,0,0
+fusion,1,1,1,10.01,0.95,0.95,1000,1.00001,1.1,0.05,1000,1.00001,0.05

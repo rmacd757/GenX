@@ -1,4 +1,7 @@
-## 
+##
+
+using GenX
+
 case = dirname(@__FILE__)
 
 function get_settings_path(case::AbstractString)

@@ -121,41 +121,32 @@ function fusionfuel(EP::Model, inputs::Dict, setup::Dict)
     trit_stor_cap = dfFusion[!,:Tritium_Cap]
 
     # Tritium inventory
-    @variable(EP, vtrit_inventory[y in FUSION, t=1:T], lower_bound = 0, upper_bound = trit_stor_cap[y])
+    @variable(EP, vtrit_inventory[y in FUSION, t=1:T], lower_bound = 0., upper_bound = trit_stor_cap[y])
   
     # Tritium exports
     @variable(EP, vtrit_exports[y in FUSION, t=1:T])
 
     # Fuel Coefficient, Breeding Coefficient, Loss Rate
-    @expression(EP, etrit_fuel[y in FUSION,t=1:T], dfFusion[y,:Trit_Fuel])
-    @expression(EP, etrit_breed[y in FUSION,t=1:T], dfFusion[y,:Trit_Breed])
-    @expression(EP, etrit_loss[y in FUSION,t=1:T], dfFusion[y,:Trit_Loss])
+    # @expression(EP, etrit_fuel[y in FUSION,t=1:T], dfFusion[y,:Trit_Fuel])
+    # @expression(EP, etrit_breed[y in FUSION,t=1:T], dfFusion[y,:Trit_Breed])
+    # @expression(EP, etrit_loss[y in FUSION,t=1:T], dfFusion[y,:Trit_Loss]
 
     # Tritium Balance
-    @expression(EP, etrit_balance[y in FUSION, t=1:T], 0)
-    etrit_balance[FUSION,2:T] .+= vtrit_inventory[FUSION,1:T-1] .- etrit_loss[FUSION,2:T] .+ EP[:vThermOutput][FUSION,2:T].*(etrit_breed[FUSION,2:T] .- etrit_fuel[FUSION,2:T]) .- vtrit_exports[FUSION,2:T]
-    etrit_balance[FUSION, 1] += vtrit_inventory[FUSION,T] - trit_loss[FUSION,1] + EP[:vThermOutput][FUSION,1]*(trit_breed[FUSION,1] - trit_fuel[FUSION,1]) - vtrit_exports[FUSION,1]
-    @constraint(EP, ctrit_balance[y in FUSION, t=1:T], etrit_balance[y,t] == 0)
+    @constraint(EP, [y in FUSION, t=1],   vtrit_inventory[y,t] == vtrit_inventory[y,T]   + EP[:vThermOutput][y,T] .* (dfFusion[y,:Trit_Breed] .- dfFusion[y,:Trit_Fuel]) .- dfFusion[y,:Trit_Loss] - vtrit_exports[y,T])
+    @constraint(EP, [y in FUSION, t=2:T], vtrit_inventory[y,t] == vtrit_inventory[y,t-1] + EP[:vThermOutput][y,t] .* (dfFusion[y,:Trit_Breed] .- dfFusion[y,:Trit_Fuel]) .- dfFusion[y,:Trit_Loss] - vtrit_exports[y,t])
 
     ##### Deuterium Balance #####
-
     deu_stor_cap = dfFusion[!,:Deu_Cap]
 
     # Deuterium inventory
-    @variable(EP, vdeu_inventory[y in FUSION, t=0:T], lower_bound = 0, upper_bound = deu_stor_cap[y])
-
-    # Fuel Coefficient, Loss Rate
-    deu_fuel = dfFusion[!,:Deu_Fuel]
-    deu_loss = dfFusion[!,:Deu_Loss]
+    @variable(EP, vdeu_inventory[y in FUSION, t=1:T], lower_bound = 0., upper_bound = deu_stor_cap[y])
 
     # Deuterium exports
     @variable(EP, vdeu_exports[y in FUSION, t=1:T])
 
     # Deuterium balance
-    @expression(EP, edeu_balance[y in FUSION, t=1:T], 0)
-    edeu_balance[FUSION, t=2:T] += vdeu_inventory[FUSION,1:T-1] - EP[:vThermOutput][FUSION,2:T]*(deu_fuel[FUSION,2:T]) - deu_loss[FUSION,2:T] - vdeu_exports[FUSION,2:T]
-    edeu_balance[FUSION, 1] += vdeu_inventory[FUSION,T] - EP[:vThermOutput][FUSION,1]*(deu_fuel[FUSION,1]) - deu_loss[FUSION,1] - vdeu_exports[FUSION,1]
-    @constraint(EP, cdeu_balance[y in FUSION, t=1:T], edeu_balance[y,t] == 0)
+    @constraint(EP, [y in FUSION, t=1],   vdeu_inventory[y,t] == vdeu_inventory[y,T]   - EP[:vThermOutput][y,T] .* dfFusion[y,:Deu_Fuel] .- dfFusion[y,:Deu_Loss] - vdeu_exports[y,T])
+    @constraint(EP, [y in FUSION, t=2:T], vdeu_inventory[y,t] == vdeu_inventory[y,t-1] - EP[:vThermOutput][y,t] .* dfFusion[y,:Deu_Fuel] .- dfFusion[y,:Deu_Loss] - vdeu_exports[y,t])
 end
 
 ## This function is the overall function for fusion power 
