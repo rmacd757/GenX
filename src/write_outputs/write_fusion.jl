@@ -21,22 +21,23 @@ function write_fusion(path::AbstractString, inputs::Dict, setup::Dict, EP::Model
 
     T = inputs["T"]     # Number of time steps (hours)
 
-    fusion_imports = vec(value.(EP[:vfusionimports][FUSION,1:T]))
-    net_fusionpwr = vec(value.(EP[:eFusionPower][FUSION,1:T]))
-    recirc_power = vec(value.(EP[:eRecircpwr][FUSION,1:T]))
-    turbine_power = net_fusionpwr .+ recirc_power
-    reactor_thermal = vec(value.(EP[:vThermOutput][FUSION,1:T]))
+    d = Dict{String, Any}(
+        "Imports" => vec(value.(EP[:vfusionimports][FUSION,1:T])),
+        "Net Electric" => vec(value.(EP[:eFusionNetElec][FUSION,1:T])),
+        "Gross Electric" => vec(value.(EP[:eTurbElec][FUSION,1:T])),
+        "Recirc Power" => vec(value.(EP[:eRecircpwr][FUSION,1:T])),
+        "Salt Heating" => vec(value.(EP[:vsaltpwr][FUSION,1:T])),
+        "Fixed plant power" => vec(value.(EP[:eplantfix][FUSION,1:T])),
+        "Var plant power" => vec(value.(EP[:eplantvar][FUSION,1:T])),
+        "Reactor Thermal power" => vec(value.(EP[:vThermOutput][FUSION,1:T])),
+        "Tritium inventory" => vec(value.(EP[:vtrit_inventory][FUSION,1:T])),
+        "Tritium exports" => vec(value.(EP[:vtrit_exports][FUSION,1:T])),
+        "Deuterium inventory" => vec(value.(EP[:vdeu_inventory][FUSION,1:T])),
+        "Deuterium exports" => vec(value.(EP[:vdeu_exports][FUSION,1:T]))
+    )
 
-    tritium_inven = vec(value.(EP[:vtrit_inventory][FUSION,1:T]))
-    deu_inven = vec(value.(EP[:vdeu_inventory][FUSION,1:T]))
-
-    trit_exports = vec(value.(EP[:vtrit_exports][FUSION,1:T]))
-    deu_exports = vec(value.(EP[:vdeu_exports][FUSION,1:T]))
-
-    fixed_input = vec(value.(EP[:eplantfix][FUSION,1:T]))
-    var_input = vec(value.(EP[:eplantvar][FUSION,1:T]))
-
-    fusion_df = DataFrame(Time = 1:T, Imports = fusion_imports, Power = net_fusionpwr, Recirculate_Power = recirc_power, Turbine_Pwr = turbine_power, Reactor_Therm = reactor_thermal, Trit_Inven = tritium_inven, Deu_Inven = deu_inven, Trit_Exports = trit_exports, Deu_Exports = deu_exports, Fixed_Input = fixed_input, Var_Input = var_input)
+    fusion_df = DataFrame(d)
+    # fusion_df = DataFrame(Time = 1:T, Imports = fusion_imports, Power = net_fusionpwr, Recirculate_Power = recirc_power, Turbine_Pwr = turbine_power, Reactor_Therm = reactor_thermal, Trit_Inven = tritium_inven, Deu_Inven = deu_inven, Trit_Exports = trit_exports, Deu_Exports = deu_exports, Fixed_Input = fixed_input, Var_Input = var_input, Salt_pwr = salt_pwr)
     
     CSV.write(joinpath(path, "fusion.csv"), fusion_df)
 end
