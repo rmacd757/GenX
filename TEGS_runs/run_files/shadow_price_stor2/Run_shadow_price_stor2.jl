@@ -141,7 +141,8 @@ temperatures = Array{Float64}([2400])
 lossrates = Array{Float64}([3])
 
 TEGSdischargecaps = Array{Float64}([10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000])
-# TEGSdischargecaps = Array{Float64}([10])
+TEGSdischarge_chargeratio = Array{Float64}([1, 2, 3, 4, 5, 6])
+TEGSdischarge_storageratio = Array{Float64}([10, 20, 30, 40, 50, 60])
 
 for (loc_name, loc_path) in location_dir
     case = loc_path
@@ -175,11 +176,9 @@ for (loc_name, loc_path) in location_dir
     end
 
     ### Configure solver
-    println("Configuring Solver")
     OPTIMIZER = configure_solver(mysetup["Solver"], settings_path)
 
     ### Load inputs
-    println("Loading Inputs")
     myinputs = load_inputs(mysetup, case)
 
     LIFETIME = 30.
@@ -195,41 +194,48 @@ for (loc_name, loc_path) in location_dir
         myinputs["dfMaxCO2"] = emiss_target * 1e3 / scale_factor
         for T in temperatures
             for lossrate in lossrates
-                for discap in TEGSdischargecaps
-                    push!(logging_notes, "Running $(emiss_name)_$(T)_$(lossrate)_stor2 case\n")
-                    setFreeTEGS(myinputs["dfGen"], STOR_TYPE, T, lossrate, LIFETIME, DISCOUNT_RATE)
-                    TEGS_input = selectresource(myinputs["dfGen"], "TEGS")
-                    TEGS_input[!, "Self_Disch"] .= lossrate / 100 / 24. # Convert daily loss rate to hourly
-                    TEGS_input[!, "STOR"] .= 2
+                for d_c_ratio in TEGSdischarge_chargeratio
+                    for d_s_ratio in TEGSdischarge_storageratio
+                        for discap in TEGSdischargecaps
+                            sub_case_name = "$(emiss_name)_$(T)_$(lossrate)_$(discap)_$(d_c_ratio)_$(d_s_ratio)_stor2"
+                            outputs_path = joinpath(outputs_path_root, sub_case_name)
+                            if isdir(outputs_path)
+                                push!(logging_notes, "Skipping $(sub_case_name) case -- already exists\n")
+                                continue
+                            end
+                            push!(logging_notes, "Running $(sub_case_name) case\n")
+                            setFreeTEGS(myinputs["dfGen"], STOR_TYPE, T, lossrate, LIFETIME, DISCOUNT_RATE)
+                            TEGS_input = selectresource(myinputs["dfGen"], "TEGS")
+                            TEGS_input[!, "Self_Disch"] .= lossrate / 100 / 24. # Convert daily loss rate to hourly
+                            TEGS_input[!, "STOR"] .= 2
 
-                    # Calculate and save baseline emissions
-                    outputs_path = joinpath(outputs_path_root, "$(emiss_name)_$(T)_$(lossrate)_$(discap)_stor2")
+                            # Calculate and save baseline emissions
+                            EP = generate_model(mysetup, myinputs, OPTIMIZER)
 
-                    println("Generating the Optimization Model")
-                    EP = generate_model(mysetup, myinputs, OPTIMIZER)
+                            @constraint(EP, tegsdiscap, EP[:eTotalCap][end] == discap)
+                            @constraint(EP, tegscharcap, EP[:eTotalCapCharge][end] == discap * d_c_ratio)
+                            @constraint(EP, tegsstorcap, EP[:eTotalCapEnergy][end] == discap * d_s_ratio)
 
-                    @constraint(EP, tegsdiscap, EP[:eTotalCap][end] <= discap)
-                    @constraint(EP, tegscharcap, EP[:eTotalCapCharge][end] <= discap * 2)
-                    @constraint(EP, tegsstorcap, EP[:eTotalCapEnergy][end] <= discap * 30)
+                            EP, solve_time = solve_model(EP, mysetup)
+                            myinputs["solve_time"] = solve_time # Store the model solve time in myinputs
 
-                    println("Solving Model")
-                    EP, solve_time = solve_model(EP, mysetup)
-                    myinputs["solve_time"] = solve_time # Store the model solve time in myinputs
+                            # Run MGA if the MGA flag is set to 1 else only save the least cost solution
+                            elapsed_time = @elapsed write_outputs(EP, outputs_path, mysetup, myinputs)
 
-                    # Run MGA if the MGA flag is set to 1 else only save the least cost solution
-                    println("Writing Output")
-                    elapsed_time = @elapsed write_outputs(EP, outputs_path, mysetup, myinputs)
-                    println("Time elapsed for writing is")
-                    println(elapsed_time)
+                            open(joinpath(outputs_path, "shadow_price_summ.csv"), "w") do f
+                                println(f, "name, discharge, charge, storage")
+                                println(f, "target cap, $(discap), $(discap * d_c_ratio), $(discap * d_s_ratio)")
+                                println(f, "end cap, $(value(EP[:eTotalCap][end])), $(value(EP[:eTotalCapCharge][end])), $(value(EP[:eTotalCapEnergy][end]))")
+                                println(f, "value, $(dual.(EP[:tegsdiscap])), $(dual.(EP[:tegscharcap])), $(dual.(EP[:tegsstorcap]))")
+                            end
+                            
+                            push!(logging_notes, "$(sub_case_name) results written to $outputs_path\n")
 
-                    println("#################################")
-                    open(joinpath(outputs_path, "shadow_price_summ.txt"), "w") do f
-                       println(f, dual.(EP[:tegsdiscap]))
-                       println(f, dual.(EP[:tegscharcap]))
-                       println(f, dual.(EP[:tegsstorcap]))
+                            if any([iszero.(dual.(EP[:tegsdiscap])), iszero.(dual.(EP[:tegscharcap])), iszero.(dual.(EP[:tegsstorcap]))])
+                                break
+                            end
+                        end
                     end
-                    
-                    push!(logging_notes, "$(emiss_name)_$(T)_$(lossrate)_$(discap)_stor2 results written to $outputs_path\n")
                 end
             end
         end
