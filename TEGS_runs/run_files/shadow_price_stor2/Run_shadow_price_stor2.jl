@@ -140,8 +140,8 @@ end
 temperatures = Array{Float64}([2400])
 lossrates = Array{Float64}([3])
 
-TEGSdischargecaps = Array{Float64}([10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000])
-TEGSdischarge_chargeratio = Array{Float64}([1, 2, 3, 4, 5, 6])
+TEGSdischargecaps = Array{Float64}([10, 20, 50, 100, 150, 200, 300, 400, 500, 1000, 1500, 2000, 3000, 4000, 5000, 7500, 10000])
+TEGSdischarge_chargeratio = Array{Float64}([1, 1.25, 1.5, 1.75, 2, 2.5, 3, 3.5, 4, 5, 6])
 TEGSdischarge_storageratio = Array{Float64}([10, 20, 30, 40, 50, 60])
 
 for (loc_name, loc_path) in location_dir
@@ -197,10 +197,17 @@ for (loc_name, loc_path) in location_dir
                 for d_c_ratio in TEGSdischarge_chargeratio
                     for d_s_ratio in TEGSdischarge_storageratio
                         for discap in TEGSdischargecaps
+
+                            # myinputs = load_inputs(mysetup, case)
+                            # if @isdefined EP
+                            #     clear!(:EP)
+                            # end                            
+
                             sub_case_name = "$(emiss_name)_$(T)_$(lossrate)_$(discap)_$(d_c_ratio)_$(d_s_ratio)_stor2"
                             outputs_path = joinpath(outputs_path_root, sub_case_name)
                             if isdir(outputs_path)
                                 push!(logging_notes, "Skipping $(sub_case_name) case -- already exists\n")
+                                println("Skipping $(sub_case_name) case -- already exists\n")
                                 continue
                             end
                             push!(logging_notes, "Running $(sub_case_name) case\n")
