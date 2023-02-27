@@ -44,8 +44,10 @@ OPTIMIZER = configure_solver(mysetup["Solver"], settings_path)
 println("Loading Inputs")
 myinputs = load_inputs(mysetup, case)
 
-co2_cap = [100.0, 2.5, 2.0, 1.5, 0.5, 0.25, 0.1]
-co2_cap = [1.0]
+co2_cap = [100.0, 2.5, 2.0, 1.5, 1.0, 0.5, 0.25, 0.1]
+
+scale_factor = mysetup["ParameterScale"] == 1 ? ModelScalingFactor : 1
+
 
 for co2 in co2_cap
 

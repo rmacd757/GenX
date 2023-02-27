@@ -30,10 +30,12 @@ function write_fusion(path::AbstractString, inputs::Dict, setup::Dict, EP::Model
         "Fixed plant power" => vec(value.(EP[:eplantfix][FUSION,1:T])),
         "Var plant power" => vec(value.(EP[:eplantvar][FUSION,1:T])),
         "Reactor Thermal power" => vec(value.(EP[:vThermOutput][FUSION,1:T])),
+        "Turbine Thermal input" => vec(value.(EP[:eTurbThermal][FUSION,1:T])),
         "Tritium inventory" => vec(value.(EP[:vtrit_inventory][FUSION,1:T])),
         "Tritium exports" => vec(value.(EP[:vtrit_exports][FUSION,1:T])),
         "Deuterium inventory" => vec(value.(EP[:vdeu_inventory][FUSION,1:T])),
-        "Deuterium exports" => vec(value.(EP[:vdeu_exports][FUSION,1:T]))
+        "Deuterium exports" => vec(value.(EP[:vdeu_exports][FUSION,1:T])),
+        "Commitment State" => vec(value.(EP[:eFusionCommit][FUSION,1:T]))
     )
 
     fusion_df = DataFrame(d)
