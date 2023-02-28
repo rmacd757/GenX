@@ -216,7 +216,7 @@ function fusionvessel(EP::Model, inputs::Dict, setup::Dict)
     @expression(EP, ePlantAnnual[y in FUSION], (plant_cost[y] * discount[y])/(1 - (1 + discount[y])^(-plant_life[y])))
     
     ## Add Plant Investment Costs to Fixed Cost of Fusion
-    EP[:eCFix][FUSION] .+= ePlantAnnual[FUSION].*dfGen[!,:Cap_Size][FUSION]
+    # EP[:eCFix][FUSION] .+= ePlantAnnual[FUSION].*dfGen[!,:Cap_Size][FUSION]
 
     ## Actual Vessel Life
     # @expression(EP, eVesselLife[y in FUSION], vessel_name[y]/eAnnualUtil[y] + replace_dur[y])
@@ -245,8 +245,18 @@ function fusionvessel(EP::Model, inputs::Dict, setup::Dict)
     # )
     
     ## Add Vessel Investment Costs to Fixed/Var Costs
-    EP[:eCFix][FUSION] .+= (eC1[FUSION].+eVesselFix[FUSION]).*dfGen[!,:Cap_Size][FUSION]
+    EP[:eCFix][FUSION] .+= (eC1[FUSION].+eVesselFix[FUSION]).*EP[:eTotalCap][FUSION]
     EP[:eCVar_out][FUSION] .+= eC2[FUSION].*eThermOutputTot[FUSION].*(20. / 21.).*(1/8760.).*con_mWt[FUSION]
+
+    ## Sum Vessel Investment and Variable Costs to add to TotalFix and TotalVar
+    @expression(EP, eSumCFix, (sum((eC1[y]+eVesselFix[y])*EP[:eTotalCap][y] for y in FUSION)))
+    @expression(EP, eSumCVar, (sum(eC2[y]*eThermOutputTot[y]*con_mWt[y] for y in FUSION).*(20. / 21.).*(1/8760.)))
+
+    EP[:eTotalCFix] += eSumCFix
+    EP[:eTotalCVarOut] += eSumCVar
+
+    ## Add the values to eObj
+    EP[:eObj] += eSumCFix + eSumCVar
 
     # @expression(EP, eCVesselInv[y in FUSION], ((vessel_inv[y]*discount[y]) / (1 - (1 + discount[y])^(-plant_life[y]))) - eC1[y] - eC2[y]*vAnnualUtil[y])
 
