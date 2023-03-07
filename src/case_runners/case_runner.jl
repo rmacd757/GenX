@@ -34,10 +34,13 @@ function run_genx_case!(case::AbstractString)
     mysetup = configure_settings(genx_settings) # mysetup dictionary stores settings and GenX-specific parameters
 
     if mysetup["MultiStage"] == 0
-        run_genx_case_simple!(case, mysetup)
+        EP, mysetup, myinputs = run_genx_case_simple!(case, mysetup)
     else
-        run_genx_case_multistage!(case, mysetup)
+        EP, mysetup, myinputs = run_genx_case_multistage!(case, mysetup)
     end
+
+    return EP, mysetup, myinputs
+
 end
 
 function time_domain_reduced_files_exist(tdrpath)
@@ -96,6 +99,8 @@ function run_genx_case_simple!(case::AbstractString, mysetup::Dict)
         println("Starting Global sensitivity analysis with Method of Morris")
         morris(EP, inputs_path, mysetup, myinputs, outputs_path, OPTIMIZER)
     end
+
+    return EP, mysetup, myinputs
 end
 
 
@@ -179,5 +184,7 @@ function run_genx_case_multistage!(case::AbstractString, mysetup::Dict)
     # Step 5) Write DDP summary outputs
 
     write_multi_stage_outputs(mystats_d, outpath, mysetup, inputs_dict)
+
+    return EP, mysetup, myinputs
 end
 

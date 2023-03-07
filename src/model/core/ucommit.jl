@@ -53,9 +53,9 @@ function ucommit!(EP::Model, inputs::Dict, setup::Dict)
 
 	## Decision variables for unit commitment
 	# commitment state variable
-	@variable(EP, vCOMMIT[y in COMMIT, t=1:T] >= 0)
+	@variable(EP, vCOMMIT[t=1:T, y in COMMIT] >= 0)
 	# startup event variable
-	@variable(EP, vSTART[y in COMMIT, t=1:T] >= 0)
+	@variable(EP, vSTART[t=1:T, y in COMMIT] >= 0)
 	# shutdown event variable
 	@variable(EP, vSHUT[y in COMMIT, t=1:T] >= 0)
 
@@ -64,7 +64,7 @@ function ucommit!(EP::Model, inputs::Dict, setup::Dict)
 	## Objective Function Expressions ##
 
 	# Startup costs of "generation" for resource "y" during hour "t"
-	@expression(EP, eCStart[y in COMMIT, t=1:T],(inputs["omega"][t]*inputs["C_Start"][y,t]*vSTART[y,t]))
+	@expression(EP, eCStart[y in COMMIT, t=1:T],(inputs["omega"][t]*inputs["C_Start"][y,t]*vSTART[t,y]))
 
 	# Julia is fastest when summing over one row one column at a time
 	@expression(EP, eTotalCStartT[t=1:T], sum(eCStart[y,t] for y in COMMIT))
@@ -76,8 +76,8 @@ function ucommit!(EP::Model, inputs::Dict, setup::Dict)
 	## Declaration of integer/binary variables
 	if setup["UCommit"] == 1 # Integer UC constraints
 		for y in COMMIT
-			set_integer.(vCOMMIT[y,:])
-			set_integer.(vSTART[y,:])
+			set_integer.(vCOMMIT[:,y])
+			set_integer.(vSTART[:,y])
 			set_integer.(vSHUT[y,:])
 			if y in inputs["RET_CAP"]
 				set_integer(EP[:vRETCAP][y])

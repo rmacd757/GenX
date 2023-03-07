@@ -16,4 +16,4 @@ received this license file.  If not, see <http://www.gnu.org/licenses/>.
 
 using GenX
 
-run_genx_case!(dirname(@__FILE__))
+EP, mysetup, myinputs = run_genx_case!(dirname(@__FILE__))

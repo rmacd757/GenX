@@ -144,7 +144,7 @@ function reserves_contingency!(EP::Model, inputs::Dict, setup::Dict)
 		@constraint(EP, cContingency[y in COMMIT, t=1:T], vLARGEST_CONTINGENCY[t] >=
 			inputs["dfGen"][y,:Cap_Size]*vCONTINGENCY_AUX[y,t] )
 		# Ensure vCONTINGENCY_AUX = 0 if vCOMMIT = 0
-		@constraint(EP, cContAux[y in COMMIT, t=1:T], vCONTINGENCY_AUX[y,t] <= EP[:vCOMMIT][y,t])
+		@constraint(EP, cContAux[y in COMMIT, t=1:T], vCONTINGENCY_AUX[y,t] <= EP[:vCOMMIT][t,y])
 		# Ensure vCONTINGENCY_AUX = 1 if vCOMMIT > 0
 		@constraint(EP, cContAux2[y in COMMIT, t=1:T], EP[:vCOMMIT][y, t] <= inputs["pContingency_BigM"][y]*vCONTINGENCY_AUX[y,t])
 	end

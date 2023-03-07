@@ -32,7 +32,7 @@ function emissions!(EP::Model, inputs::Dict)
 	@expression(EP, eEmissionsByPlant[y=1:G,t=1:T],
 
 		if y in inputs["COMMIT"]
-			dfGen[y,:CO2_per_MWh]*EP[:vP][y,t]+dfGen[y,:CO2_per_Start]*EP[:vSTART][y,t]
+			dfGen[y,:CO2_per_MWh]*EP[:vP][y,t]+dfGen[y,:CO2_per_Start]*EP[:vSTART][t,y]
 		else
 			dfGen[y,:CO2_per_MWh]*EP[:vP][y,t]
 		end
