@@ -1,0 +1,108 @@
+Emissions cap activated
+LIFETIME = 30.0
+DISCOUNT_RATE = 0.05
+STOR_TYPE = 2
+Running 0.01_2400.0_1.0_stor2 case
+0.01_2400.0_1.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\newEngland\temp_lossrate_sweep_stor2_v4\0.01_2400.0_1.0_stor2_ds120.0
+0.01_2400.0_1.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\newEngland\temp_lossrate_sweep_stor2_v4\0.01_2400.0_1.0_stor2_ds100.0
+0.01_2400.0_1.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\newEngland\temp_lossrate_sweep_stor2_v4\0.01_2400.0_1.0_stor2_ds80.0
+0.01_2400.0_1.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\newEngland\temp_lossrate_sweep_stor2_v4\0.01_2400.0_1.0_stor2_ds60.0
+0.01_2400.0_1.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\newEngland\temp_lossrate_sweep_stor2_v4\0.01_2400.0_1.0_stor2_ds40.0
+Running 0.01_2400.0_2.0_stor2 case
+0.01_2400.0_2.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\newEngland\temp_lossrate_sweep_stor2_v4\0.01_2400.0_2.0_stor2_ds120.0
+0.01_2400.0_2.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\newEngland\temp_lossrate_sweep_stor2_v4\0.01_2400.0_2.0_stor2_ds100.0
+0.01_2400.0_2.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\newEngland\temp_lossrate_sweep_stor2_v4\0.01_2400.0_2.0_stor2_ds80.0
+0.01_2400.0_2.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\newEngland\temp_lossrate_sweep_stor2_v4\0.01_2400.0_2.0_stor2_ds60.0
+0.01_2400.0_2.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\newEngland\temp_lossrate_sweep_stor2_v4\0.01_2400.0_2.0_stor2_ds40.0
+Running 0.01_2400.0_3.0_stor2 case
+0.01_2400.0_3.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\newEngland\temp_lossrate_sweep_stor2_v4\0.01_2400.0_3.0_stor2_ds120.0
+0.01_2400.0_3.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\newEngland\temp_lossrate_sweep_stor2_v4\0.01_2400.0_3.0_stor2_ds100.0
+0.01_2400.0_3.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\newEngland\temp_lossrate_sweep_stor2_v4\0.01_2400.0_3.0_stor2_ds80.0
+0.01_2400.0_3.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\newEngland\temp_lossrate_sweep_stor2_v4\0.01_2400.0_3.0_stor2_ds60.0
+0.01_2400.0_3.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\newEngland\temp_lossrate_sweep_stor2_v4\0.01_2400.0_3.0_stor2_ds40.0
+Running 0.01_2400.0_4.0_stor2 case
+0.01_2400.0_4.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\newEngland\temp_lossrate_sweep_stor2_v4\0.01_2400.0_4.0_stor2_ds120.0
+0.01_2400.0_4.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\newEngland\temp_lossrate_sweep_stor2_v4\0.01_2400.0_4.0_stor2_ds100.0
+0.01_2400.0_4.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\newEngland\temp_lossrate_sweep_stor2_v4\0.01_2400.0_4.0_stor2_ds80.0
+0.01_2400.0_4.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\newEngland\temp_lossrate_sweep_stor2_v4\0.01_2400.0_4.0_stor2_ds60.0
+0.01_2400.0_4.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\newEngland\temp_lossrate_sweep_stor2_v4\0.01_2400.0_4.0_stor2_ds40.0
+Running 0.01_2400.0_5.0_stor2 case
+0.01_2400.0_5.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\newEngland\temp_lossrate_sweep_stor2_v4\0.01_2400.0_5.0_stor2_ds120.0
+0.01_2400.0_5.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\newEngland\temp_lossrate_sweep_stor2_v4\0.01_2400.0_5.0_stor2_ds100.0
+0.01_2400.0_5.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\newEngland\temp_lossrate_sweep_stor2_v4\0.01_2400.0_5.0_stor2_ds80.0
+0.01_2400.0_5.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\newEngland\temp_lossrate_sweep_stor2_v4\0.01_2400.0_5.0_stor2_ds60.0
+0.01_2400.0_5.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\newEngland\temp_lossrate_sweep_stor2_v4\0.01_2400.0_5.0_stor2_ds40.0
+Running 0.20_2400.0_1.0_stor2 case
+0.20_2400.0_1.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\newEngland\temp_lossrate_sweep_stor2_v4\0.20_2400.0_1.0_stor2_ds40.0
+Running 0.20_2400.0_2.0_stor2 case
+0.20_2400.0_2.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\newEngland\temp_lossrate_sweep_stor2_v4\0.20_2400.0_2.0_stor2_ds40.0
+Running 0.20_2400.0_3.0_stor2 case
+0.20_2400.0_3.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\newEngland\temp_lossrate_sweep_stor2_v4\0.20_2400.0_3.0_stor2_ds40.0
+Running 0.20_2400.0_4.0_stor2 case
+0.20_2400.0_4.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\newEngland\temp_lossrate_sweep_stor2_v4\0.20_2400.0_4.0_stor2_ds40.0
+Running 0.20_2400.0_5.0_stor2 case
+0.20_2400.0_5.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\newEngland\temp_lossrate_sweep_stor2_v4\0.20_2400.0_5.0_stor2_ds40.0
+Emissions cap activated
+LIFETIME = 30.0
+DISCOUNT_RATE = 0.05
+STOR_TYPE = 2
+Running 0.01_2400.0_1.0_stor2 case
+0.01_2400.0_1.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.01_2400.0_1.0_stor2_ds120.0
+0.01_2400.0_1.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.01_2400.0_1.0_stor2_ds100.0
+0.01_2400.0_1.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.01_2400.0_1.0_stor2_ds80.0
+0.01_2400.0_1.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.01_2400.0_1.0_stor2_ds60.0
+0.01_2400.0_1.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.01_2400.0_1.0_stor2_ds40.0
+Running 0.01_2400.0_2.0_stor2 case
+0.01_2400.0_2.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.01_2400.0_2.0_stor2_ds120.0
+0.01_2400.0_2.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.01_2400.0_2.0_stor2_ds100.0
+0.01_2400.0_2.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.01_2400.0_2.0_stor2_ds80.0
+0.01_2400.0_2.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.01_2400.0_2.0_stor2_ds60.0
+0.01_2400.0_2.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.01_2400.0_2.0_stor2_ds40.0
+Running 0.01_2400.0_3.0_stor2 case
+0.01_2400.0_3.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.01_2400.0_3.0_stor2_ds120.0
+0.01_2400.0_3.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.01_2400.0_3.0_stor2_ds100.0
+0.01_2400.0_3.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.01_2400.0_3.0_stor2_ds80.0
+0.01_2400.0_3.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.01_2400.0_3.0_stor2_ds60.0
+0.01_2400.0_3.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.01_2400.0_3.0_stor2_ds40.0
+Running 0.01_2400.0_4.0_stor2 case
+0.01_2400.0_4.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.01_2400.0_4.0_stor2_ds120.0
+0.01_2400.0_4.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.01_2400.0_4.0_stor2_ds100.0
+0.01_2400.0_4.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.01_2400.0_4.0_stor2_ds80.0
+0.01_2400.0_4.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.01_2400.0_4.0_stor2_ds60.0
+0.01_2400.0_4.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.01_2400.0_4.0_stor2_ds40.0
+Running 0.01_2400.0_5.0_stor2 case
+0.01_2400.0_5.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.01_2400.0_5.0_stor2_ds120.0
+0.01_2400.0_5.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.01_2400.0_5.0_stor2_ds100.0
+0.01_2400.0_5.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.01_2400.0_5.0_stor2_ds80.0
+0.01_2400.0_5.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.01_2400.0_5.0_stor2_ds60.0
+0.01_2400.0_5.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.01_2400.0_5.0_stor2_ds40.0
+Running 0.20_2400.0_1.0_stor2 case
+0.20_2400.0_1.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.20_2400.0_1.0_stor2_ds120.0
+0.20_2400.0_1.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.20_2400.0_1.0_stor2_ds100.0
+0.20_2400.0_1.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.20_2400.0_1.0_stor2_ds80.0
+0.20_2400.0_1.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.20_2400.0_1.0_stor2_ds60.0
+0.20_2400.0_1.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.20_2400.0_1.0_stor2_ds40.0
+Running 0.20_2400.0_2.0_stor2 case
+0.20_2400.0_2.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.20_2400.0_2.0_stor2_ds120.0
+0.20_2400.0_2.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.20_2400.0_2.0_stor2_ds100.0
+0.20_2400.0_2.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.20_2400.0_2.0_stor2_ds80.0
+0.20_2400.0_2.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.20_2400.0_2.0_stor2_ds60.0
+0.20_2400.0_2.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.20_2400.0_2.0_stor2_ds40.0
+Running 0.20_2400.0_3.0_stor2 case
+0.20_2400.0_3.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.20_2400.0_3.0_stor2_ds120.0
+0.20_2400.0_3.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.20_2400.0_3.0_stor2_ds100.0
+0.20_2400.0_3.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.20_2400.0_3.0_stor2_ds80.0
+0.20_2400.0_3.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.20_2400.0_3.0_stor2_ds60.0
+0.20_2400.0_3.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.20_2400.0_3.0_stor2_ds40.0
+Running 0.20_2400.0_4.0_stor2 case
+0.20_2400.0_4.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.20_2400.0_4.0_stor2_ds120.0
+0.20_2400.0_4.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.20_2400.0_4.0_stor2_ds100.0
+0.20_2400.0_4.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.20_2400.0_4.0_stor2_ds80.0
+0.20_2400.0_4.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.20_2400.0_4.0_stor2_ds60.0
+0.20_2400.0_4.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.20_2400.0_4.0_stor2_ds40.0
+Running 0.20_2400.0_5.0_stor2 case
+0.20_2400.0_5.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.20_2400.0_5.0_stor2_ds120.0
+0.20_2400.0_5.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.20_2400.0_5.0_stor2_ds100.0
+0.20_2400.0_5.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.20_2400.0_5.0_stor2_ds80.0
+0.20_2400.0_5.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.20_2400.0_5.0_stor2_ds60.0
+0.20_2400.0_5.0_stor2 results written to D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs\outputs\texas\temp_lossrate_sweep_stor2_v4\0.20_2400.0_5.0_stor2_ds40.0
