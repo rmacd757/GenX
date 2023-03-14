@@ -7,6 +7,12 @@ function tegs_case(dsratio, outputs_path_case, mysetup, myinputs, OPTIMIZER)
     # Calculate and save baseline emissions
     mkpath(outputs_path_case)
     outputs_path = joinpath(outputs_path_case, "$(dsratio)")
+
+    if isdir(outputs_path)
+        println("Result already exists")
+        temp = CSV.File(joinpath(outputs_path, "costs.csv"))::CSV.File
+        return temp[1][2]
+    end
     
     println("Generating the Optimization Model")
     EP = generate_model(mysetup, myinputs, OPTIMIZER)
@@ -101,109 +107,190 @@ function tegs_brent(x0::Number, x1::Number, outputs_path_case::String, mysetup::
     error("Max iteration exceeded")
 end
 
-function ITP_root(f, a, b, ϵ=eps(), κ₁=0.2/(b-a), κ₂=2, n₀=1)
-    0 < κ₁ < Inf             ||   error("κ₁ must be between 0 and ∞")
-    1 ≤ κ₂ < 1 + (1 + √5)/2   ||   error("κ₂ must be between 1 and 1+ (1 + √5)/2 (1 + the golden ratio)")
-    0 < n₀ < Inf             ||   error("n₀ must be between 0 and ∞")
-    n_1div2 = ceil(Int, log2((b-a)/2ϵ))
-    nₘₐₓ = n_1div2 + n₀
-    y_a = f(a)
-    y_b = f(b)
-    sign(y_a) == sign(y_b)  &&  error("sign(f(a)) = sign(f(b)). There is no guaranteed root in the given interval.")
-    j = 0
-    while b-a > 2ϵ
-        # Calculating parameters:
-        x_1div2 = (a+b)/2
-        r = ϵ*2^(nₘₐₓ - j) - (b-a)/2
-        δ = κ₁*(b-a)^κ₂
-        
-        # Interpolation:
-        x_f = /(y_b*a - y_a*b, y_b-y_a)
-        
-        # Truncation:
-        σ = sign(x_1div2 - x_f)
-        δ ≤ abs(x_1div2 - x_f) ? (x_t=x_f+σ*δ) : (x_t = x_1div2)
-        
-        # Projection:
-        abs(x_t - x_1div2) ≤ r ? (x_ITP = x_t) : (x_ITP = x_1div2 - σ*r)
-        
-        # Updating Interval:
-        y_ITP = f(x_ITP)
-        if y_ITP > 0
-            b = x_ITP
-            y_b = y_ITP
-        elseif y_ITP < 0
-            a = x_ITP
-            y_a = y_ITP
-        else
-            a = b = x_ITP
-        end
-        j += 1
-    end
-    return (a+b)/2
-end
-
 function ITP_min(f, a, b, args, ϵ=eps(), κ₁=0.2/(b-a), κ₂=2, n₀=1)
     0 < κ₁ < Inf             ||   error("κ₁ must be between 0 and ∞")
     1 ≤ κ₂ < 1 + (1 + √5)/2   ||   error("κ₂ must be between 1 and 1+ (1 + √5)/2 (1 + the golden ratio)")
-    0 < n₀ < Inf             ||   error("n₀ must be between 0 and ∞")
+    0 ≤ n₀ < Inf             ||   error("n₀ must be between 0 and ∞")
 
     n_1div2 = ceil(Int, log2((b-a)/2ϵ))
     nₘₐₓ = n_1div2 + n₀
 
-    c = (a+b) / 2
+    m = (a + b) / 2
     y_a = f(a, args...)
-    y_c = f(c, args...)
+    y_m = f(m, args...)
     y_b = f(b, args...)
     # sign(y_a) == sign(y_b)  &&  error("sign(f(a)) = sign(f(b)). There is no guaranteed root in the given interval.")
 
-    println("A = $(a)")
-    println("C = $(b)")
-    println("B = $(c)")
+    println("A = $(a), M = $(m), B = $(b)")
+    println("Y_a = $(y_a), Y_m = $(y_m), Y_b = $(y_b)")
 
     j = 0
     while b-a > 2ϵ
 
         # Calculating parameters:
-        x_1div2 = (a+b)/2
-        r = ϵ*2^(nₘₐₓ - j) - (b-a)/2
+        x_1div2 = (a+b)/2.0
+        r = ϵ*2.0^(nₘₐₓ - j) - (b-a)/2.0
         δ = κ₁*(b-a)^κ₂
         
         # Interpolation:
-        x_f = /(y_b*a - y_a*b, y_b-y_a)
+        x_f = /(y_b*a + y_a*b, y_b+y_a)
         
         # Truncation:
         σ = sign(x_1div2 - x_f)
-        δ ≤ abs(x_1div2 - x_f) ? (x_t=x_f - σ * δ) : (x_t = x_1div2)
+        δ ≤ abs(x_1div2 - x_f) ? (x_t=x_f + σ * δ) : (x_t = x_1div2)
         
         # Projection:
-        abs(x_t - x_1div2) ≤ r ? (x_ITP = x_t) : (x_ITP = x_1div2 + σ * r)
+        abs(x_t - x_1div2) ≤ r ? (x_ITP = x_t) : (x_ITP = x_1div2 - σ * r)
 
-        println("A = $(a)")
-        println("C = $(b)")
-        println("B = $(c)")
+        # Fudge to cover x_itp == m case:
+        if x_ITP == m
+            println("Fudge to cover x_itp == m case")
+            if y_a > y_b
+                x_ITP = a + (3 - sqrt(5)) / 2 * (b - a)
+            else
+                x_ITP = a + (sqrt(5) - 1) / 2 * (b - a)
+            end
+        end
+
         println("X = $(x_ITP)")
         
         # Updating Interval:
         y_ITP = f(x_ITP, args...)
-        if y_c < y_ITP
-            # (a,c,b) -> (a,c,x)
-            b = x_ITP
-            y_b = y_ITP
-        elseif y_ITP < y_c
-            # (a,c,b) -> (c,x,b)
-            a = c
-            y_a = y_c
-            c = x_ITP
-            y_c = y_ITP
+        if y_m < y_ITP
+            if x_ITP < m
+                # (a,m,b) -> (x,m,b)
+                a = x_ITP
+                y_a = y_ITP
+            else
+                # (a,m,b) -> (a,m,x)
+                b = x_ITP
+                y_b = y_ITP
+            end
+        elseif y_ITP < y_m
+            if x_ITP < m
+                # (a,m,b) -> (a,x,m)
+                b = m
+                y_b = y_m
+                m = x_ITP
+                y_m = y_ITP                
+            else
+                # (a,m,b) -> (m,x,b)
+                a = m
+                y_a = y_m
+                m = x_ITP
+                y_m = y_ITP
+            end
         else
             a = b = x_ITP
         end
         j += 1
 
+        println("j = $(j-1)")
+        println("X = $(x_ITP), Y = $(y_ITP)")
+        println("A = $(a), M = $(m), B = $(b)")
+        println("Y_a = $(y_a), Y_m = $(y_m), Y_b = $(y_b)")
+
     end
     # return (a+b)/2
-    return c
+    return m
+end
+
+function findbiggerspan(a::Float64, m::Float64, b::Float64, y_a::Float64, y_m::Float64, y_b::Float64)
+    if m - a <= b - m
+        return (m, b, y_m, y_b)
+    else
+        return (a, m, y_a, y_m)
+    end
+end
+
+function ITP_min_v2(f, A, B, args, ϵ=eps(), κ₁=0.2/(b-a), κ₂=2, n₀=1)
+    0 < κ₁ < Inf             ||   error("κ₁ must be between 0 and ∞")
+    1 ≤ κ₂ < 1 + (1 + √5)/2   ||   error("κ₂ must be between 1 and 1+ (1 + √5)/2 (1 + the golden ratio)")
+    0 ≤ n₀ < Inf             ||   error("n₀ must be between 0 and ∞")
+
+    n_1div2 = ceil(Int, log2((B-A)/2ϵ))
+    nₘₐₓ = n_1div2 + n₀
+
+    M = (A + B) / 2
+    Y_A = f(A, args...)
+    Y_M = f(M, args...)
+    Y_B = f(B, args...)
+    # sign(y_a) == sign(y_b)  &&  error("sign(f(a)) = sign(f(b)). There is no guaranteed root in the given interval.")
+
+    println("A = $(A), M = $(M), B = $(B)")
+    println("Y_a = $(Y_A), Y_m = $(Y_M), Y_b = $(Y_B)")
+
+    j = 0
+    while B - A > 2ϵ
+
+        (a, b, y_a, y_b) = findbiggerspan(A, M, B, Y_A, Y_M, Y_B)
+
+        # Calculating parameters:
+        x_1div2 = (a+b)/2.0
+        r = ϵ*2.0^(nₘₐₓ - j) - (b-a)/2.0
+        δ = κ₁*(b-A)^κ₂
+        
+        # Interpolation:
+        x_f = /(y_b*A + y_a*b, y_b+y_a)
+        
+        # Truncation:
+        σ = sign(x_1div2 - x_f)
+        δ ≤ abs(x_1div2 - x_f) ? (x_t=x_f + σ * δ) : (x_t = x_1div2)
+        
+        # Projection:
+        abs(x_t - x_1div2) ≤ r ? (x_ITP = x_t) : (x_ITP = x_1div2 - σ * r)
+
+        # # Fudge to cover x_itp == m case:
+        # if x_ITP == m
+        #     println("Fudge to cover x_itp == m case")
+        #     if y_a > y_b
+        #         x_ITP = a + (3 - sqrt(5)) / 2 * (b - a)
+        #     else
+        #         x_ITP = a + (sqrt(5) - 1) / 2 * (b - a)
+        #     end
+        # end
+
+        println("X = $(x_ITP)")
+        
+        # Updating Interval:
+        y_ITP = f(x_ITP, args...)
+        if Y_M < y_ITP
+            if x_ITP < M
+                # (a,m,b) -> (x,m,b)
+                A = x_ITP
+                Y_A = y_ITP
+            else
+                # (a,m,b) -> (a,m,x)
+                B = x_ITP
+                Y_B = y_ITP
+            end
+        elseif y_ITP < Y_M
+            if x_ITP < M
+                # (a,m,b) -> (a,x,m)
+                B = M
+                Y_B = Y_M
+                M = x_ITP
+                Y_M = y_ITP                
+            else
+                # (a,m,b) -> (m,x,b)
+                a = M
+                y_a = Y_M
+                M = x_ITP
+                Y_M = y_ITP
+            end
+        else
+            A = B = x_ITP
+        end
+        j += 1
+
+        println("j = $(j-1)")
+        println("X = $(x_ITP), Y = $(y_ITP)")
+        println("A = $(A), M = $(M), B = $(B)")
+        println("Y_a = $(Y_A), Y_m = $(Y_M), Y_b = $(Y_B)")
+
+    end
+    # return (a+b)/2
+    return M
 end
 
 ############################################
@@ -285,8 +372,8 @@ end
 ############################################
 root_dir = dirname(dirname(dirname(@__FILE__))) # Should be ../TEGS_runs
 run_name = "temp_lossrate_sweep_stor2_v5"
-dropbox_path = "/Users/rmacd/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs"
-# dropbox_path = "D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs"
+# dropbox_path = "/Users/rmacd/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs"
+dropbox_path = "D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs"
 # dropbox_path = "/media/rmacd/LargeHD/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs"
 
 location_dir = Dict{String, String}(
@@ -319,7 +406,7 @@ for (loc_name, loc_emiss) in emiss_targets
 end
         
 temperatures = Array{Float64}([2400, 2300, 2100, 1900])
-lossrates = Array{Float64}([3, 1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])
+lossrates = Array{Float64}([3, 1, 2, 4, 5, 6]) #, 7, 8, 9, 10, 11, 12, 13, 14, 15])
 
 for (loc_name, loc_path) in location_dir
     case = loc_path
@@ -380,18 +467,40 @@ for (loc_name, loc_path) in location_dir
                 TEGS_input[!, "STOR"] .= 2
 
                 # Calculate and save baseline emissions
-                outputs_path = joinpath(outputs_path_root, "$(emiss_name)_$(T)_$(lossrate)_stor2")
-                if isdir(outputs_path)
-                    println("$(emiss_name)_$(T)_$(lossrate)_stor2 already exists. Skipping...")
+                case_key = "$(emiss_name)_$(T)_$(lossrate)_stor2"
+                dirlist = readdir(outputs_path_root)
+                exist_flag = false
+                for dir in dirlist
+                    if startswith(dir, string(case_key, "_ds"))
+                        println("$(dir) already exists. Skipping...")
+                        exist_flag = true
+                    end
+                end
+                if exist_flag
                     continue
                 end
+                outputs_path = joinpath(outputs_path_root, case_key)
+                # if isdir(outputs_path)
+                #     println("$(emiss_name)_$(T)_$(lossrate)_stor2 already exists. Skipping...")
+                #     continue
+                # end
+
 
                 # opt_dsratio = tegs_brent(1.0, 150.0, outputs_path, mysetup, myinputs, OPTIMIZER, 10.0)
-                opt_dsratio = ITP_min(tegs_case, 1.0, 100.0, (outputs_path, mysetup, myinputs, OPTIMIZER), 10.0)
+                # opt_dsratio = ITP_min(tegs_case, 1.0, 100.0, (outputs_path, mysetup, myinputs, OPTIMIZER), 10.0)
+                dsratio_lim = [1.0, 150.0]
+                eps = 1.0
+                k2 = 2.0
+                # k1 = log2((dsratio_lim[2] - dsratio_lim[1]) / eps) / k2
+                k1 = 0.2 / (dsratio_lim[2] - dsratio_lim[1])
+                # k1 = 0.1
+                n0 = 1.0
+                opt_dsratio = ITP_min(tegs_case, dsratio_lim[1], dsratio_lim[2], (outputs_path, mysetup, myinputs, OPTIMIZER), eps, k1, k2, n0)
+                # opt_dsratio = ITP_min_v2(tegs_case, dsratio_lim[1], dsratio_lim[2], (outputs_path, mysetup, myinputs, OPTIMIZER), eps, k1, k2, n0)
 
                 push!(logging_notes, "1 : $(opt_dsratio), discharge : storage capacity was optimal. Saving as $(string(outputs_path, "_ds$(opt_dsratio)"))\n")
 
-                cp(joinpath(outputs_path, "$(opt_dsratio)"), string(outputs_path, "_ds$(dsratio)"))
+                cp(joinpath(outputs_path, "$(opt_dsratio)"), string(outputs_path, "_ds$(round(opt_dsratio,digits=2,base=10))"))
 
             end
         end
