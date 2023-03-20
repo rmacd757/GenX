@@ -25,6 +25,13 @@ settings_path = get_settings_path(case)
 ### Cluster time series inputs if necessary and if specified by the user
 TDRpath = joinpath(case, mysetup["TimeDomainReductionFolder"])
 
+function time_domain_reduced_files_exist(tdrpath)
+    tdr_load = isfile(joinpath(tdrpath,"Load_data.csv"))
+    tdr_genvar = isfile(joinpath(tdrpath,"Generators_variability.csv"))
+    tdr_fuels = isfile(joinpath(tdrpath,"Fuels_data.csv"))
+    return (tdr_load && tdr_genvar && tdr_fuels)
+end
+
 if mysetup["TimeDomainReduction"] == 1
     if !time_domain_reduced_files_exist(TDRpath)
         println("Clustering Time Series Data (Grouped)...")

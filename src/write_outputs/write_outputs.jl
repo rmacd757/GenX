@@ -75,10 +75,12 @@ function write_outputs(EP::Model, path::AbstractString, setup::Dict, inputs::Dic
 	elapsed_time_power_balance = @elapsed write_power_balance(path, inputs, setup, EP)
 	println("Time elapsed for writing power balance is")
 	println(elapsed_time_power_balance)
+
 	if ~isempty(inputs["FUSION"])
 		write_fusion(path,inputs,setup,EP)
 	end
 	println("Fusion variables have been written")
+	
 	if inputs["Z"] > 1
 		elapsed_time_flows = @elapsed write_transmission_flows(path, inputs, setup, EP)
 		println("Time elapsed for writing transmission flows is")
@@ -147,6 +149,7 @@ function write_outputs(EP::Model, path::AbstractString, setup::Dict, inputs::Dic
 		if has_duals(EP) == 1
 			dfPrice = write_price(path, inputs, setup, EP)
 			dfEnergyRevenue = write_energy_revenue(path, inputs, setup, EP)
+			dfLorenz = write_lorenz_curve(path, inputs, setup, EP)
 			dfChargingcost = write_charging_cost(path, inputs, setup, EP)
 			dfSubRevenue, dfRegSubRevenue = write_subsidy_revenue(path, inputs, setup, EP)
 		end
@@ -177,6 +180,7 @@ function write_outputs(EP::Model, path::AbstractString, setup::Dict, inputs::Dic
 	  println("Time elapsed for writing net revenue is")
 	  println(elapsed_time_net_rev)
 	end
+
 	## Print confirmation
 	println("Wrote outputs to $path")
 

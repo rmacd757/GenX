@@ -14,6 +14,7 @@ in LICENSE.txt.  Users uncompressing this from an archive may not have
 received this license file.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+# using OrderedCollections
 
 function write_fusion(path::AbstractString, inputs::Dict, setup::Dict, EP::Model)
     dfFusion = inputs["dfFusion"]
