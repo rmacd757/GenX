@@ -95,7 +95,8 @@ function fusiongridpower(EP::Model, inputs::Dict, setup::Dict)
     @constraint(EP, eRecircpwr .>= 0)
 
     ## Expression for the thermal energy entering the turbine 
-    # @expression(EP, eTurbThermal[y in FUSION,t=1:T], EP[:vsaltpwr[y,t] * salteff[y] + EP[:vThermOutput][y,t] - num_units[y] * saltLosses[y])
+    # @expression(EP, eTurbThermal[y in FUSION,t=1:T], vsaltpwr[y,t] * salteff[y] + EP[:vThermOutput][y,t] - num_units[y] * saltLosses[y])
+    # @constraint(EP, eTurbThermal .>= 0)
     @variable(EP, vTurbThermal[y in FUSION,t=1:T] >= 0.0)
     @constraint(EP, [y in FUSION,t=1], vTurbThermal[y,t] == EP[:vThermOutput][y,t] - EP[:vThermStor][y,t] - num_units[y] * saltLosses[y] + EP[:vsaltpwr][y,t] * salteff[y])
     @constraint(EP, [y in FUSION,t=2:T], vTurbThermal[y,t] == EP[:vThermStor][y,t-1] - EP[:vThermStor][y,t] + EP[:vThermOutput][y,t] - num_units[y] * saltLosses[y] + EP[:vsaltpwr][y,t] * salteff[y])
@@ -109,18 +110,31 @@ function fusiongridpower(EP::Model, inputs::Dict, setup::Dict)
     @variable(EP, vTurbElecCap[y in FUSION], lower_bound = 0.)
 
     # Then, define the expression for the amount of electric power exiting turbine
-    @expression(EP, eTurbElec[y in FUSION,t=1:T], vTurbThermal[y,t] ./ (dfGen[y,:Heat_Rate_MMBTU_per_MWh] ./ hr_unit))
+    @expression(EP, eTurbElec[y in FUSION,t=1:T], eTurbThermal[y,t] ./ (dfGen[y,:Heat_Rate_MMBTU_per_MWh] ./ hr_unit))
+
 
     # Place constraints on the amount of energy exiting the turbine
     @constraint(EP, [y in FUSION,t=1:T], eTurbElec[y,t] <= vTurbElecCap[y])
-    @constraint(EP, [y in FUSION,t=1:T], eTurbElec[y,t] >= 0)
+    @constraint(EP, eTurbElec[y,t] .>= 0)
+
+    # Place constraint on turbine minimum power
+    @constraint(EP, [y in FUSION,t=1:T], eTurbElec[y,t] <= vTurbElecCap[y,t] * EP[:eFusionCommit][y,t])
+    @constraint(EP, [y in FUSION,t=1:T], eTurbElec[y,t] >= 0.4 * vTurbElecCap[y,t] * EP[:eFusionCommit][y,t])
 
     # Then, add the costs of the turbine to the fixed costs
     turb_cost = dfFusion[!,:Turb_Cap_Cost]
+
+    # Adding costs of variable turbine capacity to fixed costs
     EP[:eCFix][FUSION] .+= (vTurbElecCap[FUSION].*turb_cost[FUSION])
     @expression(EP, eSumTurbFix, (sum((vTurbElecCap[y].*turb_cost[y] for y in FUSION))))
     EP[:eTotalCFix] += eSumTurbFix
     EP[:eObj] += eSumTurbFix 
+
+    # Adding costs of fixed turbine capacity to fixed costs
+    # EP[:eCFix][FUSION] .+= (eMaxElec[FUSION].*turb_cost[FUSION])
+    # @expression(EP, eSumTurbFix, (sum((eTurbElec[y].*turb_cost[y] for y in FUSION))))
+    # EP[:eTotalCFix] += eSumTurbFix
+    # EP[:eObj] += eSumTurbFix 
 
     ## Expression for the amount of net power that is actually going to the grid
     @expression(EP, eFusionNetElec[y in FUSION,t=1:T], eTurbElec[y,t] - eRecircpwr[y,t])
