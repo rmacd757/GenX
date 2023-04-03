@@ -107,10 +107,10 @@ function fusiongridpower(EP::Model, inputs::Dict, setup::Dict)
     ## Expression for the amount of electric power coming out from the turbine
 
     # First, define the variable turbine gross electric power capacity
-    @variable(EP, vTurbElecCap[y in FUSION], lower_bound = 0.)
+    # @variable(EP, vTurbElecCap[y in FUSION], lower_bound = 0.)
 
     # Then, define the expression for the amount of electric power exiting turbine
-    @expression(EP, eTurbElec[y in FUSION,t=1:T], eTurbThermal[y,t] ./ (dfGen[y,:Heat_Rate_MMBTU_per_MWh] ./ hr_unit))
+    @expression(EP, eTurbElec[y in FUSION,t=1:T], vTurbThermal[y,t] ./ (dfGen[y,:Heat_Rate_MMBTU_per_MWh] ./ hr_unit))
 
 
     # Place constraints on the amount of energy exiting the turbine
