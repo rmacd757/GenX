@@ -98,7 +98,7 @@ function fusiongridpower(EP::Model, inputs::Dict, setup::Dict)
     # @expression(EP, eTurbThermal[y in FUSION,t=1:T], vsaltpwr[y,t] * salteff[y] + EP[:vThermOutput][y,t] - num_units[y] * saltLosses[y])
     # @constraint(EP, eTurbThermal .>= 0)
     @variable(EP, vTurbThermal[y in FUSION,t=1:T] >= 0.0)
-    @constraint(EP, [y in FUSION,t=1], vTurbThermal[y,t] == EP[:vThermOutput][y,t] - EP[:vThermStor][y,t] - num_units[y] * saltLosses[y] + EP[:vsaltpwr][y,t] * salteff[y])
+    @constraint(EP, [y in FUSION,t=1], vTurbThermal[y,t] == EP[:vThermOutput][y,t] + EP[:vThermStor][y,T] - EP[:vThermStor][y,1] - num_units[y] * saltLosses[y] + EP[:vsaltpwr][y,t] * salteff[y])
     @constraint(EP, [y in FUSION,t=2:T], vTurbThermal[y,t] == EP[:vThermStor][y,t-1] - EP[:vThermStor][y,t] + EP[:vThermOutput][y,t] - num_units[y] * saltLosses[y] + EP[:vsaltpwr][y,t] * salteff[y])
 
     ## Define the turbine efficiency
@@ -114,21 +114,21 @@ function fusiongridpower(EP::Model, inputs::Dict, setup::Dict)
 
 
     # Place constraints on the amount of energy exiting the turbine
-    @constraint(EP, [y in FUSION,t=1:T], eTurbElec[y,t] <= vTurbElecCap[y])
-    @constraint(EP, eTurbElec[y,t] .>= 0)
+    # @constraint(EP, [y in FUSION,t=1:T], eTurbElec[y,t] <= vTurbElecCap[y])
+    # @constraint(EP, eTurbElec[y,t] .>= 0)
 
-    # Place constraint on turbine minimum power
-    @constraint(EP, [y in FUSION,t=1:T], eTurbElec[y,t] <= vTurbElecCap[y,t] * EP[:eFusionCommit][y,t])
-    @constraint(EP, [y in FUSION,t=1:T], eTurbElec[y,t] >= 0.4 * vTurbElecCap[y,t] * EP[:eFusionCommit][y,t])
+    # # Place constraint on turbine minimum power
+    # @constraint(EP, [y in FUSION,t=1:T], eTurbElec[y,t] <= vTurbElecCap[y,t] * EP[:eFusionCommit][y,t])
+    # @constraint(EP, [y in FUSION,t=1:T], eTurbElec[y,t] >= 0.4 * vTurbElecCap[y,t] * EP[:eFusionCommit][y,t])
 
-    # Then, add the costs of the turbine to the fixed costs
-    turb_cost = dfFusion[!,:Turb_Cap_Cost]
+    # # Then, add the costs of the turbine to the fixed costs
+    # turb_cost = dfFusion[!,:Turb_Cap_Cost]
 
-    # Adding costs of variable turbine capacity to fixed costs
-    EP[:eCFix][FUSION] .+= (vTurbElecCap[FUSION].*turb_cost[FUSION])
-    @expression(EP, eSumTurbFix, (sum((vTurbElecCap[y].*turb_cost[y] for y in FUSION))))
-    EP[:eTotalCFix] += eSumTurbFix
-    EP[:eObj] += eSumTurbFix 
+    # # Adding costs of variable turbine capacity to fixed costs
+    # EP[:eCFix][FUSION] .+= (vTurbElecCap[FUSION].*turb_cost[FUSION])
+    # @expression(EP, eSumTurbFix, (sum((vTurbElecCap[y].*turb_cost[y] for y in FUSION))))
+    # EP[:eTotalCFix] += eSumTurbFix
+    # EP[:eObj] += eSumTurbFix 
 
     # Adding costs of fixed turbine capacity to fixed costs
     # EP[:eCFix][FUSION] .+= (eMaxElec[FUSION].*turb_cost[FUSION])
@@ -183,8 +183,9 @@ function fusionfuel(EP::Model, inputs::Dict, setup::Dict)
 
     # Tritium Balance
     # @constraint(EP, [y in FUSION, t=1], vtrit_inventory[y,t] == dfFusion[!,:Tritium_Cap][y] / 2.0)
-    @constraint(EP, [y in FUSION, t=1],   vtrit_inventory[y,t] == vtrit_inventory[y,T]   + EP[:vThermOutput][y,T] * (dfFusion[y,:Trit_Breed] - dfFusion[y,:Trit_Fuel]) - EP[:num_units][y] * dfFusion[y,:Trit_Loss] - vtrit_exports[y,T])
-    @constraint(EP, [y in FUSION, t=2:T], vtrit_inventory[y,t] == vtrit_inventory[y,t-1] + EP[:vThermOutput][y,t] * (dfFusion[y,:Trit_Breed] - dfFusion[y,:Trit_Fuel]) - EP[:num_units][y] * dfFusion[y,:Trit_Loss] - vtrit_exports[y,t])
+    trit_decay = 0.00000642259
+    @constraint(EP, [y in FUSION, t=1],   vtrit_inventory[y,t] == vtrit_inventory[y,T]*trit_decay + EP[:vThermOutput][y,T] * (dfFusion[y,:Trit_Breed] - dfFusion[y,:Trit_Fuel]) - EP[:num_units][y] * dfFusion[y,:Trit_Loss] - vtrit_exports[y,T])
+    @constraint(EP, [y in FUSION, t=2:T], vtrit_inventory[y,t] == vtrit_inventory[y,t-1]*trit_decay + EP[:vThermOutput][y,t] * (dfFusion[y,:Trit_Breed] - dfFusion[y,:Trit_Fuel]) - EP[:num_units][y] * dfFusion[y,:Trit_Loss] - vtrit_exports[y,t])
 
     ##### Deuterium Balance #####
     deu_stor_cap = dfFusion[!,:Deu_Cap]
