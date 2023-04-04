@@ -98,7 +98,7 @@ function fusiongridpower(EP::Model, inputs::Dict, setup::Dict)
     # @expression(EP, eTurbThermal[y in FUSION,t=1:T], vsaltpwr[y,t] * salteff[y] + EP[:vThermOutput][y,t] - num_units[y] * saltLosses[y])
     # @constraint(EP, eTurbThermal .>= 0)
     @variable(EP, vTurbThermal[y in FUSION,t=1:T] >= 0.0)
-    @constraint(EP, [y in FUSION,t=1], vTurbThermal[y,t] == EP[:vThermOutput][y,t] + EP[:vThermStor][y,T] - EP[:vThermStor][y,1] - num_units[y] * saltLosses[y] + EP[:vsaltpwr][y,t] * salteff[y])
+    @constraint(EP, [y in FUSION,t=1], vTurbThermal[y,t] == EP[:vThermOutput][y,T] + EP[:vThermStor][y,T] - EP[:vThermStor][y,1] - num_units[y] * saltLosses[y] + EP[:vsaltpwr][y,T] * salteff[y])
     @constraint(EP, [y in FUSION,t=2:T], vTurbThermal[y,t] == EP[:vThermStor][y,t-1] - EP[:vThermStor][y,t] + EP[:vThermOutput][y,t] - num_units[y] * saltLosses[y] + EP[:vsaltpwr][y,t] * salteff[y])
 
     ## Define the turbine efficiency
@@ -184,7 +184,7 @@ function fusionfuel(EP::Model, inputs::Dict, setup::Dict)
     # Tritium Balance
     # @constraint(EP, [y in FUSION, t=1], vtrit_inventory[y,t] == dfFusion[!,:Tritium_Cap][y] / 2.0)
     trit_decay = 0.00000642259
-    @constraint(EP, [y in FUSION, t=1],   vtrit_inventory[y,t] == vtrit_inventory[y,T]*trit_decay + EP[:vThermOutput][y,T] * (dfFusion[y,:Trit_Breed] - dfFusion[y,:Trit_Fuel]) - EP[:num_units][y] * dfFusion[y,:Trit_Loss] - vtrit_exports[y,T])
+    @constraint(EP, [y in FUSION, t=1], vtrit_inventory[y,t] == vtrit_inventory[y,T]*trit_decay + EP[:vThermOutput][y,T] * (dfFusion[y,:Trit_Breed] - dfFusion[y,:Trit_Fuel]) - EP[:num_units][y] * dfFusion[y,:Trit_Loss] - vtrit_exports[y,T])
     @constraint(EP, [y in FUSION, t=2:T], vtrit_inventory[y,t] == vtrit_inventory[y,t-1]*trit_decay + EP[:vThermOutput][y,t] * (dfFusion[y,:Trit_Breed] - dfFusion[y,:Trit_Fuel]) - EP[:num_units][y] * dfFusion[y,:Trit_Loss] - vtrit_exports[y,t])
 
     ##### Deuterium Balance #####
@@ -334,6 +334,8 @@ function fusionthermalstorage(EP::Model, inputs::Dict, setup::Dict)
     @constraint(EP, [y in FUSION,t=1:T], vThermStor[y,t] <= vThermStorCap[y])
 
     ## Constrain the change in storage over time by discharge cap
+    @constraint(EP, [y in FUSION, t=1], vThermStor[y,T] - vThermStor[y,1] <= vThermDisCap[y])
+    @constraint(EP, [y in FUSION, t=1], -vThermDisCap[y] <= vThermStor[y,T] - vThermStor[y,1])
     @constraint(EP, [y in FUSION, t=2:T], vThermStor[y,t] - vThermStor[y,t-1] <= vThermDisCap[y])
     @constraint(EP, [y in FUSION, t=2:T], -vThermDisCap[y] <= vThermStor[y,t] - vThermStor[y,t-1])
 
