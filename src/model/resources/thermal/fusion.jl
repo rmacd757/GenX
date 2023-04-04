@@ -199,7 +199,7 @@ function fusionfuel(EP::Model, inputs::Dict, setup::Dict)
 
     # Deuterium balance
     # @constraint(EP, [y in FUSION, t=1], vdeu_inventory[y,t] == dfFusion[!,:Deu_Cap][y] / 2.0)
-    @constraint(EP, [y in FUSION, t=1],   vdeu_inventory[y,t] == vdeu_inventory[y,T]   - EP[:vThermOutput][y,T] * dfFusion[y,:Deu_Fuel] - EP[:num_units][y] * dfFusion[y,:Deu_Loss] - vdeu_exports[y,T])
+    @constraint(EP, [y in FUSION, t=1],   vdeu_inventory[y,t] == vdeu_inventory[y,T] - EP[:vThermOutput][y,T] * dfFusion[y,:Deu_Fuel] - EP[:num_units][y] * dfFusion[y,:Deu_Loss] - vdeu_exports[y,T])
     @constraint(EP, [y in FUSION, t=2:T], vdeu_inventory[y,t] == vdeu_inventory[y,t-1] - EP[:vThermOutput][y,t] * dfFusion[y,:Deu_Fuel] - EP[:num_units][y] * dfFusion[y,:Deu_Loss] - vdeu_exports[y,t])
 
 
