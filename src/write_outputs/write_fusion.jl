@@ -14,14 +14,13 @@ in LICENSE.txt.  Users uncompressing this from an archive may not have
 received this license file.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-# using OrderedCollections
-
 function write_fusion(path::AbstractString, inputs::Dict, setup::Dict, EP::Model)
     dfFusion = inputs["dfFusion"]
     FUSION = inputs["FUSION"]
 
     T = inputs["T"]     # Number of time steps (hours)
 
+    # Ordered
     d = Dict{String, Any}(
         "Imports" => vec(value.(EP[:vfusionimports][FUSION,1:T])),
         "Net Electric" => vec(value.(EP[:eFusionNetElec][FUSION,1:T])),
@@ -40,9 +39,7 @@ function write_fusion(path::AbstractString, inputs::Dict, setup::Dict, EP::Model
         "Thermal Storage" => vec(value.(EP[:vThermStor][FUSION,1:T]))
     )
 
-    fusion_df = DataFrame(d)
-    # fusion_df = DataFrame(Time = 1:T, Imports = fusion_imports, Power = net_fusionpwr, Recirculate_Power = recirc_power, Turbine_Pwr = turbine_power, Reactor_Therm = reactor_thermal, Trit_Inven = tritium_inven, Deu_Inven = deu_inven, Trit_Exports = trit_exports, Deu_Exports = deu_exports, Fixed_Input = fixed_input, Var_Input = var_input, Salt_pwr = salt_pwr)
-    
+    fusion_df = DataFrame(d)    
     CSV.write(joinpath(path, "fusion.csv"), fusion_df)
 end
 

@@ -1,6 +1,7 @@
 ##
 
 using GenX
+using JuMP
 
 case = dirname(@__FILE__)
 
@@ -44,6 +45,7 @@ end
 ### Configure solver
 println("Configuring Solver")
 OPTIMIZER = configure_solver(mysetup["Solver"], settings_path)
+set_optimizer_attribute(OPTIMIZER, "BarHomogeneous", 1)
 
 #### Running a case
 
@@ -53,6 +55,8 @@ myinputs = load_inputs(mysetup, case)
 
 println("Generating the Optimization Model")
 EP = generate_model(mysetup, myinputs, OPTIMIZER)
+
+@constraint(EP, EP[:eTotalCap][end] >= 100)
 
 println("Solving Model")
 EP, solve_time = solve_model(EP, mysetup)
