@@ -20,8 +20,7 @@ function write_fusion(path::AbstractString, inputs::Dict, setup::Dict, EP::Model
 
     T = inputs["T"]     # Number of time steps (hours)
 
-    # Ordered
-    d = Dict{String, Any}(
+    d = OrderedDict{String, Any}(
         "Imports" => vec(value.(EP[:vfusionimports][FUSION,1:T])),
         "Net Electric" => vec(value.(EP[:eFusionNetElec][FUSION,1:T])),
         "Gross Electric" => vec(value.(EP[:eTurbElec][FUSION,1:T])),
