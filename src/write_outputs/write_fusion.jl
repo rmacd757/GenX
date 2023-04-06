@@ -14,15 +14,13 @@ in LICENSE.txt.  Users uncompressing this from an archive may not have
 received this license file.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-# using OrderedCollections
-
 function write_fusion(path::AbstractString, inputs::Dict, setup::Dict, EP::Model)
     dfFusion = inputs["dfFusion"]
     FUSION = inputs["FUSION"]
 
     T = inputs["T"]     # Number of time steps (hours)
 
-    d = Dict{String, Any}(
+    d = OrderedDict{String, Any}(
         "Imports" => vec(value.(EP[:vfusionimports][FUSION,1:T])),
         "Net Electric" => vec(value.(EP[:eFusionNetElec][FUSION,1:T])),
         "Gross Electric" => vec(value.(EP[:eTurbElec][FUSION,1:T])),
