@@ -208,8 +208,13 @@ function fusionfuel(EP::Model, inputs::Dict, setup::Dict)
 
     # Adding costs for deuterium imports
     deu_im_cost = dfFusion[!,:Deu_Im_Cost]
-    EP[:eCVar_out][FUSION] .+= deu_im_cost[FUSION] .* (DEU_FUEL_RATIO * vdeu_exports[y,t])
-    @expression(EP, eSumDeuVar, sum(deu_im_cost[FUSION] .* (DEU_FUEL_RATIO * vdeu_exports[y,t] for y in FUSION)) / T)
+    
+    @expression(EP, edeuexports[y in FUSION], sum(vdeu_exports[y,t] for t in 1:T))
+
+    EP[:eCVar_out][FUSION] .+= deu_im_cost[FUSION] .* (DEU_FUEL_RATIO * edeuexports[FUSION])
+   
+    @expression(EP, eSumDeuVar, sum(deu_im_cost[FUSION] .* (DEU_FUEL_RATIO * edeuexports[FUSION])) / T)
+    
     EP[:eTotalCVarOut] += eSumDeuVar
 
     # Add both to variable cost
