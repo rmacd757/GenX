@@ -29,17 +29,35 @@ function write_fusion(path::AbstractString, inputs::Dict, setup::Dict, EP::Model
         "Fixed plant power" => vec(value.(EP[:eplantfix][FUSION,1:T])),
         "Var plant power" => vec(value.(EP[:eplantvar][FUSION,1:T])),
         "Reactor Thermal power" => vec(value.(EP[:vThermOutput][FUSION,1:T])),
-        "Turbine Thermal input" => vec(value.(EP[:vTurbThermal][FUSION,1:T])),
+        "Turbine Thermal input" => vec(value.(EP[:eTurbThermal][FUSION,1:T])),
         "Tritium inventory" => vec(value.(EP[:vtrit_inventory][FUSION,1:T])),
         "Tritium exports" => vec(value.(EP[:vtrit_exports][FUSION,1:T])),
         "Deuterium inventory" => vec(value.(EP[:vdeu_inventory][FUSION,1:T])),
         "Deuterium exports" => vec(value.(EP[:vdeu_exports][FUSION,1:T])),
         "Commitment State" => vec(value.(EP[:eFusionCommit][FUSION,1:T])),
-        "Thermal Storage" => vec(value.(EP[:vThermStor][FUSION,1:T]))
+        "Storage Inventory" => vec(value.(EP[:vThermStor][FUSION,1:T])),
+        "Charge per Hour" => vec(value.(EP[:vThermChar][FUSION,1:T])),
+        "Discharge per Hour" => vec(value.(EP[:vThermDis][FUSION,1:T])),
+        "Net charge rate" => vec(value.(EP[:eThermStorNetDischarge][FUSION,1:T]))
     )
 
     fusion_df = DataFrame(d)    
-    CSV.write(joinpath(path, "fusion.csv"), fusion_df)
+    CSV.write(joinpath(path, "fusion_time.csv"), fusion_df)
 end
 
+function write_fusion_var(path::AbstractString, inputs::Dict, setup::Dict, EP::Model)
+    dfFusion = inputs["dfFusion"]
+    FUSION = inputs["FUSION"]
+
+    f_var = OrderedDict{String, Any}(
+        "No. of Units" => value.(EP[:num_units][FUSION]),
+        "Tritium Capacity" => value.(EP[:TritCap][FUSION]),
+        "Deuterium Capacity" => value.(EP[:DeuCap][FUSION]),
+        "Storage Capacity" => value.(EP[:vThermStorCap][FUSION]),
+        "Discharge Capacity" => value.(EP[:vThermDisCap][FUSION])
+    )
+
+    fvar_df = DataFrame(f_var)
+    CSV.write(joinpath(path, "fusion_var.csv"), fvar_df)
+end
 

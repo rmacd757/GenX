@@ -92,7 +92,7 @@ function load_generators_data!(setup::Dict, path::AbstractString, inputs_gen::Di
 		inputs_gen["FUSION"] = Int64[]
 	end
 
-	inputs_gen["FUSION"] = Int64[] 
+	# inputs_gen["FUSION"] = Int64[] 
 	
 	# For now, the only resources eligible for UC are themal resources
 	inputs_gen["COMMIT"] = inputs_gen["THERM_COMMIT"]
