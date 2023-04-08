@@ -48,16 +48,33 @@ end
 function write_fusion_var(path::AbstractString, inputs::Dict, setup::Dict, EP::Model)
     dfFusion = inputs["dfFusion"]
     FUSION = inputs["FUSION"]
+    dfGen = inputs["dfGen"]
 
-    f_var = OrderedDict{String, Any}(
-        "No. of Units" => value.(EP[:num_units][FUSION]),
-        "Tritium Capacity" => value.(EP[:TritCap][FUSION]),
-        "Deuterium Capacity" => value.(EP[:DeuCap][FUSION]),
-        "Storage Capacity" => value.(EP[:vThermStorCap][FUSION]),
-        "Discharge Capacity" => value.(EP[:vThermDisCap][FUSION])
+
+    numunitf = zeros(size(inputs["dfGen"]))
+    tritcap = zeros(size(inputs["dfGen"]))
+    deucap = zeros(size(inputs["dfGen"]))
+    fthermstorcap = zeros(size(inputs["dfGen"]))
+    fthermdiscap = zeros(size(inputs["dfGen"]))
+    
+    for i in FUSION
+        numunitf[i] = value(EP[:num_units][i])
+        tritcap[i] = value(EP[:TritCap][i])
+        deucap[i] = value(EP[:DeuCap][i])            
+        fthermstorcap[i] = value(EP[:vThermStorCap][i])
+        fthermdiscap[i] = value(EP[:vThermDisCap][i])
+    end
+
+    f_var = DataFrame(
+        Fusion_tech = inputs["FUSION"],
+        Num_Units = numunitf[FUSION],
+        Trit_Cap = tritcap[FUSION],
+        Deu_Cap = deucap[FUSION],
+        Therm_Stor_Cap = fthermstorcap[FUSION],
+        Therm_Dis_Cap = fthermdiscap[FUSION]
     )
 
-    fvar_df = DataFrame(f_var)
-    CSV.write(joinpath(path, "fusion_var.csv"), fvar_df)
+    CSV.write(joinpath(path, "fusion_var.csv"), f_var)
 end
+
 
