@@ -84,15 +84,10 @@ function fusiongridpower(EP::Model, inputs::Dict, setup::Dict)
     @constraint(EP, eRecircpwr .>= 0)
 
     ## Expression for the thermal energy entering the turbine 
-    # @expression(EP, eTurbThermal[y in FUSION,t=1:T], vsaltpwr[y,t] * salteff[y] + EP[:vThermOutput][y,t] - num_units[y] * saltLosses[y])
-    # @constraint(EP, eTurbThermal .>= 0)
-    # @variable(EP, eTurbThermal[y in FUSION,t=1:T] >= 0.0)
-    # @constraint(EP, [y in FUSION,t=1:T], eTurbThermal[y,t] == EP[:eThermStorNetDischarge][y,t] + EP[:vThermOutput][y,t] - num_units[y] * saltLosses[y] + EP[:vsaltpwr][y,t] * salteff[y])
-    
     if any(dfFusion[!,:Add_Therm_Stor].>0)
         @expression(EP, eTurbThermal[y in FUSION,t=1:T], EP[:eThermStorNetDischarge][y,t] + EP[:vThermOutput][y,t] - num_units[y] * saltLosses[y] + EP[:vsaltpwr][y,t] * salteff[y])
     else
-        @expression(EP, eTurbThermal[y in FUSION,t=1:T], vsaltpwr[y,t] * salteff[y] + EP[:vThermOutput][y,t] - num_units[y] * saltLosses[y])
+        @expression(EP, eTurbThermal[y in FUSION,t=1:T], EP[:vThermOutput][y,t] - num_units[y] * saltLosses[y] + vsaltpwr[y,t] * salteff[y])
     end
     @constraint(EP, eTurbThermal .>= 0)
 
@@ -295,13 +290,14 @@ function fusionvessel(EP::Model, inputs::Dict, setup::Dict)
     @expression(EP, eThermOutputTot[y in FUSION], sum(EP[:vThermOutput][y,t] for t=1:T))
 
     ## Calculates the effective thermal power capacity of the plant for the year
-    @expression(EP, eThermCap[y in FUSION], dfGen[!,:Cap_Size][y] * pulse_ratio[y] / turb_efficiency[y])
+    @expression(EP, eThermCap[y in FUSION], EP[:eTotalCap][y] * pulse_ratio[y] / turb_efficiency[y])
     
     ## Calculates Annual Utilization based on thermal output and capacity
-    @expression(EP, eAnnualUtil[y in FUSION], eThermOutputTot[y] / eThermCap[y] / T)
+    # @expression(EP, eAnnualUtil[y in FUSION], eThermOutputTot[y] / eThermCap[y] / T)
 
     ## Constrain annual utilization
-    @constraint(EP, cAnnualUtil[y in FUSION], eAnnualUtil[y] <= calc_fpp_maxutil(vessel_name[y], replace_dur[y]))
+    # @constraint(EP, cAnnualUtil[y in FUSION], eAnnualUtil[y] <= calc_fpp_maxutil(vessel_name[y], replace_dur[y]))
+    @constraint(EP, cAnnualUtilMax[y in FUSION], eThermOutputTot[y] <= eThermCap[y] * T * calc_fpp_maxutil(vessel_name[y], replace_dur[y]))
 
     ## Annuitized Plant costs
     # @expression(EP, ePlantAnnual[y in FUSION], (plant_cost[y] * discount[y])/(1 - (1 + discount[y])^(-plant_life[y])))
@@ -310,6 +306,10 @@ function fusionvessel(EP::Model, inputs::Dict, setup::Dict)
     @expression(EP, eC1[y in FUSION], calc_vacvessel_c1(vessel_inv[y], discount[y], vessel_name[y], 0.5))
 
     @expression(EP, eC2[y in FUSION], calc_vacvessel_c2(vessel_inv[y], discount[y], vessel_name[y], 0.5))
+
+    ## Constrain minimum annual utilization to avoid negative vessel costs
+    # @constraint(EP, cAnnualUtilMin[y in FUSION], eAnnualUtil[y] >= calc_fpp_minutil(eC1[y], eC2[y]))
+    @constraint(EP, cAnnualUtilMin[y in FUSION], eThermOutputTot[y] >= eThermCap[y] * T * calc_fpp_minutil(eC1[y], eC2[y]))
 
     ## Fixed Vessel Investment Costs
     @expression(EP, eVesselFix[y in FUSION], vessel_inv[y] * discount[y] / (1 - (1 + discount[y])^(-plant_life[y])))
@@ -450,6 +450,13 @@ function calc_vacvessel_c2(capex::Float64, discount_rate::Float64, nom_lifetime:
             /
             util_guess^2
         )
+end
+
+function calc_fpp_minutil(c1::Float64, c2::Float64)
+    # The periodic vacuum vessel costs are of the form y = c1 + c2 * x
+    # Where x is the utilization factor and y is the cost
+    # If y = 0, x = -c1 / c2
+    return c1 / c2
 end
 
 function updatevariablecosts!(EP::JuMP.Model, terms, active_R_ID::Vector{Int64})
