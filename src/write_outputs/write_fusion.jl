@@ -33,12 +33,12 @@ function write_fusion(path::AbstractString, inputs::Dict, setup::Dict, EP::Model
         "Tritium inventory" => vec(value.(EP[:vtrit_inventory][FUSION,1:T])),
         "Tritium exports" => vec(value.(EP[:vtrit_exports][FUSION,1:T])),
         "Deuterium inventory" => vec(value.(EP[:vdeu_inventory][FUSION,1:T])),
-        "Deuterium exports" => vec(value.(EP[:vdeu_exports][FUSION,1:T])),
-        "Commitment State" => vec(value.(EP[:eFusionCommit][FUSION,1:T])),
-        "Storage Inventory" => vec(value.(EP[:vThermStor][FUSION,1:T])),
-        "Charge per Hour" => vec(value.(EP[:vThermChar][FUSION,1:T])),
-        "Discharge per Hour" => vec(value.(EP[:vThermDis][FUSION,1:T])),
-        "Net charge rate" => vec(value.(EP[:eThermStorNetDischarge][FUSION,1:T]))
+        "Deuterium imports" => vec(value.(EP[:vdeu_imports][FUSION,1:T])),
+        "Commitment State" => vec(value.(EP[:eFusionCommit][FUSION,1:T]))
+        # "Storage Inventory" => vec(value.(EP[:vThermStor][FUSION,1:T])),
+        # "Charge per Hour" => vec(value.(EP[:vThermChar][FUSION,1:T])),
+        # "Discharge per Hour" => vec(value.(EP[:vThermDis][FUSION,1:T])),
+        # "Net charge rate" => vec(value.(EP[:eThermStorNetDischarge][FUSION,1:T]))
     )
 
     fusion_df = DataFrame(d)    
@@ -59,10 +59,10 @@ function write_fusion_var(path::AbstractString, inputs::Dict, setup::Dict, EP::M
     
     for i in FUSION
         numunitf[i] = value(EP[:num_units][i])
-        tritcap[i] = value(EP[:TritCap][i])
-        deucap[i] = value(EP[:DeuCap][i])            
-        fthermstorcap[i] = value(EP[:vThermStorCap][i])
-        fthermdiscap[i] = value(EP[:vThermDisCap][i])
+        tritcap[i] = value(EP[:vTritCap][i])
+        deucap[i] = value(EP[:vDeuCap][i])            
+        # fthermstorcap[i] = value(EP[:vThermStorCap][i])
+        # fthermdiscap[i] = value(EP[:vThermDisCap][i])
     end
 
     f_var = DataFrame(
@@ -70,8 +70,8 @@ function write_fusion_var(path::AbstractString, inputs::Dict, setup::Dict, EP::M
         Num_Units = numunitf[FUSION],
         Trit_Cap = tritcap[FUSION],
         Deu_Cap = deucap[FUSION],
-        Therm_Stor_Cap = fthermstorcap[FUSION],
-        Therm_Dis_Cap = fthermdiscap[FUSION]
+        # Therm_Stor_Cap = fthermstorcap[FUSION],
+        # Therm_Dis_Cap = fthermdiscap[FUSION]
     )
 
     CSV.write(joinpath(path, "fusion_var.csv"), f_var)

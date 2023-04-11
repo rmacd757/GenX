@@ -16,8 +16,22 @@ received this license file.  If not, see <http://www.gnu.org/licenses/>.
 
 function load_fusion_data!(setup::Dict, path::AbstractString, inputs_ffuel::Dict)
 
+	# All inputs are converted to Float64 by default.
+	# The input columns listed here should be converted to Int64
+	int_inputs = Vector{Symbol}([
+		:Zone,
+		:THERM,
+		:FUSION,
+		:Add_Therm_Stor
+	])
+
     filename = "Fusion_data.csv"
-	fusion_in = DataFrame(CSV.File(joinpath(path, filename), header=true), copycols=true)
+	fusion_in = DataFrame(CSV.File(joinpath(path, filename), header=true, typemap=Dict(Int64 => Float64)), copycols=false)
+
+	# Convert specified columns to Int64
+	for col in int_inputs
+		fusion_in[!,col] = Int64.(fusion_in[!,col])
+	end
 
 	# Add Resource IDs after reading to prevent user errors
 	fusion_in[!,:R_ID] = 1:length(collect(skipmissing(fusion_in[!,1])))

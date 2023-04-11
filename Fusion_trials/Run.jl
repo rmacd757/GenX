@@ -56,7 +56,7 @@ myinputs = load_inputs(mysetup, case)
 println("Generating the Optimization Model")
 EP = generate_model(mysetup, myinputs, OPTIMIZER)
 
-@constraint(EP, EP[:eTotalCap][end] >= 100)
+@constraint(EP, EP[:eTotalCap][end] >= 300.)
 
 println("Solving Model")
 EP, solve_time = solve_model(EP, mysetup)

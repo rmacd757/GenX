@@ -28,7 +28,7 @@ function fusionthermalpower(EP::Model, inputs::Dict, setup::Dict)
 	### Variables ###
     MMBTU_PER_MWH = 3.412 ### hard coded mmbtu to mwh conversion
 
-    con_mWh_heatrt = dfGen[!,:Heat_Rate_MMBTU_per_MWh] ./ MMBTU_PER_MWH   # Heat Rate of the technology is always greater than the mmbtu to mwh conversion
+    heatrate_mwh = dfGen[!,:Heat_Rate_MMBTU_per_MWh] ./ MMBTU_PER_MWH   # Heat Rate of the technology is always greater than the mmbtu to mwh conversion
 
     # Expression to represent the commitment state of the fusion power generators
     # Note, this is the number of commited units in the cluster if using linearized unit commitment
@@ -44,7 +44,7 @@ function fusionthermalpower(EP::Model, inputs::Dict, setup::Dict)
 
     ## Constrain the Thermal Output with the Effective Capacity
     pulse_ratio = fusionpulseratio.(dfFusion[!,:Pulse_length_min], dfFusion[!,:Pulse_gap_min])
-    @constraint(EP, [y in FUSION,t=1:T], vThermOutput[y,t] <= eFusionCommit[y,t] * dfGen[!,:Cap_Size][y] * con_mWh_heatrt[y] * pulse_ratio[y])
+    @constraint(EP, [y in FUSION,t=1:T], vThermOutput[y,t] <= eFusionCommit[y,t] * dfGen[!,:Cap_Size][y] * heatrate_mwh[y] * pulse_ratio[y])
 end
 
 ### This function will calculate the power provided by the reactor to the grid
@@ -63,7 +63,7 @@ function fusiongridpower(EP::Model, inputs::Dict, setup::Dict)
     MMBTU_PER_MWH = 3.412 ### hard coded mmbtu to mwh conversion
 
     ## Turbine efficiency
-    turbefficiency = MMBTU_PER_MWH ./ dfGen[!,:Heat_Rate_MMBTU_per_MWh]
+    turb_efficiency = MMBTU_PER_MWH ./ dfGen[!,:Heat_Rate_MMBTU_per_MWh]
 
     ## Define key variables
     magcool = dfFusion[!,:Mag_Cool]  #Amount of power (MW) being delivered to cool the magnets
@@ -88,7 +88,12 @@ function fusiongridpower(EP::Model, inputs::Dict, setup::Dict)
     # @constraint(EP, eTurbThermal .>= 0)
     # @variable(EP, eTurbThermal[y in FUSION,t=1:T] >= 0.0)
     # @constraint(EP, [y in FUSION,t=1:T], eTurbThermal[y,t] == EP[:eThermStorNetDischarge][y,t] + EP[:vThermOutput][y,t] - num_units[y] * saltLosses[y] + EP[:vsaltpwr][y,t] * salteff[y])
-    @expression(EP, eTurbThermal[y in FUSION,t=1:T], EP[:eThermStorNetDischarge][y,t] + EP[:vThermOutput][y,t] - num_units[y] * saltLosses[y] + EP[:vsaltpwr][y,t] * salteff[y])
+    
+    if any(dfFusion[!,:Add_Therm_Stor].>0)
+        @expression(EP, eTurbThermal[y in FUSION,t=1:T], EP[:eThermStorNetDischarge][y,t] + EP[:vThermOutput][y,t] - num_units[y] * saltLosses[y] + EP[:vsaltpwr][y,t] * salteff[y])
+    else
+        @expression(EP, eTurbThermal[y in FUSION,t=1:T], vsaltpwr[y,t] * salteff[y] + EP[:vThermOutput][y,t] - num_units[y] * saltLosses[y])
+    end
     @constraint(EP, eTurbThermal .>= 0)
 
     ## Expression for the amount of electric power coming out from the turbine
@@ -96,7 +101,7 @@ function fusiongridpower(EP::Model, inputs::Dict, setup::Dict)
     # @variable(EP, vTurbElecCap[y in FUSION], lower_bound = 0.)
 
     # Then, define the expression for the amount of electric power exiting turbine
-    @expression(EP, eTurbElec[y in FUSION,t=1:T], eTurbThermal[y,t] .* turbefficiency[y])
+    @expression(EP, eTurbElec[y in FUSION,t=1:T], eTurbThermal[y,t] .* turb_efficiency[y])
 
 
     # Place constraints on the amount of energy exiting the turbine
@@ -134,7 +139,8 @@ function fusiongridpower(EP::Model, inputs::Dict, setup::Dict)
     @expression(EP, efusionimports[t=1:T, z=1:Z], 
         sum(vfusionimports[y,t] for y in intersect(FUSION, dfGen[dfGen[!,:Zone].==z,:R_ID])))
 
-    EP[:ePowerBalance] -= efusionimports
+    add_to_expression!.(EP[:ePowerBalance], -efusionimports)
+    # EP[:ePowerBalance] -= efusionimports
 
     ## Constraints for the electric power node (Supply of power on the left, Demand for power on right)
     @constraint(EP, PwrNode[y in FUSION, t=1:T], eTurbElec[y,t] + vfusionimports[y,t] == EP[:vP][y,t] + EP[:eRecircpwr][y,t])
@@ -150,75 +156,115 @@ function fusionfuel(EP::Model, inputs::Dict, setup::Dict)
     ##### Tritium Balance #####
 
     ## Tritium capacity
-    @variable(EP, TritCap[y in FUSION] .>= 0.0)
-
+    @variable(EP, vTritCap[y in FUSION] >= 0.0)
     ## Tritium inventory
     @variable(EP, vtrit_inventory[y in FUSION, t=1:T], lower_bound = 0.)
-
     ## Tritium inventory <= Tritium capacity
-    @constraint(EP, [y in FUSION,t=1:T], vtrit_inventory[y,t] <= TritCap[y])
+    @constraint(EP, [y in FUSION,t=1:T], vtrit_inventory[y,t] <= vTritCap[y])
 
     # Tritium exports
     @variable(EP, vtrit_exports[y in FUSION, t=1:T] >= 0.0)
 
+    ## Fuel useage
+    # eV produced per fusion = 14e6
+    # Joules per fusion = 14e6 * 1.6e-19
+    # Fusions per MWh = 3600 * 1e6 / (14e6 * 1.6e-19)
+    # Avagadro's number = 6.022e23
+    # Mols per MWh = (3600 * 1e6 / (14e6 * 1.6e-19)) / 6.022e23
+    # Tritium molar mass = 3g / mol
+    # kg tritium per MWh = 3 / 1000 * (3600 * 1e6 / (14e6 * 1.6e-19)) / 6.022e23
+    # Extra thermal energy from secondary reactions in the blanket ~ 15%
+    # Adjusted kg tritium per MWh = 3 / 1000 * (3600 * 1e6 / (14e6 * 1.6e-19)) / 6.022e23 / 1.15 = 6.96295e-6
+    # We require the same number of mols of deuterium, but that equals 2/3 the mass
+
+    TRIT_FUEL_RATIO = 3. / 1000. * (3600. * 1e6 / (14e6 * 1.6e-19)) / 6.022e23 ./ dfFusion[!,:Blanket_Power_Mult]
+    DEU_FUEL_RATIO = TRIT_FUEL_RATIO .* (2. / 3.)
+
     ## Hourly tritium decay rate [/ hr]
     TRIT_DECAY = 0.00000642259
 
-    ## Fuel useage
-    # Energy per fusion = 14e6 * 1.6e-19
-    # Fusions per MWh = 3600 * 1e6 / (14e6 * 1.6e-19)
-    # Avagadro's number = 6.022e23
-    # Mol's per MWh = (3600 * 1e6 / (14e6 * 1.6e-19)) / 6.022e23
-    # Tritium molar mass = 3g / mol
-    # kg tritium per MWh = 3 / 1000 * (3600 * 1e6 / (14e6 * 1.6e-19)) / 6.022e23
-    # Secondary boost = 15%
-    # Adjusted kg tritium per MWh = 3 / 1000 * (3600 * 1e6 / (14e6 * 1.6e-19)) / 6.022e23 / 1.15 = 6.96295e-6
-
-    TRIT_FUEL_RATIO = 3 / 1000 * (3600 * 1e6 / (14e6 * 1.6e-19)) / 6.022e23 / 1.15
-    DEU_FUEL_RATIO = 2 / 1000 * (3600 * 1e6 / (14e6 * 1.6e-19)) / 6.022e23 / 1.15
-
     ## Hourly tritium balance
-    @constraint(EP, [y in FUSION, t=1:T], vtrit_inventory[y,t] == vtrit_inventory[y, cyclicindex(t-1, T)] * (1 - TRIT_DECAY) + TRIT_FUEL_RATIO * (EP[:vThermOutput][y,t] * (dfFusion[y,:Trit_Breed] - dfFusion[y,:Trit_Fuel]) - EP[:num_units][y] * dfFusion[y,:Trit_Loss] - vtrit_exports[y,t]))
+    @constraint(EP, cTrit_balance[y in FUSION, t=1:T], 
+        vtrit_inventory[y,t] 
+        == 
+        + vtrit_inventory[y, cyclicindex(t-1, T)] * (1 - TRIT_DECAY) 
+        + TRIT_FUEL_RATIO[y] * (
+            + EP[:vThermOutput][y,t] * (dfFusion[y,:Trit_Breed] - dfFusion[y,:Trit_Fuel]) 
+            - EP[:num_units][y] * dfFusion[y,:Trit_Loss] 
+            - vtrit_exports[y,t]
+        )
+    )
 
     ##### Deuterium Balance #####
-    @variable(EP, DeuCap[y in FUSION] .>= 0.0)
+    @variable(EP, vDeuCap[y in FUSION] .>= 0.0)
 
     # Deuterium inventory
     @variable(EP, vdeu_inventory[y in FUSION, t=1:T], lower_bound = 0.)
-    @constraint(EP, [y in FUSION,t=1:T], vdeu_inventory[y,t] <= DeuCap[y])
+    @constraint(EP, [y in FUSION,t=1:T], vdeu_inventory[y,t] <= vDeuCap[y])
 
     # Deuterium exports
-    @variable(EP, vdeu_exports[y in FUSION, t=1:T] >= 0.0)
+    @variable(EP, 0. <= vdeu_imports[y in FUSION, t=1:T])
 
     # Deuterium balance
-    @constraint(EP, [y in FUSION, t=1:T], vdeu_inventory[y,t] == vdeu_inventory[y, cyclicindex(t-1, T)] - DEU_FUEL_RATIO * (EP[:vThermOutput][y,t] * dfFusion[y,:Deu_Fuel] + EP[:num_units][y] * dfFusion[y,:Deu_Loss] + vdeu_exports[y,t]))
+    @constraint(EP, cDeu_balance[y in FUSION, t=1:T], 
+        vdeu_inventory[y,t] 
+        == 
+        + vdeu_inventory[y, cyclicindex(t-1, T)] 
+        - DEU_FUEL_RATIO[y] * (
+            + EP[:vThermOutput][y,t] * dfFusion[y,:Deu_Fuel] 
+            + EP[:num_units][y] * dfFusion[y,:Deu_Loss] 
+            - vdeu_imports[y,t])
+        )
 
-    ### Add Tritium and Deuterium Storage Capacity to the Fixed Costs (Dummy Cost of $0.1/kg currently in place)
+    ### Add Tritium and Deuterium Storage Capacity to the Fixed Costs
 
     # First, pull values of cost from dfFusion
     trit_stor_cost = dfFusion[!,:Trit_Stor_Cost]
     deu_stor_cost = dfFusion[!,:Deu_Stor_Cost]
 
     # Then, multiply by the storage capacity and add to the fixed costs
-    EP[:eCFix][FUSION] .+= (TritCap[FUSION].*trit_stor_cost[FUSION].+DeuCap[FUSION].*deu_stor_cost[FUSION])
+    fuel_fixed_costs = vTritCap[FUSION] .* trit_stor_cost[FUSION] .+ vDeuCap[FUSION] .* deu_stor_cost[FUSION]
 
-    @expression(EP, eSumFuelFix, (sum((TritCap[y].*trit_stor_cost[y].+DeuCap[y].*deu_stor_cost[y] for y in FUSION))))
+    for y in FUSION
+        add_to_expression!(EP[:eCFix][y], fuel_fixed_costs[y])
+        add_to_expression!(EP[:eTotalCFix], fuel_fixed_costs[y])
+        add_to_expression!(EP[:eObj], fuel_fixed_costs[y])
+    end
 
-    EP[:eTotalCFix] += eSumFuelFix
+    # # Add to fixed costs for each generators
+    # add_to_expression!.(EP[:eCFix][FUSION], fuel_fixed_costs)
+
+    # @expression(EP, eSumFuelFix, sum(fuel_fixed_costs[y] for y in FUSION))
+
+    # # Add to total fixed costs and objective function
+    # add_to_expression!(EP[:eTotalCFix], eSumFuelFix)
+    # add_to_expression!(EP[:eObj], eSumFuelFix)
 
     # Adding costs for deuterium imports
-    deu_im_cost = dfFusion[!,:Deu_Im_Cost]
-    
-    @expression(EP, edeuexports[y in FUSION], sum(vdeu_exports[y,t] for t in 1:T))
+    deuterium_var_costs = vdeu_imports .* DEU_FUEL_RATIO .* dfFusion[!,:Deu_Import_Cost]
 
-    EP[:eCVar_out][FUSION] .+= deu_im_cost[FUSION] .* (DEU_FUEL_RATIO * edeuexports[FUSION])
-   
-    @expression(EP, eSumDeuVar, sum(deu_im_cost[FUSION] .* (DEU_FUEL_RATIO * edeuexports[FUSION])) / T)
-    
-    EP[:eTotalCVarOut] += eSumDeuVar
+    for t in 1:T
+        for y in FUSION
+            add_to_expression!(EP[:eCVar_out][y,t], deuterium_var_costs[y,t])
+            add_to_expression!(EP[:eTotalCVarOutT][t], deuterium_var_costs[y,t])
+            add_to_expression!(EP[:eTotalCVarOut], deuterium_var_costs[y,t])
+            add_to_expression!(EP[:eObj], deuterium_var_costs[y,t])
+        end
+    end
 
-    # Add both to variable cost
-    EP[:eObj] += eSumFuelFix + eSumDeuVar
+    # # Add to [y,t] variable costs
+    # add_to_expression!.(EP[:eCVar_out][FUSION, :], deuterium_var_costs[FUSION,:])
+
+    # # Add to [t] variable costs
+    # @expression(EP, eSumDeuT[t=1:T], sum(deuterium_var_costs[y,t] for y in FUSION))
+    # for t in 1:T
+    #     add_to_expression!(EP[:eTotalCVarOutT][t], eSumDeuT[t])
+    # end
+
+    # Add to total variable costs and objective function
+    # @expression(EP, eSumDeuTotal, sum(eSumDeuT[t] for t in 1:T))
+    # add_to_expression!(EP[:eTotalCVarOut], eSumDeuTotal)
+    # add_to_expression!(EP[:eObj], eSumDeuTotal)
 end
 
 # This function incorporates the vessel costs
@@ -240,46 +286,72 @@ function fusionvessel(EP::Model, inputs::Dict, setup::Dict)
 
     # Turbine efficiency
     MMBTU_PER_MWH = 3.412
-    con_mWt = MMBTU_PER_MWH./dfGen[!,:Heat_Rate_MMBTU_per_MWh]
+    turb_efficiency = MMBTU_PER_MWH ./ dfGen[!,:Heat_Rate_MMBTU_per_MWh]
+
+    # Effective power of the reactor based on average fusion pulse pattern
+    pulse_ratio = fusionpulseratio.(dfFusion[!,:Pulse_length_min], dfFusion[!,:Pulse_gap_min])
 
     ## Calculate annual plant utilization
     @expression(EP, eThermOutputTot[y in FUSION], sum(EP[:vThermOutput][y,t] for t=1:T))
 
-    ## Calculates the effective thermal capacity of the plant for the year
-    @expression(EP, eECap[y in FUSION], (8760 * dfGen[!,:Cap_Size][y]* (1/con_mWt[y]) * (20. / 21.)))
-
+    ## Calculates the effective thermal power capacity of the plant for the year
+    @expression(EP, eThermCap[y in FUSION], dfGen[!,:Cap_Size][y] * pulse_ratio[y] / turb_efficiency[y])
+    
     ## Calculates Annual Utilization based on thermal output and capacity
-    @expression(EP, eAnnualUtil[y in FUSION], eThermOutputTot[y]/eECap[y])
+    @expression(EP, eAnnualUtil[y in FUSION], eThermOutputTot[y] / eThermCap[y] / T)
 
     ## Constrain annual utilization
-    @constraint(EP, cAnnualUtil[y in FUSION], eAnnualUtil[y] <= ((-vessel_name[y] + sqrt((vessel_name[y])^2 + 4*vessel_name[y]*replace_dur[y])) / (2*replace_dur[y])))
+    @constraint(EP, cAnnualUtil[y in FUSION], eAnnualUtil[y] <= calc_fpp_maxutil(vessel_name[y], replace_dur[y]))
 
     ## Annuitized Plant costs
-    @expression(EP, ePlantAnnual[y in FUSION], (plant_cost[y] * discount[y])/(1 - (1 + discount[y])^(-plant_life[y])))
+    # @expression(EP, ePlantAnnual[y in FUSION], (plant_cost[y] * discount[y])/(1 - (1 + discount[y])^(-plant_life[y])))
 
     ## Calculate Vessel Investment Costs
-    @expression(EP, eC1[y in FUSION], vessel_inv[y] * ((0.5*discount[y] / ((1+discount[y])^(2*vessel_name[y]) - 1)) - ((2*vessel_name[y]*discount[y]*(1 + discount[y])^(2*vessel_name[y]) * log(1+discount[y])) / ((1+discount[y])^(2*vessel_name[y]) -1)^2)))
+    @expression(EP, eC1[y in FUSION], calc_vacvessel_c1(vessel_inv[y], discount[y], vessel_name[y], 0.5))
 
-    @expression(EP, eC2[y in FUSION], vessel_inv[y] * ((4*vessel_name[y]*discount[y]*(1+discount[y])^(2*vessel_name[y]) * log(1+discount[y])) / ((1+discount[y])^(2*vessel_name[y]) - 1)^2))
+    @expression(EP, eC2[y in FUSION], calc_vacvessel_c2(vessel_inv[y], discount[y], vessel_name[y], 0.5))
 
     ## Fixed Vessel Investment Costs
-    @expression(EP, eVesselFix[y in FUSION], (vessel_inv[y]*discount[y])/(1-(1+discount[y])^(-plant_life[y])))
+    @expression(EP, eVesselFix[y in FUSION], vessel_inv[y] * discount[y] / (1 - (1 + discount[y])^(-plant_life[y])))
     
     ## Add Vessel Investment Costs to Fixed/Var Costs
-    EP[:eCFix][FUSION] .+= (eC1[FUSION].+eVesselFix[FUSION]).*EP[:eTotalCap][FUSION]
-    EP[:eCVar_out][FUSION] .+= eC2[FUSION].*eThermOutputTot[FUSION].*(20. / 21.).*(1/8760.).*con_mWt[FUSION]
+    @expression(EP, eVessel_fix_costs[y in FUSION], (eC1[y] + eVesselFix[y]) * EP[:eTotalCap][y])
 
-    ## Sum Vessel Investment and Variable Costs to add to TotalFix and TotalVar
-    @expression(EP, eSumCFix, sum((eC1[y] + eVesselFix[y]) * EP[:eTotalCap][y] for y in FUSION))
+    # add_to_expression!.(EP[:eCFix][FUSION], eVessel_fix_costs[FUSION])
 
-    pulse_ratio = fusionpulseratio.(dfFusion[!,:Pulse_length_min], dfFusion[!,:Pulse_gap_min])
-    @expression(EP, eSumCVar, sum(eC2[y] * eThermOutputTot[y] * con_mWt[y] * pulse_ratio[y] for y in FUSION) / T)
+    # ## Sum Vessel Investment and Variable Costs to add to TotalFix and TotalVar
+    # @expression(EP, eTotal_vessel_fix_costs, sum(eVessel_fix_costs[y] for y in FUSION))
 
-    EP[:eTotalCFix] += eSumCFix
-    EP[:eTotalCVarOut] += eSumCVar
+    # ## Add the values to eObj
+    # add_to_expression!(EP[:eTotalCFix], eTotal_vessel_fix_costs)
+    # add_to_expression!(EP[:eObj], eTotal_vessel_fix_costs)
 
-    ## Add the values to eObj
-    EP[:eObj] += eSumCFix + eSumCVar
+    # Add vacuum vessel costs to [y,t] variable costs
+    # Note that this does not depend on time, so 
+    @expression(EP, eVessel_var_costs[y in FUSION], eC2[y] * eThermOutputTot[y] * turb_efficiency[y] / pulse_ratio[y] / T)
+
+    for y in FUSION
+        add_to_expression!(EP[:eCFix][y], eVessel_fix_costs[y])
+        add_to_expression!(EP[:eTotalCFix], eVessel_fix_costs[y])
+        add_to_expression!(EP[:eObj], eVessel_fix_costs[y])
+
+        add_to_expression!.(EP[:eCVar_out][y,:], eVessel_var_costs[y])
+        add_to_expression!.(EP[:eTotalCVarOutT], eVessel_var_costs[y])
+        add_to_expression!(EP[:eTotalCVarOut], eVessel_var_costs[y])
+        add_to_expression!(EP[:eObj], eVessel_var_costs[y])
+    end
+    # add_to_expression!.(EP[:eCVar_out][FUSION, :], eVessel_var_costs[FUSION])
+
+    # Add to [t] variable costs
+    # @expression(EP, eTotal_vessel_var_costs_T[t=1:T], sum(eVessel_var_costs[y,t] for y in FUSION))
+    # add_to_expression!.(EP[:eTotalCVarOutT], eTotal_vessel_var_costs_T)
+    # @expression(EP, eTotal_vessel_var_costs, sum(eVessel_var_costs[y] for y in FUSION))
+    # add_to_expression!.(EP[:eTotalCVarOutT], eTotal_vessel_var_costs)
+    
+    # # Add to total variable costs and objective function
+    # # @expression(EP, eTotal_vessel_var_costs, sum(eTotal_vessel_var_costs_T[t] for t in 1:T))
+    # add_to_expression!(EP[:eTotalCVarOut], eTotal_vessel_var_costs)
+    # add_to_expression!(EP[:eObj], eTotal_vessel_var_costs)
 end
 
 function fusionthermalstorage(EP::Model, inputs::Dict, setup::Dict)
@@ -297,6 +369,15 @@ function fusionthermalstorage(EP::Model, inputs::Dict, setup::Dict)
 
     ## Thermal storage hourly charge and discharge capacity [MWht]
     @variable(EP, vThermDisCap[y in FUSION], lower_bound = 0.)
+
+    for y in FUSION
+        if dfFusion[y, :Max_Therm_Stor_MWh] > 0
+            set_upper_bound(vThermStorCap[y], dfFusion[y, :Max_Therm_Stor_MWh])
+        end
+        if dfFusion[y, :Max_Therm_Stor_Dis_MWe] > 0
+            set_upper_bound(vThermDisCap[y], dfFusion[y, :Max_Therm_Stor_Dis_MWe])
+        end
+    end 
     
     ## Discharge per hour [MWht]
     @variable(EP, vThermDis[y in FUSION, t=1:T], lower_bound = 0.)
@@ -344,11 +425,72 @@ function fusionpulseratio(pulse_length_min::Float64, pulse_gap_min::Float64)
     return pulse_length_min / (pulse_length_min + pulse_gap_min)
 end
 
+function calc_fpp_maxutil(nom_lifetime::Float64, replace_dur::Float64)
+    return (-nom_lifetime + sqrt(nom_lifetime^2 + 4 * nom_lifetime * replace_dur)) / (2 * replace_dur)
+end
+
+function calc_vacvessel_c1(capex::Float64, discount_rate::Float64, nom_lifetime::Float64, util_guess::Float64)
+    return capex * (
+            (discount_rate / ((1 + discount_rate)^(nom_lifetime / util_guess) - 1) / util_guess) 
+            - (
+                (nom_lifetime * discount_rate * (1 + discount_rate)^(nom_lifetime / util_guess) * log(1 + discount_rate)) 
+                / 
+                ((1 + discount_rate)^(nom_lifetime / util_guess) - 1)^2
+                / 
+                util_guess
+            )
+        )
+end
+
+function calc_vacvessel_c2(capex::Float64, discount_rate::Float64, nom_lifetime::Float64, util_guess::Float64)
+    return capex * (
+            (nom_lifetime * discount_rate * (1 + discount_rate)^(nom_lifetime / util_guess) * log(1 + discount_rate)) 
+            / 
+            ((1 + discount_rate)^(nom_lifetime / util_guess) - 1)^2
+            /
+            util_guess^2
+        )
+end
+
+function updatevariablecosts!(EP::JuMP.Model, terms, active_R_ID::Vector{Int64})
+    # THIS VERSION ONLY WORKS PROPERLY FOR FULL ARRAYS OF TERMS
+
+    # Add time-dependent variable costs for each technology
+    add_to_expression!.(EP[:eCVar_out][active_R_ID, :], terms[active_R_ID,:])
+
+    var_across_tech = sum(terms[active_R_ID,:], dims=1)
+    # Add time-dependent variable costs across all technologies
+    add_to_expression!.(EP[:eTotalCVarOutT], var_across_tech)
+
+    total_var = sum(var_across_tech)
+    # Variable costs across all technologies
+    add_to_expression!(EP[:eTotalCVarOut], total_var)
+
+    # Add total variable costs to the objective function
+    add_to_expression!(EP[:eObj], total_var)
+end
+
 ## This function is the overall function for fusion power 
 function fusion!(EP::Model, inputs::Dict, setup::Dict)
+    println("Fusion Power Module")
+
     fusionthermalpower(EP,inputs,setup)
-    fusionthermalstorage(EP,inputs,setup)
+    println("-- Fusion thermal power done")
+
+    dfFusion = inputs["dfFusion"]
+    if any(dfFusion[!,:Add_Therm_Stor].>0)
+        fusionthermalstorage(EP,inputs,setup)
+        println("-- Fusion thermal storage done")
+    end
+
     fusiongridpower(EP,inputs,setup)
-    fusionfuel(EP,inputs,setup)
-    fusionvessel(EP,inputs,setup)
+    println("-- Fusion grid power done")
+
+    fusionfuel(EP,inputs,setup) 
+    println("-- Fusion fuel done")
+
+    if any(dfFusion[!,:VV_Util_Deg].>0)
+        fusionvessel(EP,inputs,setup)
+        println("-- Fusion vessel costs done")
+    end
 end     
