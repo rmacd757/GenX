@@ -15,34 +15,52 @@ received this license file.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 function write_fusion(path::AbstractString, inputs::Dict, setup::Dict, EP::Model)
-    dfFusion = inputs["dfFusion"]
+    # dfFusion = inputs["dfFusion"]
     FUSION = inputs["FUSION"]
-
     T = inputs["T"]     # Number of time steps (hours)
 
-    d = OrderedDict{String, Any}(
-        "Imports" => vec(value.(EP[:vfusionimports][FUSION,1:T])),
-        "Net Electric" => vec(value.(EP[:eFusionNetElec][FUSION,1:T])),
-        "Gross Electric" => vec(value.(EP[:eTurbElec][FUSION,1:T])),
-        "Recirc Power" => vec(value.(EP[:eRecircpwr][FUSION,1:T])),
-        "Salt Heating" => vec(value.(EP[:vsaltpwr][FUSION,1:T])),
-        "Fixed plant power" => vec(value.(EP[:eplantfix][FUSION,1:T])),
-        "Var plant power" => vec(value.(EP[:eplantvar][FUSION,1:T])),
-        "Reactor Thermal power" => vec(value.(EP[:vThermOutput][FUSION,1:T])),
-        "Turbine Thermal input" => vec(value.(EP[:eTurbThermal][FUSION,1:T])),
-        "Tritium inventory" => vec(value.(EP[:vtrit_inventory][FUSION,1:T])),
-        "Tritium exports" => vec(value.(EP[:vtrit_exports][FUSION,1:T])),
-        "Deuterium inventory" => vec(value.(EP[:vdeu_inventory][FUSION,1:T])),
-        "Deuterium imports" => vec(value.(EP[:vdeu_imports][FUSION,1:T])),
-        "Commitment State" => vec(value.(EP[:eFusionCommit][FUSION,1:T]))
-        # "Storage Inventory" => vec(value.(EP[:vThermStor][FUSION,1:T])),
-        # "Charge per Hour" => vec(value.(EP[:vThermChar][FUSION,1:T])),
-        # "Discharge per Hour" => vec(value.(EP[:vThermDis][FUSION,1:T])),
-        # "Net charge rate" => vec(value.(EP[:eThermStorNetDischarge][FUSION,1:T]))
-    )
+    # Make ~/fusion directory if it doesn't exist
+    fusion_results_path = joinpath(path, "fusion")
+    if !isdir(fusion_results_path)
+        mkpath(fusion_results_path)
+    end
 
-    fusion_df = DataFrame(d)    
-    CSV.write(joinpath(path, "fusion_time.csv"), fusion_df)
+    for y in FUSION
+        result_filename = string("fusion_time_", y, ".csv")
+        fusion_timeseries = OrderedDict{String, Any}(
+            "Imports" => :vfusionimports,
+            "Net Electric" => :eFusionNetElec,
+            "Gross Electric" => :eTurbElec,
+            "Recirc Power" => :eRecircpwr,
+            "Salt Heating" => :vsaltpwr,
+            "Fixed plant power" => :eplantfix,
+            "Var plant power" => :eplantvar,
+            "Reactor Thermal power" => :vThermOutput,
+            "Turbine Thermal input" => :eTurbThermal,
+            "Tritium inventory" => :vtrit_inventory,
+            "Tritium exports" => :vtrit_exports,
+            "Deuterium inventory" => :vdeu_inventory,
+            "Deuterium imports" => :vdeu_imports,
+            "Commitment State" => :eFusionCommit,
+            "Storage Inventory" => :vThermStor,
+            "Charge per Hour" => :vThermChar,
+            "Discharge per Hour" => :vThermDis,
+            "Net charge rate" => :eThermStorNetDischarge
+        )
+        for (name, model_key) in fusion_timeseries
+            if haskey(EP, model_key)
+                fusion_timeseries[name] = get_fusion_data_vector(EP, model_key, y, T)
+            else
+                fusion_timeseries[name] = zeros(T)
+            end
+        end
+        fusion_df = DataFrame(fusion_timeseries)    
+        CSV.write(joinpath(fusion_results_path, result_filename), fusion_df)
+    end
+end
+
+function get_fusion_data_vector(EP::JuMP.Model, model_key::Symbol, R_ID::Int64, maxtime::Int64, mintime::Int64=1)
+    return vec(value.(EP[model_key][[R_ID], mintime:maxtime]))
 end
 
 function write_fusion_var(path::AbstractString, inputs::Dict, setup::Dict, EP::Model)
