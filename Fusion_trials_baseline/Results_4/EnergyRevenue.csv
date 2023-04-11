@@ -1,0 +1,8 @@
+Region,Resource,Zone,Cluster,AnnualSum
+NE,natural_gas_ccs,1,1,4.362332831186421e9
+NE,solar_pv,1,1,1.1410192909198923e9
+NE,onshore_wind,1,1,3.1082148096529346e9
+NE,battery,1,0,8.936581958959041e8
+NE,offshore_wind,1,1,0.0011124240940453291
+NE,natural_gas,1,1,2.918850039530536e8
+NE,nuclear,1,1,0.0
