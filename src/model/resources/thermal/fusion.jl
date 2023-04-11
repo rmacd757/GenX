@@ -241,7 +241,7 @@ function fusionfuel(EP::Model, inputs::Dict, setup::Dict)
     for t in 1:T
         for y in FUSION
             add_to_expression!(EP[:eCVar_out][y,t], deuterium_var_costs[y,t])
-            add_to_expression!(EP[:eTotalCVarOutT][t], deuterium_var_costs[y,t])
+            # add_to_expression!(EP[:eTotalCVarOutT][t], deuterium_var_costs[y,t])
             add_to_expression!(EP[:eTotalCVarOut], deuterium_var_costs[y,t])
             add_to_expression!(EP[:eObj], deuterium_var_costs[y,t])
         end
@@ -336,7 +336,7 @@ function fusionvessel(EP::Model, inputs::Dict, setup::Dict)
         add_to_expression!(EP[:eObj], eVessel_fix_costs[y])
 
         add_to_expression!.(EP[:eCVar_out][y,:], eVessel_var_costs[y])
-        add_to_expression!.(EP[:eTotalCVarOutT], eVessel_var_costs[y])
+        # add_to_expression!.(EP[:eTotalCVarOutT], eVessel_var_costs[y])
         add_to_expression!(EP[:eTotalCVarOut], eVessel_var_costs[y])
         add_to_expression!(EP[:eObj], eVessel_var_costs[y])
     end
@@ -467,7 +467,7 @@ function updatevariablecosts!(EP::JuMP.Model, terms, active_R_ID::Vector{Int64})
 
     var_across_tech = sum(terms[active_R_ID,:], dims=1)
     # Add time-dependent variable costs across all technologies
-    add_to_expression!.(EP[:eTotalCVarOutT], var_across_tech)
+    # add_to_expression!.(EP[:eTotalCVarOutT], var_across_tech)
 
     total_var = sum(var_across_tech)
     # Variable costs across all technologies
