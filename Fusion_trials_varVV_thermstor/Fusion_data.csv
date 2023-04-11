@@ -1,0 +1,9 @@
+Resource,Zone,THERM,FUSION,VV_Util_Deg,Add_Therm_Stor,Max_Therm_Stor_MWh,Max_Therm_Stor_Dis_MWe,Blanket_Power_Mult,Stor_Cost_per_MWht,Dis_Cost_per_MWht,Pulse_length_min,Pulse_gap_min,Mag_Cool,Plant_fixed_power_MWe,Plant_var_power_MWeperMWt,Salt_Loss,Salt_Eff,Trit_Fuel,Trit_Breed,Trit_Loss,Deu_Fuel,Deu_Loss,Plant_Life,Vessel_Life,Rep_Dur,Dis_Rate,Inv_Vessel_per_MWe,Turb_Cap_Cost,Trit_Stor_Cost,Deu_Stor_Cost,Deu_Import_Cost
+natural_gas_ccs,1,1,0,0,0,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+solar_pv,1,1,0,0,0,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+onshore_wind,1,1,0,0,0,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+battery,1,1,0,0,0,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+offshore_wind,1,1,0,0,0,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+natural_gas,1,1,0,0,0,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+nuclear,1,1,0,0,0,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+fusion,1,1,1,1,0,-1,-1,1.15,10,10,20,1,10,10,0.0833333,0.95,0.95,1,2,0,1,0,40,2,0.25,0.06,100,10,0.1,0.1,500
