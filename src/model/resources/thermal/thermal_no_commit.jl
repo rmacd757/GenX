@@ -109,10 +109,10 @@ function thermal_no_commit!(EP::Model, inputs::Dict, setup::Dict)
 	else
 		@constraints(EP, begin
 			# Minimum stable power generated per technology "y" at hour "t" Min_Power
-			[y in THERM_NO_COMMIT, t=1:T], EP[:vP][y,t] >= dfGen[y,:Min_Power]*EP[:eTotalCap][y]
+			cMin_vP_therm_no_commit[y in THERM_NO_COMMIT, t=1:T], EP[:vP][y,t] >= dfGen[y,:Min_Power]*EP[:eTotalCap][y]
 
 			# Maximum power generated per technology "y" at hour "t"
-			[y in THERM_NO_COMMIT, t=1:T], EP[:vP][y,t] <= inputs["pP_Max"][y,t]*EP[:eTotalCap][y]
+			cMax_vP_therm_no_commit[y in THERM_NO_COMMIT, t=1:T], EP[:vP][y,t] <= inputs["pP_Max"][y,t]*EP[:eTotalCap][y]
 		end)
 
 	end
@@ -193,10 +193,10 @@ function thermal_no_commit_reserves!(EP::Model, inputs::Dict)
 			[y in THERM_NO_COMMIT_REG_RSV, t=1:T], EP[:vRSV][y,t] <= inputs["pP_Max"][y,t]*dfGen[y,:Rsv_Max]*EP[:eTotalCap][y]
 
 			# Minimum stable power generated per technology "y" at hour "t" and contribution to regulation down must be > min power
-			[y in THERM_NO_COMMIT_REG_RSV, t=1:T], EP[:vP][y,t]-EP[:vREG][y,t] >= dfGen[y,:Min_Power]*EP[:eTotalCap][y]
+			cMin_vP_therm_no_commit_reg_rsv[y in THERM_NO_COMMIT_REG_RSV, t=1:T], EP[:vP][y,t]-EP[:vREG][y,t] >= dfGen[y,:Min_Power]*EP[:eTotalCap][y]
 
 			# Maximum power generated per technology "y" at hour "t" and contribution to regulation and reserves must be < max power
-			[y in THERM_NO_COMMIT_REG_RSV, t=1:T], EP[:vP][y,t]+EP[:vREG][y,t]+EP[:vRSV][y,t] <= inputs["pP_Max"][y,t]*EP[:eTotalCap][y]
+			cMax_vP_therm_no_commit_reg_rsv[y in THERM_NO_COMMIT_REG_RSV, t=1:T], EP[:vP][y,t]+EP[:vREG][y,t]+EP[:vRSV][y,t] <= inputs["pP_Max"][y,t]*EP[:eTotalCap][y]
 		end)
 	end
 
@@ -206,10 +206,10 @@ function thermal_no_commit_reserves!(EP::Model, inputs::Dict)
 			[y in THERM_NO_COMMIT_REG, t=1:T], EP[:vREG][y,t] <= inputs["pP_Max"][y,t]*dfGen[y,:Reg_Max]*EP[:eTotalCap][y]
 
 			# Minimum stable power generated per technology "y" at hour "t" and contribution to regulation down must be > min power
-			[y in THERM_NO_COMMIT_REG, t=1:T], EP[:vP][y,t]-EP[:vREG][y,t] >= dfGen[y,:Min_Power]*EP[:eTotalCap][y]
+			cMin_vP_therm_no_commit_reg[y in THERM_NO_COMMIT_REG, t=1:T], EP[:vP][y,t]-EP[:vREG][y,t] >= dfGen[y,:Min_Power]*EP[:eTotalCap][y]
 
 			# Maximum power generated per technology "y" at hour "t" and contribution to regulation and reserves must be < max power
-			[y in THERM_NO_COMMIT_REG, t=1:T], EP[:vP][y,t]+EP[:vREG][y,t] <= inputs["pP_Max"][y,t]*EP[:eTotalCap][y]
+			cMax_vP_therm_no_commit_reg[y in THERM_NO_COMMIT_REG, t=1:T], EP[:vP][y,t]+EP[:vREG][y,t] <= inputs["pP_Max"][y,t]*EP[:eTotalCap][y]
 		end)
 	end
 
@@ -219,20 +219,20 @@ function thermal_no_commit_reserves!(EP::Model, inputs::Dict)
 			[y in THERM_NO_COMMIT_RSV, t=1:T], EP[:vRSV][y,t] <= inputs["pP_Max"][y,t]*dfGen[y,:Rsv_Max]*EP[:eTotalCap][y]
 
 			# Minimum stable power generated per technology "y" at hour "t" and contribution to regulation down must be > min power
-			[y in THERM_NO_COMMIT_RSV, t=1:T], EP[:vP][y,t] >= dfGen[y,:Min_Power]*EP[:eTotalCap][y]
+			cMin_vP_therm_no_commit_rsv[y in THERM_NO_COMMIT_RSV, t=1:T], EP[:vP][y,t] >= dfGen[y,:Min_Power]*EP[:eTotalCap][y]
 
 			# Maximum power generated per technology "y" at hour "t" and contribution to regulation and reserves must be < max power
-			[y in THERM_NO_COMMIT_RSV, t=1:T], EP[:vP][y,t]+EP[:vRSV][y,t] <= inputs["pP_Max"][y,t]*EP[:eTotalCap][y]
+			cMax_vP_therm_no_commit_rsv[y in THERM_NO_COMMIT_RSV, t=1:T], EP[:vP][y,t]+EP[:vRSV][y,t] <= inputs["pP_Max"][y,t]*EP[:eTotalCap][y]
 		end)
 	end
 
 	if !isempty(THERM_NO_COMMIT_NO_RES)
 		@constraints(EP, begin
 			# Minimum stable power generated per technology "y" at hour "t" Min_Power
-			[y in THERM_NO_COMMIT_NO_RES, t=1:T], EP[:vP][y,t] >= dfGen[y,:Min_Power]*EP[:eTotalCap][y]
+			cMin_vP_therm_no_commit_no_rsv[y in THERM_NO_COMMIT_NO_RES, t=1:T], EP[:vP][y,t] >= dfGen[y,:Min_Power]*EP[:eTotalCap][y]
 
 			# Maximum power generated per technology "y" at hour "t"
-			[y in THERM_NO_COMMIT_NO_RES, t=1:T], EP[:vP][y,t] <= inputs["pP_Max"][y,t]*EP[:eTotalCap][y]
+			cMax_vP_therm_no_commit_no_rsv[y in THERM_NO_COMMIT_NO_RES, t=1:T], EP[:vP][y,t] <= inputs["pP_Max"][y,t]*EP[:eTotalCap][y]
 		end)
 	end
 

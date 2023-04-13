@@ -34,10 +34,6 @@ function thermal!(EP::Model, inputs::Dict, setup::Dict)
 
 	
 	# Model constraints, variables, expression related to fusion power technologies
-	if !isempty(FUSION)
-		fusion!(EP, inputs, setup)
-	end
-
 	if !isempty(THERM_COMMIT)
 		thermal_commit!(EP, inputs, setup)
 	end
@@ -45,6 +41,11 @@ function thermal!(EP::Model, inputs::Dict, setup::Dict)
 	if !isempty(THERM_NO_COMMIT)
 		thermal_no_commit!(EP, inputs, setup)
 	end
+
+	if !isempty(FUSION)
+		fusion!(EP, inputs, setup)
+	end
+	
 	##CO2 Polcy Module Thermal Generation by zone
 	@expression(EP, eGenerationByThermAll[z=1:Z, t=1:T], # the unit is GW
 		sum(EP[:vP][y,t] for y in intersect(inputs["THERM_ALL"], dfGen[dfGen[!,:Zone].==z,:R_ID]))

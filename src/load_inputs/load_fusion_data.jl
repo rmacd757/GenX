@@ -22,7 +22,8 @@ function load_fusion_data!(setup::Dict, path::AbstractString, inputs_ffuel::Dict
 		:Zone,
 		:THERM,
 		:FUSION,
-		:Add_Therm_Stor
+		:Add_Therm_Stor,
+		:Var_Turb_Cap
 	])
 
     filename = "Fusion_data.csv"
