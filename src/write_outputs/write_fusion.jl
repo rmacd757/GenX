@@ -71,34 +71,10 @@ function get_fusion_fleet_data(EP::JuMP.Model, model_key::Symbol, R_ID::Int64)
     return value(EP[model_key][R_ID])
 end
 
-function get_fusion_fleet_data(EP::JuMP.Model, model_key::Symbol, R_ID::Int64)
-    return value(EP[model_key][R_ID])
-end
-
 function write_fusion_var(path::AbstractString, inputs::Dict, setup::Dict, EP::Model)
     dfFusion = inputs["dfFusion"]
     FUSION = inputs["FUSION"]
     dfGen = inputs["dfGen"]
-
-
-    for y in FUSION
-        file_name = string("fusion_var_", y, ".csv")
-
-        fusion_variables = OrderedDict{String, Any}(
-            "Num_Units" => :num_units,
-            "Tritium Cap" => :vTritCap,
-            "Deuterium Cap" => :vDeuCap,
-        )
-        for (name, model_key) in fusion_variables
-            if haskey(EP, model_key)
-                fusion_variables[name] = get_fusion_fleet_data(EP, model_key, y)
-            else
-                fusion_variables[name] = zeros(1)
-            end
-        end
-        fusion_var_df = DataFrame(fusion_variables)    
-        CSV.write(joinpath(fusion_results_path, file_name), fusion_var_df)
-    end
 
     for y in FUSION
         file_name = string("fusion_var_", y, ".csv")
