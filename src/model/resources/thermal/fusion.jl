@@ -369,6 +369,20 @@ function fusionvessel(EP::Model, inputs::Dict, setup::Dict)
     end
 end
 
+# function testfun(model_exp::Vector{AffExpr}, term::JuMP.Containers.DenseAxisArray{AffExpr, 1, Tuple{Vector{Int64}}, Tuple{JuMP.Containers._AxisLookup{Dict{Int64, Int64}}}}, FUSION::Vector{Int64})
+#     for y in FUSION
+#         add_to_expression!(model_exp[y], term[y])
+#     end
+# end
+
+# function a_testfun(model_exp::Vector{AffExpr}, Y_ZONE::Vector{Int64})
+#     totalCVar = 0.0::Float64
+#     for y in Y_ZONE
+#         totalCVar += value(model_exp[y])
+#     end
+#     return totalCVar
+# end
+
 function fusionthermalstorage(EP::Model, inputs::Dict, setup::Dict)
     T = inputs["T"]     # Number of time steps (hours)
 
