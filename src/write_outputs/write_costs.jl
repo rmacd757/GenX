@@ -66,9 +66,29 @@ function write_costs(path::AbstractString, inputs::Dict, setup::Dict, EP::Model)
 		FLEX_ZONE = intersect(inputs["FLEX"], Y_ZONE)
 		COMMIT_ZONE = intersect(inputs["COMMIT"], Y_ZONE)
 
+
+		# function fun(model_data::Vector{AffExpr}, Y_ZONE::Vector{Int64}, tempCFix::Float64, tempCTotal::Float64)
+		# 	@inbounds for y in Y_ZONE
+		# 		v = value(model_data[y])::Float64
+		# 		tempCFix += v
+		# 		tempCTotal += v
+		# 	end
+		# 	return tempCFix, tempCTotal
+		# end
+
 		eCFix = sum(value.(EP[:eCFix][Y_ZONE]))
 		tempCFix += eCFix
 		tempCTotal += eCFix
+
+		# function fun(model_data::Matrix{AffExpr},Y_ZONE::Vector{Int64})
+		# 	tempCTotal::Float64 = 0.0
+		# 	@inbounds for t=1:8760
+		# 		for y in Y_ZONE
+		# 			@fastmath tempCTotal += value(model_data[y,t])::Float64
+		# 		end
+		# 	end
+		# 	return tempCTotal
+		# end
 
 		tempCVar = sum(value.(EP[:eCVar_out][Y_ZONE,:]))
 		tempCTotal += tempCVar
