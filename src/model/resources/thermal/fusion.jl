@@ -114,6 +114,15 @@ function fusiongridpower(EP::Model, inputs::Dict, setup::Dict)
     ## Turbine gross electric power capacity
     @variable(EP, 0 <= vTurbElecCap[y in FUSION])
 
+    for y in FUSION
+        if dfFusion[y, :Turb_Min_Ratio] > 0
+            @constraint(EP, vTurbElecCap[y] >= EP[:eTotalCap][y] * dfFusion[y, :Turb_Min_Ratio])
+        end
+        if dfFusion[y, :Turb_Max_Ratio] > 0
+            @constraint(EP, vTurbElecCap[y] <= EP[:eTotalCap][y] * dfFusion[y, :Turb_Max_Ratio])
+        end
+    end 
+
     ## Commitment state of the turbine
     @variable(EP, 0 <= vTurbCommit[y in FUSION,t=1:T])
     if setup["UCommit"] == 1
@@ -377,11 +386,20 @@ function fusionthermalstorage(EP::Model, inputs::Dict, setup::Dict)
     @variable(EP, vThermDisCap[y in FUSION], lower_bound = 0.)
 
     for y in FUSION
+        # Constrain the thermal storage energy capacity
         if dfFusion[y, :Max_Therm_Stor_MWh] > 0
             set_upper_bound(vThermStorCap[y], dfFusion[y, :Max_Therm_Stor_MWh])
         end
+        # Constrain the thermal storage discharge capacity
         if dfFusion[y, :Max_Therm_Stor_Dis_MWe] > 0
             set_upper_bound(vThermDisCap[y], dfFusion[y, :Max_Therm_Stor_Dis_MWe])
+        end
+        # Constrain the ratio of thermal storage energy capacity to discharge capacity
+        if dfFusion[y, :Min_Therm_Dur] > 0
+            @constraint(EP, vThermStorCap[y] >= vThermDisCap[y] * dfFusion[y, :Min_Therm_Dur])
+        end
+        if dfFusion[y, :Max_Therm_Dur] > 0
+            @constraint(EP, vThermStorCap[y] <= vThermDisCap[y] * dfFusion[y, :Max_Therm_Dur])
         end
     end 
     
