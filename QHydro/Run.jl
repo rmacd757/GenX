@@ -53,10 +53,16 @@ set_optimizer_attribute(OPTIMIZER, "BarHomogeneous", 1)
 println("Loading Inputs")
 myinputs = load_inputs(mysetup, case)
 
+dfGen = myinputs["dfGen"]
+
 println("Generating the Optimization Model")
 EP = generate_model(mysetup, myinputs, OPTIMIZER)
 
-@constraint(EP, EP[:eTotalCap][end] >= 300.)
+# @constraint(EP, EP[:eTotalCap][end] >= 300.)
+# HYDRO_RES = inputs["HYDRO_RES"]
+# @constraint(EP, EP[:vS_HYDRO][:, 2879] == 0.55 * (dfGen[end,:Existing_Cap_MWh]))
+# @constraint(EP, EP[:vS_HYDRO][:, end] == 0.70 * (dfGen[end,:Existing_Cap_MWh]))
+
 
 println("Solving Model")
 EP, solve_time = solve_model(EP, mysetup)
