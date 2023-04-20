@@ -72,27 +72,38 @@ function get_fusion_fleet_data(EP::JuMP.Model, model_key::Symbol, R_ID::Int64)
 end
 
 function write_fusion_var(path::AbstractString, inputs::Dict, setup::Dict, EP::Model)
-    dfFusion = inputs["dfFusion"]
+    # dfFusion = inputs["dfFusion"]
     FUSION = inputs["FUSION"]
-    dfGen = inputs["dfGen"]
+    # dfGen = inputs["dfGen"]
+
+    fusion_results_path = joinpath(path, "fusion")
+    if !isdir(fusion_results_path)
+        mkpath(fusion_results_path)
+    end
+
+    fusion_var_names = OrderedDict{String, Any}(
+        "Num_Units" => :num_units,
+        "Reactor Gross Cap" => :eTotalCap,
+        "Turbine Cap" => :vTurbElecCap,
+        "Tritium Cap" => :vTritCap,
+        "Deuterium Cap" => :vDeuCap,
+        "Thermal Storage Cap" => :vThermStorCap,
+        "Thermal Discharge Cap" => :vThermDisCap
+    )
+
+    fusion_variables = OrderedDict{String, Vector{Float64}}()
+    for (name, _) in fusion_var_names
+        fusion_variables[name] = []
+    end
+
+    file_name = string("fusion_var.csv")
 
     for y in FUSION
-        file_name = string("fusion_var_", y, ".csv")
-
-        fusion_variables = OrderedDict{String, Any}(
-            "Num_Units" => :num_units,
-            "Reactor Gross Cap" => :eTotalCap,
-            "Turbine Cap" => :vTurbElecCap,
-            "Tritium Cap" => :vTritCap,
-            "Deuterium Cap" => :vDeuCap,
-            "Thermal Storage Cap" => :vThermStorCap,
-            "Thermal Discharge Cap" => :vThermDisCap
-        )
-        for (name, model_key) in fusion_variables
+        for (name, model_key) in fusion_var_names
             if haskey(EP, model_key)
-                fusion_variables[name] = get_fusion_fleet_data(EP, model_key, y)
+                append!(fusion_variables[name], get_fusion_fleet_data(EP, model_key, y))
             else
-                fusion_variables[name] = zeros(1)
+                append!(fusion_variables[name], 0.0)
             end
         end
         fusion_var_df = DataFrame(fusion_variables)    
