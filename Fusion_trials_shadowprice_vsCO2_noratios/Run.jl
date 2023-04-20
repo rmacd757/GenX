@@ -44,50 +44,14 @@ if mysetup["TimeDomainReduction"] == 1
     end
 end
 
-function write_fusion_var(path::AbstractString, inputs::Dict, setup::Dict, EP::Model)
-    dfFusion = inputs["dfFusion"]
-    FUSION = inputs["FUSION"]
-    dfGen = inputs["dfGen"]
-
-    numunitf = zeros(size(inputs["dfGen"]))
-    reactorcap = zeros(size(inputs["dfGen"]))
-    turbcap = zeros(size(inputs["dfGen"]))
-    tritcap = zeros(size(inputs["dfGen"]))
-    deucap = zeros(size(inputs["dfGen"]))
-    fthermstorcap = zeros(size(inputs["dfGen"]))
-    fthermdiscap = zeros(size(inputs["dfGen"]))
-    
-    for i in FUSION
-        numunitf[i] = value(EP[:num_units][i])
-        reactorcap[i] = value(EP[:eTotalCap][i])
-        turbcap[i] = value(EP[:vTurbElecCap][i])
-        tritcap[i] = value(EP[:vTritCap][i])
-        deucap[i] = value(EP[:vDeuCap][i])  
-        if any(dfFusion[!,:Add_Therm_Stor].>0)
-            fthermstorcap[i] = value(EP[:vThermStorCap][i])
-            fthermdiscap[i] = value(EP[:vThermDisCap][i])
-        else
-            fthermstorcap[i] = 0
-            fthermdiscap[i] = 0
-        end
-    end
-
+function write_fusion_duals(path::AbstractString, inputs::Dict, setup::Dict, EP::Model)
     f_var = DataFrame(
-        Fusion_tech = inputs["FUSION"],
-        Num_Units = numunitf[FUSION],
-        Reactor_Gross_Cap = reactorcap[FUSION],
-        Turbine_Cap = turbcap[FUSION],
-        Trit_Cap = tritcap[FUSION],
-        Deu_Cap = deucap[FUSION],
-        Therm_Stor_Cap = fthermstorcap[FUSION],
-        Therm_Dis_Cap = fthermdiscap[FUSION],
         Gross_Cap_Dual = -dual(EP[:fusiongrosseleccap]),
         # Turbine_Dual = dual(EP[:fusionturbeleccap]),
         # Stor_Dual = dual(EP[:fusionthermalstorcap]),
         # Stor_Dis_Dual = dual(EP[:fusionthermaldiscap])
     )
-
-    CSV.write(joinpath(path, "fusion_var.csv"), f_var)
+    CSV.write(joinpath(path, "fusion_duals.csv"), f_var)
 end
 
 ### Configure solver
@@ -156,7 +120,7 @@ for therm_stor in therm_stor_list
                     # println(dual(EP[:fusionthermalstorcap]))
                     # println(dual(EP[:fusionthermaldiscap]))
 
-                    write_fusion_var(outputs_path,myinputs,mysetup,EP)
+                    write_fusion_duals(outputs_path,myinputs,mysetup,EP)
                     # write_fusion(outputs_path,myinputs,mysetup,EP)
 
                 end
