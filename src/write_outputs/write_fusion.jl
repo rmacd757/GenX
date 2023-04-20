@@ -45,11 +45,11 @@ function write_fusion(path::AbstractString, inputs::Dict, setup::Dict, EP::Model
             "Storage Inventory" => :vThermStor,
             "Charge per Hour" => :vThermChar,
             "Discharge per Hour" => :vThermDis,
-            "Net charge rate" => :eThermStorNetDischarge
+            "Net discharge rate" => :eThermStorNetDischarge
         )
         for (name, model_key) in fusion_timeseries
             if haskey(EP, model_key)
-                fusion_timeseries[name] = get_fusion_data_vector(EP, model_key, y, T)
+                fusion_timeseries[name] = get_fusion_data_vector(EP[model_key], y, T)
             else
                 fusion_timeseries[name] = zeros(T)
             end
@@ -59,8 +59,12 @@ function write_fusion(path::AbstractString, inputs::Dict, setup::Dict, EP::Model
     end
 end
 
-function get_fusion_data_vector(EP::JuMP.Model, model_key::Symbol, R_ID::Int64, maxtime::Int64, mintime::Int64=1)
-    return vec(value.(EP[model_key][[R_ID], mintime:maxtime]))
+function get_fusion_data_vector(model_data::JuMP.Containers.DenseAxisArray{AffExpr, 2, Tuple{Vector{Int64}, Base.OneTo{Int64}}, Tuple{JuMP.Containers._AxisLookup{Dict{Int64, Int64}}, JuMP.Containers._AxisLookup{Base.OneTo{Int64}}}}, R_ID::Int64, maxtime::Int64, mintime::Int64=1)
+    return value.(model_data[R_ID, mintime:maxtime]).data
+end
+
+function get_fusion_data_vector(model_data::JuMP.Containers.DenseAxisArray{VariableRef, 2, Tuple{Vector{Int64}, Base.OneTo{Int64}}, Tuple{JuMP.Containers._AxisLookup{Dict{Int64, Int64}}, JuMP.Containers._AxisLookup{Base.OneTo{Int64}}}}, R_ID::Int64, maxtime::Int64, mintime::Int64=1)
+    return value.(model_data[R_ID, mintime:maxtime]).data
 end
 
 function write_fusion_var(path::AbstractString, inputs::Dict, setup::Dict, EP::Model)
@@ -68,8 +72,9 @@ function write_fusion_var(path::AbstractString, inputs::Dict, setup::Dict, EP::M
     FUSION = inputs["FUSION"]
     dfGen = inputs["dfGen"]
 
-
     numunitf = zeros(size(inputs["dfGen"]))
+    reactorcap = zeros(size(inputs["dfGen"]))
+    turbcap = zeros(size(inputs["dfGen"]))
     tritcap = zeros(size(inputs["dfGen"]))
     deucap = zeros(size(inputs["dfGen"]))
     fthermstorcap = zeros(size(inputs["dfGen"]))
@@ -77,22 +82,29 @@ function write_fusion_var(path::AbstractString, inputs::Dict, setup::Dict, EP::M
     
     for i in FUSION
         numunitf[i] = value(EP[:num_units][i])
+        reactorcap[i] = value(EP[:eTotalCap][i])
+        turbcap[i] = value(EP[:vTurbElecCap][i])
         tritcap[i] = value(EP[:vTritCap][i])
-        deucap[i] = value(EP[:vDeuCap][i])            
-        # fthermstorcap[i] = value(EP[:vThermStorCap][i])
-        # fthermdiscap[i] = value(EP[:vThermDisCap][i])
+        deucap[i] = value(EP[:vDeuCap][i])  
+        if any(dfFusion[!,:Add_Therm_Stor].>0)
+            fthermstorcap[i] = value(EP[:vThermStorCap][i])
+            fthermdiscap[i] = value(EP[:vThermDisCap][i])
+        else
+            fthermstorcap[i] = 0
+            fthermdiscap[i] = 0
+        end
     end
 
     f_var = DataFrame(
         Fusion_tech = inputs["FUSION"],
         Num_Units = numunitf[FUSION],
+        Reactor_Gross_Cap = reactorcap[FUSION],
+        Turbine_Cap = turbcap[FUSION],
         Trit_Cap = tritcap[FUSION],
         Deu_Cap = deucap[FUSION],
-        # Therm_Stor_Cap = fthermstorcap[FUSION],
-        # Therm_Dis_Cap = fthermdiscap[FUSION]
+        Therm_Stor_Cap = fthermstorcap[FUSION],
+        Therm_Dis_Cap = fthermdiscap[FUSION],
     )
 
     CSV.write(joinpath(path, "fusion_var.csv"), f_var)
 end
-
-
