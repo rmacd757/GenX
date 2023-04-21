@@ -84,15 +84,6 @@ function load_generators_data!(setup::Dict, path::AbstractString, inputs_gen::Di
 		inputs_gen["THERM_NO_COMMIT"] = union(gen_in[gen_in.THERM.==1,:R_ID], gen_in[gen_in.THERM.==2,:R_ID])
 	end
 	inputs_gen["THERM_ALL"] = union(inputs_gen["THERM_COMMIT"],inputs_gen["THERM_NO_COMMIT"])
-
-	# Set of fusion resources
-	if ("FUSION" in names(gen_in))
-		inputs_gen["FUSION"] = gen_in[gen_in.FUSION.==1,:R_ID]
-	else
-		inputs_gen["FUSION"] = Int64[]
-	end
-
-	# inputs_gen["FUSION"] = Int64[] 
 	
 	# For now, the only resources eligible for UC are themal resources
 	inputs_gen["COMMIT"] = inputs_gen["THERM_COMMIT"]
@@ -149,6 +140,15 @@ function load_generators_data!(setup::Dict, path::AbstractString, inputs_gen::Di
 		end
 		inputs_gen["RETROFIT_INV_CAP_COSTS"] = [ [ inv_cap[i][y] for i in 1:max_retro_sources if inv_cap[i][y] >= 0 ] for y in 1:G ]  # The set of investment costs (capacity $/MWyr) of each retrofit by source
 	end
+
+	# Set of fusion resources
+	if ("FUSION" in names(gen_in))
+		FUSION = gen_in[gen_in.FUSION.==1,:R_ID]
+	else
+		FUSION = Int64[]
+	end
+	possible_resources = union(inputs_gen["NEW_CAP"],inputs_gen["RET_CAP"])
+	inputs_gen["FUSION"] = intersect(FUSION, possible_resources)
 
 	if setup["ParameterScale"] == 1  # Parameter scaling turned on - adjust values of subset of parameter values
 
