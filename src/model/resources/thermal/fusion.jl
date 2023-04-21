@@ -297,7 +297,7 @@ function fusionfuel(EP::Model, inputs::Dict, setup::Dict)
 
     for t in 1:T
         for y in FUSION
-            update_var_cost!(EP, deuterium_var_costs[y, t], y, t)
+            update_var_cost_t!(EP, deuterium_var_costs[y, t], y, t)
         end
     end
 end
@@ -498,13 +498,13 @@ function update_fixed_cost!(EP::Model, term::Union{AffExpr, Float64}, R_ID::Int6
 end
 
 function update_var_cost!(EP::Model, term::Union{AffExpr, Float64}, R_ID::Int64)
-    add_to_expression!.(EP[:eCVar_out][R_ID,:], term)
+    # add_to_expression!.(EP[:eCVar_out][R_ID,:], term)
     # add_to_expression!.(EP[:eTotalCVarOutT], term)
     add_to_expression!(EP[:eTotalCVarOut], term)
     add_to_expression!(EP[:eObj], term)
 end
 
-function update_var_cost!(EP::Model, term::Union{AffExpr, Float64}, R_ID::Int64, t::Int64)
+function update_var_cost_t!(EP::Model, term::Union{AffExpr, Float64}, R_ID::Int64, t::Int64)
     add_to_expression!(EP[:eCVar_out][R_ID,t], term)
     # add_to_expression!.(EP[:eTotalCVarOutT], term)
     add_to_expression!(EP[:eTotalCVarOut], term)
