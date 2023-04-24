@@ -147,8 +147,9 @@ function load_generators_data!(setup::Dict, path::AbstractString, inputs_gen::Di
 	else
 		FUSION = Int64[]
 	end
-	possible_resources = union(inputs_gen["NEW_CAP"],inputs_gen["RET_CAP"])
-	inputs_gen["FUSION"] = intersect(FUSION, possible_resources)
+	# possible_resources = union(inputs_gen["NEW_CAP"],inputs_gen["RET_CAP"])
+	# inputs_gen["FUSION"] = intersect(FUSION, possible_resources)
+	inputs_gen["FUSION"] = intersect(FUSION, inputs_gen["NEW_CAP"])
 
 	if setup["ParameterScale"] == 1  # Parameter scaling turned on - adjust values of subset of parameter values
 

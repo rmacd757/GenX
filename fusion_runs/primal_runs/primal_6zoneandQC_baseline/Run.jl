@@ -44,12 +44,13 @@ EP = generate_model(mysetup, myinputs, OPTIMIZER)
 
 #### Add any additional constraints
 HYDRO_RES = myinputs["HYDRO_RES"]
+dfGen = myinputs["dfGen"]
 
-## Hydro storage <= 0.55 * Existing Capacity at start of May 1st
-@constraint(EP, EP[:vS_HYDRO][HYDRO_RES, 2879] .== 0.55 .* (dfGen[HYDRO_RES,:Existing_Cap_MWh]))
+## Hydro storage <= 0.55 * Existing Capacity at start of May 1st 
+@constraint(EP, cHydroSpring[y in HYDRO_RES], EP[:vS_HYDRO][y, 2879] .<= 0.55 .* EP[:eTotalCap][y] .* dfGen[y,:Hydro_Energy_to_Power_Ratio]) 
 
 ## Hydro storage == 0.70 * Existing Capacity at the start of the year
-@constraint(EP, EP[:vS_HYDRO][HYDRO_RES, 1] .== 0.70 .* (dfGen[HYDRO_RES,:Existing_Cap_MWh]))
+@constraint(EP, cHydroJan[y in HYDRO_RES], EP[:vS_HYDRO][y, 1]       .== 0.70 .* EP[:eTotalCap][y] .* dfGen[y,:Hydro_Energy_to_Power_Ratio]) 
 
 ## Solve model
 println("Solving Model")
