@@ -49,7 +49,6 @@ function load_inputs(setup::Dict,path::AbstractString)
 	if ~isempty(inputs["FUSION"])
 		load_fusion_data!(setup,path,inputs)
 	end
-	println("LOADED FUSION")
 	# Read in generator/resource availability profiles
 	load_generators_variability!(setup, path, inputs)
 

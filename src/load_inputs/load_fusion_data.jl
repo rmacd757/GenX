@@ -39,4 +39,6 @@ function load_fusion_data!(setup::Dict, path::AbstractString, inputs_ffuel::Dict
 
 	# Store DataFrame of generators/resources input data for use in model
 	inputs_ffuel["dfFusion"] = fusion_in
+
+	println(string(filename," Successfully Read!"))
 end
