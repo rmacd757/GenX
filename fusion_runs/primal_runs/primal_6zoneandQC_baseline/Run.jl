@@ -4,12 +4,17 @@ using OrderedCollections
 using DataFrames
 using CSV
 
+case_name = "primal_6zoneandQC_baseline"
+
+# THIS MUST BE RESET FOR EACH COMPUTER RUNNING THE CODE
+# case_path = dirname(@__FILE__)
+case_path = joinpath("D:\\", "Dropbox", "1_Academics", "Research", "19-Fusion_resilience_ENI", "Fusion Resilience Study - Shared", "7-GenX Optimizations", "primal_runs", case_name)
+
 ## Load helper functions
 include(joinpath(pwd(),"fusion_runs","run_helpers.jl"))
 
 ## Define input and output paths
-inputs_path = joinpath(pwd(),"fusion_runs","data","primal_6zoneandQC_baseline")
-case_path = dirname(@__FILE__)
+inputs_path = joinpath(pwd(),"fusion_runs","data", case_name)
 
 ## Load settings
 genx_settings = get_settings_path(inputs_path, "genx_settings.yml") #Settings YAML file path

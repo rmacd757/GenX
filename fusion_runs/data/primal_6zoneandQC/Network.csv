@@ -1,5 +1,5 @@
 ﻿,Network_zones,Network_Lines,z1,z2,z3,z4,z5,z6,z7,Line_Max_Flow_MW,transmission_path_name,distance_mile,Line_Loss_Percentage,Line_Max_Reinforcement_MW,Line_Reinforcement_Cost_per_MWyr,DerateCapRes_1,CapRes_1,CapRes_Excl_1
-QC,z1,1,1,-1,0,0,0,0,0,2225,QC_to_ME,100,0.012305837,0,12060,0.95,0,0
+QC,z1,1,1,0,0,-1,0,0,0,2225,QC_to_VT,100,0.012305837,0,12060,0.95,0,0
 ME,z2,2,0,1,-1,0,0,0,0,7471.37,ME_to_NH,100,0.012305837,8558.7,12060,0.95,0,0
 NH,z3,3,0,0,1,-1,0,0,0,19422.45,NH_to_VT,100,0.012305837,39545,12060,0.95,0,0
 VT,z4,4,0,0,1,0,-1,0,0,8890.63,NH_to_MA,100,0.012305837,8496.9,12060,0.95,0,0
