@@ -185,7 +185,8 @@ function fusiongridpower(EP::Model, inputs::Dict, setup::Dict)
 
     ## Expression for the amount of net power that is actually going to the grid
     @expression(EP, eFusionNetElec[y in FUSION,t=1:T], eTurbElec[y,t] - eRecircpwr[y,t])
-    @constraint(EP, [y in FUSION,t=1:T], 0.0 <= eFusionNetElec[y,t])
+    # @constraint(EP, [y in FUSION,t=1:T], 0.0 <= eFusionNetElec[y,t])
+    println("Revise package is working")
 
     ## Variable for the amount of power that is being imported by the reactor when it is in standby mode
     @variable(EP, vfusionimports[y in FUSION,t=1:T] >= 0)
