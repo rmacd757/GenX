@@ -60,7 +60,7 @@ for emiss_lim in emiss_lim_list
         continue
     end
 
-    mkpath(outputs_path)
+    mkpath(dirname(outputs_path))
     
     ## Generate model
     println("Generating the Optimization Model")
@@ -80,7 +80,19 @@ for emiss_lim in emiss_lim_list
     ## Maine -> Quebec transmission limited to 2170MWe.
     # The line is defined as Quebec -> Maine in Network.csv, so these flows will be negative
     # Make sure to correc the line index if the order is changed in Network.csv
-    @constraint(EP, cMaine2Quebec[t=1:myinputs["T"]], EP[:vFLOW][1, t] >= -2170.0)
+    @constraint(EP, cMaine2Quebec[t=1:myinputs["T"]], EP[:vFLOW][2, t] >= -170.0)
+
+    ## Solar <= 22GWe
+    solar_rid = findall(x -> startswith(x, "solar"), dfGen[!,:Resource])
+    @constraint(EP, cSolarCap, sum(EP[:eTotalCap][y] for y in solar_rid) <= 22e3)
+
+    ## Onshore wind <= 10GWe
+    onshore_rid = findall(x -> startswith(x, "onshore"), dfGen[!,:Resource])
+    @constraint(EP, cOnshoreCap, sum(EP[:eTotalCap][y] for y in onshore_rid) <= 10e3)
+
+    ## Offshore wind <= 280GWe
+    offshore_rid = findall(x -> startswith(x, "offshore"), dfGen[!,:Resource])
+    @constraint(EP, cOffshoreCap, sum(EP[:eTotalCap][y] for y in offshore_rid) <= 280e3)
     ########################
 
     ## Solve model
