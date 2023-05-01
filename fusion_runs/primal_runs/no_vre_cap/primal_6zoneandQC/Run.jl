@@ -8,7 +8,7 @@ case_name = "primal_6zoneandQC"
 
 # THIS MUST BE RESET FOR EACH COMPUTER RUNNING THE CODE
 # case_path = dirname(@__FILE__)
-case_path = joinpath("D:\\", "Dropbox", "1_Academics", "Research", "19-Fusion_resilience_ENI", "Fusion Resilience Study - Shared", "7-GenX Optimizations", "primal_runs", "revised", case_name)
+case_path = joinpath("D:\\", "Dropbox", "1_Academics", "Research", "19-Fusion_resilience_ENI", "Fusion Resilience Study - Shared", "7-GenX Optimizations", "primal_runs", "no_vre_cap", case_name)
 
 ## Load helper functions
 include(joinpath(pwd(),"fusion_runs","run_helpers.jl"))
@@ -82,17 +82,17 @@ for emiss_lim in emiss_lim_list
     # Make sure to correc the line index if the order is changed in Network.csv
     @constraint(EP, cMaine2Quebec[t=1:myinputs["T"]], EP[:vFLOW][2, t] >= -170.0)
 
-    ## Solar <= 22GWe
-    solar_rid = findall(x -> startswith(x, "solar"), dfGen[!,:Resource])
-    @constraint(EP, cSolarCap, sum(EP[:eTotalCap][y] for y in solar_rid) <= 22e3)
+    # ## Solar <= 22GWe
+    # solar_rid = findall(x -> startswith(x, "solar"), dfGen[!,:Resource])
+    # @constraint(EP, cSolarCap, sum(EP[:eTotalCap][y] for y in solar_rid) <= 22e3)
 
-    ## Onshore wind <= 10GWe
-    onshore_rid = findall(x -> startswith(x, "onshore"), dfGen[!,:Resource])
-    @constraint(EP, cOnshoreCap, sum(EP[:eTotalCap][y] for y in onshore_rid) <= 10e3)
+    # ## Onshore wind <= 10GWe
+    # onshore_rid = findall(x -> startswith(x, "onshore"), dfGen[!,:Resource])
+    # @constraint(EP, cOnshoreCap, sum(EP[:eTotalCap][y] for y in onshore_rid) <= 10e3)
 
-    ## Offshore wind <= 280GWe
-    offshore_rid = findall(x -> startswith(x, "offshore"), dfGen[!,:Resource])
-    @constraint(EP, cOffshoreCap, sum(EP[:eTotalCap][y] for y in offshore_rid) <= 280e3)
+    # ## Offshore wind <= 280GWe
+    # offshore_rid = findall(x -> startswith(x, "offshore"), dfGen[!,:Resource])
+    # @constraint(EP, cOffshoreCap, sum(EP[:eTotalCap][y] for y in offshore_rid) <= 280e3)
 
     ########################
 
