@@ -4,7 +4,7 @@ using OrderedCollections
 using DataFrames
 using CSV
 
-case_name = "primal_6zoneandQC_noEmissLim"
+case_name = "hydrotest_primal_6zoneandQC_noEmissLim"
 
 # THIS MUST BE RESET FOR EACH COMPUTER RUNNING THE CODE
 # case_path = dirname(@__FILE__)
