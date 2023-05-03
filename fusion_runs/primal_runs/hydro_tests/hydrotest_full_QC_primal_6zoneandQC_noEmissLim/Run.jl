@@ -4,7 +4,7 @@ using OrderedCollections
 using DataFrames
 using CSV
 
-case_name = "hydrotest_primal_6zoneandQC_noEmissLim"
+case_name = "hydrotest_full_QC_primal_6zoneandQC_noEmissLim"
 
 # THIS MUST BE RESET FOR EACH COMPUTER RUNNING THE CODE
 # case_path = dirname(@__FILE__)
@@ -69,28 +69,35 @@ EP = generate_model(mysetup, myinputs, OPTIMIZER)
 HYDRO_RES = myinputs["HYDRO_RES"]
 dfGen = myinputs["dfGen"]
 
-# ## Hydro storage <= 0.55 * Existing Capacity at start of May 1st 
-# @constraint(EP, cHydroSpring[y in HYDRO_RES], EP[:vS_HYDRO][y, 2879] .<= 0.55 .* EP[:eTotalCap][y] .* dfGen[y,:Hydro_Energy_to_Power_Ratio]) 
+## Hydro storage <= 0.55 * Existing Capacity at start of May 1st 
+@constraint(EP, cHydroSpring[y in HYDRO_RES], EP[:vS_HYDRO][y, 2879] .<= 0.55 .* EP[:eTotalCap][y] .* dfGen[y,:Hydro_Energy_to_Power_Ratio]) 
 
-# ## Hydro storage == 0.70 * Existing Capacity at the start of the year
-# @constraint(EP, cHydroJan[y in HYDRO_RES], EP[:vS_HYDRO][y, 1]       .== 0.70 .* EP[:eTotalCap][y] .* dfGen[y,:Hydro_Energy_to_Power_Ratio]) 
+## Hydro storage == 0.70 * Existing Capacity at the start of the year
+@constraint(EP, cHydroJan[y in HYDRO_RES], EP[:vS_HYDRO][y, 1]       .== 0.70 .* EP[:eTotalCap][y] .* dfGen[y,:Hydro_Energy_to_Power_Ratio]) 
 
-# ## Maine -> Quebec transmission limited to 2170MWe.
-# # The line is defined as Quebec -> Maine in Network.csv, so these flows will be negative
-# # Make sure to correc the line index if the order is changed in Network.csv
-# @constraint(EP, cMaine2Quebec[t=1:myinputs["T"]], EP[:vFLOW][2, t] >= -170.0)
+## Maine -> Quebec transmission limited to 2170MWe.
+# The line is defined as Quebec -> Maine in Network.csv, so these flows will be negative
+# Make sure to correc the line index if the order is changed in Network.csv
+@constraint(EP, cMaine2Quebec[t=1:myinputs["T"]], EP[:vFLOW][2, t] >= -170.0)
 
-# ## Solar <= 22GWe
-# solar_rid = findall(x -> startswith(x, "solar"), dfGen[!,:Resource])
-# @constraint(EP, cSolarCap, sum(EP[:eTotalCap][y] for y in solar_rid) <= 22e3)
+## Solar <= 22GWe
+solar_rid = findall(x -> startswith(x, "solar"), dfGen[!,:Resource])
+# Remove QC from cap
+popfirst!(solar_rid)
+@constraint(EP, cSolarCap, sum(EP[:eTotalCap][y] for y in solar_rid) <= 22e3)
 
-# ## Onshore wind <= 10GWe
-# onshore_rid = findall(x -> startswith(x, "onshore"), dfGen[!,:Resource])
-# @constraint(EP, cOnshoreCap, sum(EP[:eTotalCap][y] for y in onshore_rid) <= 10e3)
+## Onshore wind <= 10GWe
+onshore_rid = findall(x -> startswith(x, "onshore"), dfGen[!,:Resource])
+# Remove QC from cap
+popfirst!(onshore_rid)
+@constraint(EP, cOnshoreCap, sum(EP[:eTotalCap][y] for y in onshore_rid) <= 10e3)
 
-# ## Offshore wind <= 280GWe
-# offshore_rid = findall(x -> startswith(x, "offshore"), dfGen[!,:Resource])
-# @constraint(EP, cOffshoreCap, sum(EP[:eTotalCap][y] for y in offshore_rid) <= 280e3)
+## Offshore wind <= 280GWe
+offshore_rid = findall(x -> startswith(x, "offshore"), dfGen[!,:Resource])
+# Remove QC from cap
+popfirst!(offshore_rid)
+@constraint(EP, cOffshoreCap, sum(EP[:eTotalCap][y] for y in offshore_rid) <= 280e3)
+
 ########################
 
 ## Solve model
