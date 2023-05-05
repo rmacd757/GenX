@@ -343,9 +343,9 @@ function fusionvessel(EP::Model, inputs::Dict, setup::Dict)
     )
 
     ## Calculate Vessel Investment Costs
-    @expression(EP, eC1[y in FUSION], calc_vacvessel_c1(vessel_inv[y], discount[y], vessel_name[y], 0.5))
+    @expression(EP, eC1[y in FUSION], calc_vacvessel_c1(vessel_inv[y], discount[y], vessel_name[y], 0.5, replace_dur[y]))
 
-    @expression(EP, eC2[y in FUSION], calc_vacvessel_c2(vessel_inv[y], discount[y], vessel_name[y], 0.5))
+    @expression(EP, eC2[y in FUSION], calc_vacvessel_c2(vessel_inv[y], discount[y], vessel_name[y], 0.5, replace_dur[y]))
 
     ## Constrain minimum annual utilization to avoid negative vessel costs
     @constraint(EP, cAnnualUtilMin[y in FUSION], 
@@ -464,31 +464,31 @@ function calc_fpp_maxutil(nom_lifetime::Float64, replace_dur::Float64)
     return (-nom_lifetime + sqrt(nom_lifetime^2 + 4 * nom_lifetime * replace_dur)) / (2 * replace_dur)
 end
 
-function calc_vacvessel_c1(capex::Float64, discount_rate::Float64, nom_lifetime::Float64, util_guess::Float64)
+function calc_vacvessel_c1(capex::Float64, discount_rate::Float64, nom_lifetime::Float64, util_guess::Float64, rep_dur::Float64)
     return capex * (
-            (discount_rate / ((1 + discount_rate)^(nom_lifetime / util_guess) - 1)) 
+            (discount_rate / ((1 + discount_rate)^(nom_lifetime / util_guess + rep_dur) - 1)) 
             - (
                 nom_lifetime * discount_rate / util_guess 
                 * 
-                (1 + discount_rate)^(nom_lifetime / util_guess) 
+                (1 + discount_rate)^(nom_lifetime / util_guess + rep_dur) 
                 * 
                 log(1 + discount_rate)
                 / 
-                ((1 + discount_rate)^(nom_lifetime / util_guess) - 1)^2
+                ((1 + discount_rate)^(nom_lifetime / util_guess + rep_dur) - 1)^2
                 
             )
         )
 end
 
-function calc_vacvessel_c2(capex::Float64, discount_rate::Float64, nom_lifetime::Float64, util_guess::Float64)
+function calc_vacvessel_c2(capex::Float64, discount_rate::Float64, nom_lifetime::Float64, util_guess::Float64, rep_dur::Float64)
     return capex * (
             nom_lifetime * discount_rate 
             * 
-            (1 + discount_rate)^(nom_lifetime / util_guess) 
+            (1 + discount_rate)^(nom_lifetime / util_guess + rep_dur) 
             * 
             log(1 + discount_rate)
             / 
-            ((1 + discount_rate)^(nom_lifetime / util_guess) - 1)^2
+            ((1 + discount_rate)^(nom_lifetime / util_guess + rep_dur) - 1)^2
             /
             util_guess^2
         )

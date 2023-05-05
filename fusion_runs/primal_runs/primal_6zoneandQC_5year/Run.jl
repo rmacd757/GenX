@@ -7,7 +7,7 @@ using CSV
 case_name = "primal_6zoneandQC_5year"
 
 # THIS MUST BE RESET FOR EACH COMPUTER RUNNING THE CODE
-# case_path = dirname(@__FILE__)
+case_path = dirname(@__FILE__)
 case_path = joinpath("D:\\", "Dropbox", "1_Academics", "Research", "19-Fusion_resilience_ENI", "Fusion Resilience Study - Shared", "7-GenX Optimizations", "primal_runs", "corrected_battery", case_name)
 
 ## Load helper functions
