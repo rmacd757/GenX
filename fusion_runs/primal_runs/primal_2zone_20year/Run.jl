@@ -64,7 +64,7 @@ myinputs = load_inputs(mysetup, inputs_path)
 
 # emiss_lim_list = 100.0 .* [2.5, 5, 7.5, 10, 15, 20, 25]
 # emiss_lim_list = 100.0 .* [2.5, 5, 10, 15, 20, 25, 1.0]
-emiss_lim_list = 100.0 .* [2.5, 0.5]
+emiss_lim_list = 100.0 .* [2.5, 0.5,1000000000]
 
 mysetup["CO2Cap"] = 1
 scale_factor = mysetup["ParameterScale"] == 1 ? ModelScalingFactor : 1
