@@ -364,7 +364,7 @@ function fusionvessel(EP::Model, inputs::Dict, setup::Dict)
     ## Add Vessel Investment Costs to Fixed/Var Costs
     @expression(EP, eVessel_fix_costs[y in FUSION], (eC1[y] + eVesselFix[y]) * EP[:eTotalCap][y])
 
-    @expression(EP, eVessel_var_costs[y in FUSION], eC2[y] * eThermOutputTot[y] * turb_efficiency[y] / pulse_ratio[y] / T)
+    @expression(EP, eVessel_var_costs[y in FUSION], (eC2[y] / pulse_ratio[y] / T) * eThermOutputTot[y] * turb_efficiency[y])
 
     for y in FUSION
         update_fixed_cost!(EP, eVessel_fix_costs[y], y)
@@ -484,13 +484,13 @@ function calc_vacvessel_c2(capex::Float64, discount_rate::Float64, nom_lifetime:
     return capex * (
             nom_lifetime * discount_rate 
             * 
-            (1 + discount_rate)^(nom_lifetime / util_guess + rep_dur) 
+            (1 + discount_rate)^((nom_lifetime / util_guess) + rep_dur) 
             * 
             log(1 + discount_rate)
             / 
-            ((1 + discount_rate)^(nom_lifetime / util_guess + rep_dur) - 1)^2
+            ((1 + discount_rate)^((nom_lifetime / util_guess) + rep_dur) - 1) ^ 2
             /
-            util_guess^2
+            (util_guess) ^ 2
         )
 end
 

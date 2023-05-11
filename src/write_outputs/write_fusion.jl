@@ -84,11 +84,14 @@ function write_fusion_var(path::AbstractString, inputs::Dict, setup::Dict, EP::M
     fusion_var_names = OrderedDict{String, Any}(
         "Num_Units" => :num_units,
         "Reactor Gross Cap" => :eTotalCap,
+        "Total Thermal Output" => :eThermOutputTot,
         "Turbine Cap" => :vTurbElecCap,
         "Tritium Cap" => :vTritCap,
         "Deuterium Cap" => :vDeuCap,
         "Thermal Storage Cap" => :vThermStorCap,
-        "Thermal Discharge Cap" => :vThermDisCap
+        "Thermal Discharge Cap" => :vThermDisCap,
+        "Vessel Fixed Costs" => :eVessel_fix_costs,
+        "Vessel Variable Costs" => :eVessel_var_costs
     )
 
     fusion_variables = OrderedDict{String, Vector{Float64}}()
