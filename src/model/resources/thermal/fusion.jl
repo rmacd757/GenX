@@ -177,9 +177,12 @@ function fusiongridpower(EP::Model, inputs::Dict, setup::Dict)
     )
 
     turb_cost = dfFusion[!,:Turb_CAPEX] .* dfFusion[!,:Dis_Rate] ./ (1 .- (1 .+ dfFusion[!,:Dis_Rate]).^(-dfFusion[!,:Plant_Life]))
+
+    @expression(EP, eturb_final_cost[y in FUSION], vTurbElecCap[y] * turb_cost[y])
+
     for y in FUSION
         if dfFusion[y,:Var_Turb_Cap] == 1
-            update_fixed_cost!(EP, turb_cost[y], y)
+            update_fixed_cost!(EP, eturb_final_cost[y], y)
         end
     end
 

@@ -91,7 +91,8 @@ function write_fusion_var(path::AbstractString, inputs::Dict, setup::Dict, EP::M
         "Thermal Storage Cap" => :vThermStorCap,
         "Thermal Discharge Cap" => :vThermDisCap,
         "Vessel Fixed Costs" => :eVessel_fix_costs,
-        "Vessel Variable Costs" => :eVessel_var_costs
+        "Vessel Variable Costs" => :eVessel_var_costs,
+        "Turbine Fixed Costs" => :eturb_final_cost
     )
 
     fusion_variables = OrderedDict{String, Vector{Float64}}()
