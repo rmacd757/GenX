@@ -111,11 +111,14 @@ function storage_all!(EP::Model, inputs::Dict, setup::Dict)
 
 		# Maximum discharging rate must be less than power rating OR available stored energy in the prior period, whichever is less
 		# wrapping from end of sample period to start of sample period for energy capacity constraint
-		@constraints(EP, begin
-			[y in STOR_ALL, t=1:T], EP[:vP][y,t] <= EP[:eTotalCap][y]
-			[y in STOR_ALL, t in INTERIOR_SUBPERIODS], EP[:vP][y,t] <= EP[:vS][y,t-1]*dfGen[y,:Eff_Down]
-			[y in STOR_ALL, t in START_SUBPERIODS], EP[:vP][y,t] <= EP[:vS][y,t+hours_per_subperiod-1]*dfGen[y,:Eff_Down]
-		end)
+		# @constraints(EP, begin
+			# [y in STOR_ALL, t=1:T], EP[:vP][y,t] <= EP[:eTotalCap][y]
+			# [y in STOR_ALL, t in INTERIOR_SUBPERIODS], EP[:vP][y,t] <= EP[:vS][y,t-1]*dfGen[y,:Eff_Down]
+			# [y in STOR_ALL, t in START_SUBPERIODS], EP[:vP][y,t] <= EP[:vS][y,t+hours_per_subperiod-1]*dfGen[y,:Eff_Down]
+		# end)
+		@constraint(EP, [y in STOR_ALL, t=1:T], EP[:vP][y,t] <= EP[:eTotalCap][y])
+		@constraint(EP, cInterior_vP_leq_vS[y in STOR_ALL, t in INTERIOR_SUBPERIODS], EP[:vP][y,t] <= EP[:vS][y,t-1]*dfGen[y,:Eff_Down])
+		@constraint(EP, cStart_vP_leq_vS[y in STOR_ALL, t in START_SUBPERIODS], EP[:vP][y,t] <= EP[:vS][y,t+hours_per_subperiod-1]*dfGen[y,:Eff_Down])
 	end
 	#From co2 Policy module
 	@expression(EP, eELOSSByZone[z=1:Z],
