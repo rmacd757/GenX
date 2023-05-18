@@ -3,7 +3,7 @@ using CSV
 using DataFrames
 using JuMP
 
-include(joinpath(pwd(),"PiecewiseLinearOpt","PiecewiseLinearOpt.jl"))
+# include(joinpath(pwd(),"PiecewiseLinearOpt","PiecewiseLinearOpt.jl"))
 
 function tegs_case(dsratio, csratio, max_temp, min_temp, tegs_rid, outputs_path_case, mysetup, myinputs, OPTIMIZER)
     dfGen = myinputs["dfGen"]
@@ -91,20 +91,29 @@ function tegs_case(dsratio, csratio, max_temp, min_temp, tegs_rid, outputs_path_
     # @constraint(EP, TEGSeffpower[t=1:myinputs["T"]], EP[:vP][end,t] * dsratio <= EP[:vS][end,t])
 
     # Binary switch -> takes ages to solve
-    # @variable(EP, tegs_neg[t=1:myinputs["T"]], Bin)
-    # @constraint(EP, TEGSeffpower[t=1:myinputs["T"]], EP[:vP][end,t] * dsratio <= EP[:vS][end,t] * EP[:tegs_neg][t])
+    @variable(EP, tegs_neg[t=1:myinputs["T"]], Bin)
+    M = 1e8
+    # if vS <= 0, then tegs_neg = 0, and -M * (1 - tegs_neg) = -M
+    @constraint(EP, bigM1[t=1:myinputs["T"]], EP[:vS][end,t] >= -M * (1 - EP[:tegs_neg][t]))
+    # if vS > 0, then tegs_neg = 1 and M * tegs_neg = M
+    @constraint(EP, bigM2[t=1:myinputs["T"]], EP[:vS][end,t] <= M * EP[:tegs_neg][t])
+    @constraint(EP, TEGSeffpower[t=1:myinputs["T"]], EP[:vP][end,t] * dsratio <= EP[:vS][end,t] * EP[:tegs_neg][t])
 
     # Big-M -> runs but numerical issues in the answer
     # @variable(EP, tegs_neg[t=1:myinputs["T"]], Bin)
     # @constraint(EP, TEGSeffpower[t=1:myinputs["T"]], EP[:vP][end,t] * dsratio <= EP[:vS][end,t] + 1e8 * (1 - EP[:tegs_neg][t]))
     
-    @constraint(EP, [k, t=1:T], EP[:vP2G][k,t] == EP[:vH2GenNewCap][k] * piecewiselinear(EP, EP[:vH2UnitGenFrac][k,t] * dfH2Gen[k, :Cap_Size_tonne_p_hr], h2_output, h2_power))
-
     # Piecewise linear approach
-    pw_vS = piecewiselinear(EP, EP[vS][end,:], )
-    # @constraint(EP, TEGSeffpower[t=1:myinputs["T"]], EP[:vP][end,t] * dsratio <= pw_dS
-    # EP[:vS][end,t])
-
+    # @constraint(
+    #     EP, 
+    #     [k, t=1:T], 
+    #     EP[:vP2G][k,t] == EP[:vH2GenNewCap][k] * piecewiselinear(EP, EP[:vH2UnitGenFrac][k,t] * dfH2Gen[k, :Cap_Size_tonne_p_hr], h2_output, h2_power)
+    # )
+    # @constraint(
+    #     EP, 
+    #     [y in tegs_rid, t=1:myinputs["T"]],
+    #     EP[:vP][y,t] * dsratio <= PiecewiseLinearOpt.piecewiselinear(EP, EP[:vS][y,t], [min_energy - base_energy, 0.0, 1e7], [0.0, 0.0, 1e7])
+    # )
 
     ## Constrain charging power based on state of charge. Reaches rated capacity at 0% state of charge
     # {Charge power} / {charge capacity} <= 1 - {energy} / {energy capacity}
@@ -459,9 +468,9 @@ end
 ############################################
 root_dir = dirname(dirname(dirname(@__FILE__))) # Should be ../TEGS_runs
 run_name = "temp_lossrate_sweep_stor2_v6_testcase"
-# dropbox_path = "/Users/rmacd/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs"
+dropbox_path = "/Users/rmacd/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs"
 # dropbox_path = "D:/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs"
-dropbox_path = "/media/rmacd/LargeHD/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs"
+# dropbox_path = "/media/rmacd/LargeHD/Dropbox/1_Academics/Research/22-TEGS_modelling/TEGS GenX shared folder/GenX_runs"
 
 location_dir = Dict{String, String}(
     "newEngland" => joinpath(root_dir, "data", "newEngland_stor2_v2"),
