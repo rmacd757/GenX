@@ -375,20 +375,6 @@ function fusionvessel(EP::Model, inputs::Dict, setup::Dict)
     end
 end
 
-# function testfun(model_exp::Vector{AffExpr}, term::JuMP.Containers.DenseAxisArray{AffExpr, 1, Tuple{Vector{Int64}}, Tuple{JuMP.Containers._AxisLookup{Dict{Int64, Int64}}}}, FUSION::Vector{Int64})
-#     for y in FUSION
-#         add_to_expression!(model_exp[y], term[y])
-#     end
-# end
-
-# function a_testfun(model_exp::Vector{AffExpr}, Y_ZONE::Vector{Int64})
-#     totalCVar = 0.0::Float64
-#     for y in Y_ZONE
-#         totalCVar += value(model_exp[y])
-#     end
-#     return totalCVar
-# end
-
 function fusionthermalstorage(EP::Model, inputs::Dict, setup::Dict)
     T = inputs["T"]     # Number of time steps (hours)
 
@@ -467,34 +453,25 @@ function calc_fpp_maxutil(nom_lifetime::Float64, replace_dur::Float64)
     return (-nom_lifetime + sqrt(nom_lifetime^2 + 4 * nom_lifetime * replace_dur)) / (2 * replace_dur)
 end
 
+function vessel_degradation_taylor_first(discount_rate::Float64, nom_lifetime::Float64, util_guess::Float64, rep_dur::Float64)
+    vessel_lifetime = nom_lifetime / util_guess + rep_dur
+    return (
+        nom_lifetime * log(1 + discount_rate) * (1 + discount_rate)^vessel_lifetime
+        / 
+        ((1 + discount_rate)^vessel_lifetime - 1)^2 / util_guess^2
+    )
+end
+
 function calc_vacvessel_c1(capex::Float64, discount_rate::Float64, nom_lifetime::Float64, util_guess::Float64, rep_dur::Float64)
-    return capex * (
-            (discount_rate / ((1 + discount_rate)^(nom_lifetime / util_guess + rep_dur) - 1)) 
-            - (
-                nom_lifetime * discount_rate / util_guess 
-                * 
-                (1 + discount_rate)^(nom_lifetime / util_guess + rep_dur) 
-                * 
-                log(1 + discount_rate)
-                / 
-                ((1 + discount_rate)^(nom_lifetime / util_guess + rep_dur) - 1)^2
-                
-            )
+    return capex * discount_rate * (
+            (1 / ((1 + discount_rate)^(nom_lifetime / util_guess + rep_dur) - 1)) 
+            + 
+            vessel_degradation_taylor_first(discount_rate, nom_lifetime, util_guess, rep_dur)
         )
 end
 
 function calc_vacvessel_c2(capex::Float64, discount_rate::Float64, nom_lifetime::Float64, util_guess::Float64, rep_dur::Float64)
-    return capex * (
-            nom_lifetime * discount_rate 
-            * 
-            (1 + discount_rate)^((nom_lifetime / util_guess) + rep_dur) 
-            * 
-            log(1 + discount_rate)
-            / 
-            ((1 + discount_rate)^((nom_lifetime / util_guess) + rep_dur) - 1) ^ 2
-            /
-            (util_guess) ^ 2
-        )
+    return capex * discount_rate * vessel_degradation_taylor_first(discount_rate, nom_lifetime, util_guess, rep_dur)
 end
 
 function update_fixed_cost!(EP::Model, term::Union{AffExpr, Float64}, R_ID::Int64)
