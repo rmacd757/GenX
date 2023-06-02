@@ -91,7 +91,7 @@ function write_outputs(EP::Model, path::AbstractString, setup::Dict, inputs::Dic
 	elapsed_time_emissions = @elapsed write_emissions(path, inputs, setup, EP)
 	println("Time elapsed for writing emissions is")
 	println(elapsed_time_emissions)
-	if has_duals(EP) == 1
+	if setup["WriteShadowPrices"] == 1
 		elapsed_time_reliability = @elapsed write_reliability(path, inputs, setup, EP)
 		println("Time elapsed for writing reliability is")
 		println(elapsed_time_reliability)
