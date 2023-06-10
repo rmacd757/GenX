@@ -8,7 +8,7 @@ input_name = "primal_2zone_20year_flexNG"
 case_name = "primal_2zone_20year_flexNG"
 
 # THIS MUST BE RESET FOR EACH COMPUTER RUNNING THE CODE
-case_path = dirname(@__FILE__)
+case_path = @__DIR__
 
 function gethomedir(case_path::String)
     path_split = splitpath(case_path)
@@ -64,7 +64,7 @@ myinputs = load_inputs(mysetup, inputs_path)
 
 # emiss_lim_list = 100.0 .* [2.5, 5, 7.5, 10, 15, 20, 25]
 # emiss_lim_list = 100.0 .* [2.5, 5, 10, 15, 20, 25, 1.0]
-emiss_lim_list = 100.0 .* [2.5, 0.5,1000000000]
+emiss_lim_list = 100.0 .* [5.0, 25.0] * 20.0
 
 mysetup["CO2Cap"] = 1
 scale_factor = mysetup["ParameterScale"] == 1 ? ModelScalingFactor : 1

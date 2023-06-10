@@ -96,12 +96,10 @@ for emiss_lim in emiss_lim_list
     offshore_rid = findall(x -> startswith(x, "offshore"), dfGen[!,:Resource])
     @constraint(EP, cOffshoreCap, sum(EP[:eTotalCap][y] for y in offshore_rid) <= 280e3)
 
-    ## Set fusion capacity factor >= 0.85
+    ## Set fusion capacity factor >= 0.85, based on net power
     fusion_rid = findall(x -> startswith(x, "fusion"), dfGen[!,:Resource])
-    @constraint(EP, cFPPCapFactor[y in fusion_rid], sum(EP[:vP][y,t] for t in 1:myinputs["T"]) >= 0.85 * EP[:eTotalCap][y])
+    @constraint(EP, cFPPCapFactor[y in fusion_rid], sum(EP[:vP][y,t] for t in 1:myinputs["T"]) >= 0.85 * EP[:eTotalCap][y]) * 190 / 263
     
-    @constraint(EP, cFusionCap, sum(EP[:eTotalCap][y] for y in fusion_rid) <= 8500e3)
-
     ########################
 
     ## Solve model
