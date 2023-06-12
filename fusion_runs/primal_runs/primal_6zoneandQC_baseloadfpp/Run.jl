@@ -68,6 +68,8 @@ for emiss_lim in emiss_lim_list
     println("Generating the Optimization Model")
     EP = generate_model(mysetup, myinputs, OPTIMIZER)
 
+    println("Done generating model.")
+
     ########################
     #### Add any additional constraints
     HYDRO_RES = myinputs["HYDRO_RES"]
@@ -98,7 +100,7 @@ for emiss_lim in emiss_lim_list
 
     ## Set fusion capacity factor >= 0.85, based on net power
     fusion_rid = findall(x -> startswith(x, "fusion"), dfGen[!,:Resource])
-    @constraint(EP, cFPPCapFactor[y in fusion_rid], sum(EP[:vP][y,t] for t in 1:myinputs["T"]) >= 0.85 * EP[:eTotalCap][y]) * 190 / 263
+    @constraint(EP, cFPPCapFactor[y in fusion_rid], sum(EP[:vP][y,t] for t in 1:myinputs["T"]) >= 0.85 * EP[:eTotalCap][y] * 190.0 / 263.0 * 8760.0)
     
     ########################
 
