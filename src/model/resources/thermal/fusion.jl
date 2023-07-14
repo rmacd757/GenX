@@ -463,9 +463,11 @@ function vessel_degradation_taylor_first(discount_rate::Float64, nom_lifetime::F
 end
 
 function calc_vacvessel_c1(capex::Float64, discount_rate::Float64, nom_lifetime::Float64, util_guess::Float64, rep_dur::Float64)
-    return capex * discount_rate * (
-            (1 / ((1 + discount_rate)^(nom_lifetime / util_guess + rep_dur) - 1)) 
-            + 
+    return capex * discount_rate *
+            ((1 
+            / 
+            ((1 + discount_rate)^(nom_lifetime / util_guess + rep_dur) - 1))  
+            - 
             vessel_degradation_taylor_first(discount_rate, nom_lifetime, util_guess, rep_dur)
         )
 end
