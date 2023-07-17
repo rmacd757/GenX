@@ -500,7 +500,7 @@ function calc_fpp_minutil(c1::Float64, c2::Float64)
     # The periodic vacuum vessel costs are of the form y = c1 + c2 * x
     # Where x is the utilization factor and y is the cost
     # If y = 0, x = c1 / c2
-    return c1 / c2
+    return -c1 / c2
 end
 
 ## This function is the overall function for fusion power 
