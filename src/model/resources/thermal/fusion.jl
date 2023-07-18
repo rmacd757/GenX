@@ -44,6 +44,7 @@ function fusionthermalpower(EP::Model, inputs::Dict, setup::Dict)
 
     ## Constrain the Thermal Output with the Effective Capacity
     pulse_ratio = fusionpulseratio.(dfFusion[!,:Pulse_length_min], dfFusion[!,:Pulse_gap_min])
+
     @constraint(EP, [y in FUSION,t=1:T], 
         vThermOutput[y,t] 
         <= 
@@ -364,6 +365,11 @@ function fusionvessel(EP::Model, inputs::Dict, setup::Dict)
         (1 - (1 + discount[y])^(-plant_life[y]))
     )
     
+    println("MAX:")
+    println(calc_fpp_maxutil(vessel_name[12], replace_dur[12]))
+    println("MIN:")
+    println(calc_fpp_minutil(eC1[12], eC2[12]))
+    
     ## Add Vessel Investment Costs to Fixed/Var Costs
     @expression(EP, eVessel_fix_costs[y in FUSION], (eC1[y] + eVesselFix[y]) * EP[:eTotalCap][y])
 
@@ -450,7 +456,8 @@ function fusionpulseratio(pulse_length_min::Float64, pulse_gap_min::Float64)
 end
 
 function calc_fpp_maxutil(nom_lifetime::Float64, replace_dur::Float64)
-    return (-nom_lifetime + sqrt(nom_lifetime^2 + 4 * nom_lifetime * replace_dur)) / (2 * replace_dur)
+    # return (-nom_lifetime + sqrt(nom_lifetime^2 + 4 * nom_lifetime * replace_dur)) / (2 * replace_dur)
+    return(1.0 - replace_dur / nom_lifetime)
 end
 
 function vessel_degradation_taylor_first(discount_rate::Float64, nom_lifetime::Float64, util_guess::Float64, rep_dur::Float64)
@@ -464,11 +471,10 @@ end
 
 function calc_vacvessel_c1(capex::Float64, discount_rate::Float64, nom_lifetime::Float64, util_guess::Float64, rep_dur::Float64)
     return capex * discount_rate *
-            ((1 
-            / 
-            ((1 + discount_rate)^(nom_lifetime / util_guess + rep_dur) - 1))  
+        (
+            (1 / (1 - (1 + discount_rate)^-(nom_lifetime / util_guess + rep_dur)))  
             - 
-            vessel_degradation_taylor_first(discount_rate, nom_lifetime, util_guess, rep_dur)
+            util_guess * vessel_degradation_taylor_first(discount_rate, nom_lifetime, util_guess, rep_dur)
         )
 end
 
@@ -499,7 +505,7 @@ end
 function calc_fpp_minutil(c1::Float64, c2::Float64)
     # The periodic vacuum vessel costs are of the form y = c1 + c2 * x
     # Where x is the utilization factor and y is the cost
-    # If y = 0, x = c1 / c2
+    # If y = 0, x = -c1 / c2
     return -c1 / c2
 end
 
