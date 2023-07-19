@@ -4,13 +4,12 @@ using OrderedCollections
 using DataFrames
 using CSV
 
-input_name = "2z_1sc_dual_test_run_SC"
-case_name = "2z_1sc_dual_test_run_SC"
+input_name = "2z_1sc_dual_test_run"
+case_name = "2z_1sc_dual_test_run"
+dropbox_path = "D:\\Dropbox\\"
 
+# THIS MUST BE RESET FOR EACH COMPUTER RUNNING THE CODE
 case_path = @__DIR__
-results_path = joinpath(case_path, "Results")
-dual_results_path = joinpath(results_path, "dual_results.csv")
-cost_results_path = joinpath(results_path, "cost_results.csv")
 
 function gethomedir(case_path::String)
     path_split = splitpath(case_path)
@@ -75,15 +74,15 @@ fusion_cap_list = vcat([0.0, 500.0, 1000.0], range(start=2500.0, stop=30000.0, s
 
 # dual_results = zeros(length(fusion_cap_list), length(emiss_lim_list))
 # load joinpath(case_path, "Results", "cost_results.csv") if it exists
-mkpath(results_path)
+mkpath(joinpath(dropbox_path, "Results"))
 
-if isfile(dual_results_path)
-    dual_results = CSV.read(dual_results_path, DataFrame)
+if isfile(joinpath(dropbox_path, "Results", "dual_results.csv"))
+    dual_results = CSV.read(joinpath(dropbox_path, "Results", "dual_results.csv"), DataFrame)
 else
     dual_results = DataFrame()
 end
-if isfile(cost_results_path)
-    cost_results = CSV.read(cost_results_path, DataFrame)
+if isfile(joinpath(dropbox_path, "Results", "cost_results.csv"))
+    cost_results = CSV.read(joinpath(dropbox_path, "Results", "cost_results.csv"), DataFrame)
 else
     cost_results = DataFrame()
 end
@@ -103,7 +102,7 @@ for emiss_lim in emiss_lim_list
     for (cap_idx, fusion_cap) in enumerate(fusion_cap_list)
         # Hard-coded to put all emissions in New Hampshire, but CO2 Cap is set to be system-wide
         myinputs["dfMaxCO2"][2] = emiss_lim * 1e3 / scale_factor
-        outputs_path = joinpath(results_path, "Primal_dual_" * string(fusion_cap) * "mw_EmissLevel_" * string(emiss_lim))
+        outputs_path = joinpath(dropbox_path, "Results", "Primal_dual_" * string(fusion_cap) * "mw_EmissLevel_" * string(emiss_lim))
 
         dfGen = myinputs["dfGen"]
         fusion_rid = findall(x -> startswith(x, "fusion"), dfGen[!,:Resource])
@@ -176,8 +175,8 @@ for emiss_lim in emiss_lim_list
         cost_results[cap_idx, string(emiss_lim)] = objective_value(EP)
 
         ## Save dual_results to dual_results.csv
-        CSV.write(joinpath(results_path, "dual_results.csv"), dual_results)
-        CSV.write(joinpath(results_path, "cost_results.csv"), cost_results)
+        CSV.write(joinpath(dropbox_path, "Results", "dual_results.csv"), dual_results)
+        CSV.write(joinpath(dropbox_path, "Results", "cost_results.csv"), cost_results)
     end
 end
 
