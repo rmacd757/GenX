@@ -6,10 +6,11 @@ using CSV
 
 input_name = "2z_1sc_dual_test_run"
 case_name = "2z_1sc_dual_test_run"
-dropbox_path = "D:\\Dropbox\\"
 
-# THIS MUST BE RESET FOR EACH COMPUTER RUNNING THE CODE
 case_path = @__DIR__
+results_path = joinpath(case_path, "Results")
+dual_results_path = joinpath(results_path, "dual_results.csv")
+cost_results_path = joinpath(results_path, "cost_results.csv")
 
 function gethomedir(case_path::String)
     path_split = splitpath(case_path)
@@ -54,7 +55,9 @@ end
 ## Configure solver
 println("Configuring Solver")
 OPTIMIZER = configure_solver(mysetup["Solver"], settings_path)
-set_optimizer_attribute(OPTIMIZER, "BarHomogeneous", 1)
+
+# Turn this setting on if you run into numerical stability issues
+# set_optimizer_attribute(OPTIMIZER, "BarHomogeneous", 1)
 
 #### Running a case
 
@@ -63,7 +66,6 @@ println("Loading Inputs")
 myinputs = load_inputs(mysetup, inputs_path)
 
 emiss_lim_list = 100.0 .* [0.5, 1.5, 2.5, 1.0, 2.0]
-# emiss_lim_list = 100.0 .* [2.5, 5, 10, 15, 20, 25, 1.0]
 # emiss_lim_list = 100.0 .* [0.5]
 
 mysetup["CO2Cap"] = 1
@@ -72,17 +74,15 @@ scale_factor = mysetup["ParameterScale"] == 1 ? ModelScalingFactor : 1
 fusion_cap_list = vcat([0.0, 500.0, 1000.0], range(start=2500.0, stop=30000.0, step=2500.0))
 # fusion_cap_list = [250.0, 500.0]
 
-# dual_results = zeros(length(fusion_cap_list), length(emiss_lim_list))
-# load joinpath(case_path, "Results", "cost_results.csv") if it exists
-mkpath(joinpath(dropbox_path, "Results"))
+mkpath(results_path)
 
-if isfile(joinpath(dropbox_path, "Results", "dual_results.csv"))
-    dual_results = CSV.read(joinpath(dropbox_path, "Results", "dual_results.csv"), DataFrame)
+if isfile(dual_results_path)
+    dual_results = CSV.read(dual_results_path, DataFrame)
 else
     dual_results = DataFrame()
 end
-if isfile(joinpath(dropbox_path, "Results", "cost_results.csv"))
-    cost_results = CSV.read(joinpath(dropbox_path, "Results", "cost_results.csv"), DataFrame)
+if isfile(cost_results_path)
+    cost_results = CSV.read(cost_results_path, DataFrame)
 else
     cost_results = DataFrame()
 end
@@ -102,8 +102,10 @@ for emiss_lim in emiss_lim_list
     for (cap_idx, fusion_cap) in enumerate(fusion_cap_list)
         # Hard-coded to put all emissions in New Hampshire, but CO2 Cap is set to be system-wide
         myinputs["dfMaxCO2"][2] = emiss_lim * 1e3 / scale_factor
-        outputs_path = joinpath(dropbox_path, "Results", "Primal_dual_" * string(fusion_cap) * "mw_EmissLevel_" * string(emiss_lim))
+        outputs_path = joinpath(results_path, "Dual_" * string(fusion_cap) * "mw_EmissLevel_" * string(emiss_lim))
 
+        # Find all the fusion resources in the model
+        # and set their investment and fixed O&M costs to zero
         dfGen = myinputs["dfGen"]
         fusion_rid = findall(x -> startswith(x, "fusion"), dfGen[!,:Resource])
         for y in fusion_rid
@@ -111,6 +113,7 @@ for emiss_lim in emiss_lim_list
             dfGen[y,:Fixed_OM_Cost_per_MWyr] = 0.0
         end
 
+        # This check will cause the case to be skipped if the results already exist
         if isfile(joinpath(outputs_path, "costs.csv"))
             println("Skipping Case for emiss limit = " * string(emiss_lim) * " because it already exists.")
             continue
@@ -175,8 +178,8 @@ for emiss_lim in emiss_lim_list
         cost_results[cap_idx, string(emiss_lim)] = objective_value(EP)
 
         ## Save dual_results to dual_results.csv
-        CSV.write(joinpath(dropbox_path, "Results", "dual_results.csv"), dual_results)
-        CSV.write(joinpath(dropbox_path, "Results", "cost_results.csv"), cost_results)
+        CSV.write(joinpath(results_path, "dual_results.csv"), dual_results)
+        CSV.write(joinpath(results_path, "cost_results.csv"), cost_results)
     end
 end
 

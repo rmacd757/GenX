@@ -4,8 +4,8 @@ using OrderedCollections
 using DataFrames
 using CSV
 
-input_name = "2z_1sc_dual_test_run_SC"
-case_name = "2z_1sc_dual_test_run_SC"
+input_name = "2z_1sc_dual_test_run"
+case_name = "2z_1sc_dual_test_run"
 
 case_path = @__DIR__
 results_path = joinpath(case_path, "Results")
@@ -55,7 +55,9 @@ end
 ## Configure solver
 println("Configuring Solver")
 OPTIMIZER = configure_solver(mysetup["Solver"], settings_path)
-set_optimizer_attribute(OPTIMIZER, "BarHomogeneous", 1)
+
+# Turn this setting on if you run into numerical stability issues
+# set_optimizer_attribute(OPTIMIZER, "BarHomogeneous", 1)
 
 #### Running a case
 
@@ -64,7 +66,6 @@ println("Loading Inputs")
 myinputs = load_inputs(mysetup, inputs_path)
 
 emiss_lim_list = 100.0 .* [0.5, 1.5, 2.5, 1.0, 2.0]
-# emiss_lim_list = 100.0 .* [2.5, 5, 10, 15, 20, 25, 1.0]
 # emiss_lim_list = 100.0 .* [0.5]
 
 mysetup["CO2Cap"] = 1
@@ -73,8 +74,6 @@ scale_factor = mysetup["ParameterScale"] == 1 ? ModelScalingFactor : 1
 fusion_cap_list = vcat([0.0, 500.0, 1000.0], range(start=2500.0, stop=30000.0, step=2500.0))
 # fusion_cap_list = [250.0, 500.0]
 
-# dual_results = zeros(length(fusion_cap_list), length(emiss_lim_list))
-# load joinpath(case_path, "Results", "cost_results.csv") if it exists
 mkpath(results_path)
 
 if isfile(dual_results_path)
@@ -103,8 +102,10 @@ for emiss_lim in emiss_lim_list
     for (cap_idx, fusion_cap) in enumerate(fusion_cap_list)
         # Hard-coded to put all emissions in New Hampshire, but CO2 Cap is set to be system-wide
         myinputs["dfMaxCO2"][2] = emiss_lim * 1e3 / scale_factor
-        outputs_path = joinpath(results_path, "Primal_dual_" * string(fusion_cap) * "mw_EmissLevel_" * string(emiss_lim))
+        outputs_path = joinpath(results_path, "Dual_" * string(fusion_cap) * "mw_EmissLevel_" * string(emiss_lim))
 
+        # Find all the fusion resources in the model
+        # and set their investment and fixed O&M costs to zero
         dfGen = myinputs["dfGen"]
         fusion_rid = findall(x -> startswith(x, "fusion"), dfGen[!,:Resource])
         for y in fusion_rid
@@ -112,6 +113,7 @@ for emiss_lim in emiss_lim_list
             dfGen[y,:Fixed_OM_Cost_per_MWyr] = 0.0
         end
 
+        # This check will cause the case to be skipped if the results already exist
         if isfile(joinpath(outputs_path, "costs.csv"))
             println("Skipping Case for emiss limit = " * string(emiss_lim) * " because it already exists.")
             continue
