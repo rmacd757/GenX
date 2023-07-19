@@ -4,8 +4,8 @@ using OrderedCollections
 using DataFrames
 using CSV
 
-input_name = "2z_1sc_dual_test_run"
-case_name = "2z_1sc_dual_test_run"
+input_name = "2z_1sc_dual_test_run_SC"
+case_name = "2z_1sc_dual_test_run_SC"
 
 case_path = @__DIR__
 results_path = joinpath(case_path, "Results")
