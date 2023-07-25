@@ -75,7 +75,12 @@ fusion_cap_list = vcat([0.0, 500.0, 1000.0], range(start=2500.0, stop=30000.0, s
 
 mkpath(results_path)
 
-for emiss_lim in emiss_lim_list
+task_id = parse(Int,ARGS[1])
+num_tasks = parse(Int,ARGS[2])
+
+for i in task_id+1:num_tasks:length(emiss_lim_list)
+# for emiss_lim in emiss_lim_list
+    emiss_lim = emiss_lim_list[i]
     for (cap_idx, fusion_cap) in enumerate(fusion_cap_list)
         # Hard-coded to put all emissions in New Hampshire, but CO2 Cap is set to be system-wide
         myinputs["dfMaxCO2"][2] = emiss_lim * 1e3 / scale_factor
