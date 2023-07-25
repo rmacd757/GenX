@@ -509,12 +509,12 @@ function fusionfuel!(EP::Model, inputs::Dict, setup::Dict)
         TRIT_FUEL_RATIO[y] * EP[:vThermOutput][y,t] * dfFusion[y,:Trit_Fuel]
     )
 
-    @expression(EP, eTritDecay[y in FUSION, t=1:T]
-        vTritInventory[y, cyclicindex(t-1, T)] * TRIT_DECAY
+    @expression(EP, eTritDecay[y in FUSION, t=1:T],
+        vTritInventory[y, t] * TRIT_DECAY
     )
 
-    @expression(EP, eTritLeakage[y in FUSION, t=1:T]
-        vTritInventory[y, cyclicindex(t-1, T)] * dfFusion[y,:Trit_Loss]
+    @expression(EP, eTritLeakage[y in FUSION, t=1:T],
+        vTritInventory[y, t] * dfFusion[y,:Trit_Loss]
     )
 
     ## Hourly tritium balance
@@ -551,7 +551,7 @@ function fusionfuel!(EP::Model, inputs::Dict, setup::Dict)
 
     # Deuterium Leakage
     @expression(EP, eDeuLeakage[y in FUSION, t=1:T],
-        vDeuInventory[y, cyclicindex(t-1, T)] * dfFusion[y,:Deu_Loss]
+        vDeuInventory[y, t] * dfFusion[y,:Deu_Loss]
     )
 
     # Deuterium balance

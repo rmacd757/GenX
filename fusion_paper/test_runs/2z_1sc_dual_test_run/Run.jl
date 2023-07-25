@@ -8,7 +8,7 @@ input_name = "2z_1sc_dual_test_run"
 case_name = "2z_1sc_dual_test_run"
 
 case_path = @__DIR__
-results_path = joinpath(case_path, "Results")
+results_path = joinpath(case_path, "Results_v2")
 dual_results_path = joinpath(results_path, "dual_results.csv")
 cost_results_path = joinpath(results_path, "cost_results.csv")
 
@@ -65,7 +65,8 @@ OPTIMIZER = configure_solver(mysetup["Solver"], settings_path)
 println("Loading Inputs")
 myinputs = load_inputs(mysetup, inputs_path)
 
-emiss_lim_list = 100.0 .* [0.5, 1.5, 2.5, 1.0, 2.0]
+# emiss_lim_list = 100.0 .* [0.5, 1.5, 2.5, 1.0, 2.0]
+emiss_lim_list = 100.0 .* [0.5, 1.5, 2.5]
 # emiss_lim_list = 100.0 .* [0.5]
 
 mysetup["CO2Cap"] = 1
