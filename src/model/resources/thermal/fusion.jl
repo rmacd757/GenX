@@ -329,12 +329,12 @@ function fusionthermalstorage!(EP::Model, inputs::Dict, setup::Dict)
     @variable(EP, vThermStor[y in FUSION_ThermStor, t=1:T], lower_bound = 0.)
 
     ## Energy stored <= Storage Capacity
-    @constraint(EP, [y in FUSION_ThermStor,t=1:T], vThermStor[y,t] <= vThermStorCap[y])
+    @constraint(EP, [y in FUSION_ThermStor,t=1:T], vThermStor[y,t] <= EP[:vThermStorCap][y])
 
     ## Limit charge and discharge rates
-    @constraint(EP, [y in FUSION_ThermStor,t=1:T], vThermDis[y,t]  <= vThermDisCap[y])
-    @constraint(EP, [y in FUSION_ThermStor,t=1:T], vThermChar[y,t] <= vThermDisCap[y])
-    @constraint(EP, [y in FUSION_ThermStor,t=1:T], vThermDis[y,t] + vThermChar[y,t] <= vThermDisCap[y])
+    @constraint(EP, [y in FUSION_ThermStor,t=1:T], vThermDis[y,t]  <= EP[:vThermDisCap][y])
+    @constraint(EP, [y in FUSION_ThermStor,t=1:T], vThermChar[y,t] <= EP[:vThermDisCap][y])
+    @constraint(EP, [y in FUSION_ThermStor,t=1:T], vThermDis[y,t] + vThermChar[y,t] <= EP[:vThermDisCap][y])
 
     ## Calculate the net discharge rate
     @expression(EP, eThermStorNetDischarge[y in FUSION_ThermStor, t=1:T], vThermDis[y,t] - vThermChar[y,t])
@@ -714,7 +714,7 @@ function fusion!(EP::Model, inputs::Dict, setup::Dict)
     dfFusion = inputs["dfFusion"]
     if any(dfFusion[!,:Add_Therm_Stor].>0)
         print("\n-- Fusion thermal storage ... ")
-        fusionthermalstorage(EP,inputs,setup)
+        fusionthermalstorage!(EP,inputs,setup)
         print("done")
     end
 
