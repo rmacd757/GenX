@@ -9,8 +9,6 @@ case_name = "2z_1sc_dual_test_run_SC"
 
 case_path = @__DIR__
 results_path = joinpath(case_path, "Results")
-dual_results_path = joinpath(results_path, "dual_results.csv")
-cost_results_path = joinpath(results_path, "cost_results.csv")
 
 function gethomedir(case_path::String)
     path_split = splitpath(case_path)
@@ -65,7 +63,8 @@ OPTIMIZER = configure_solver(mysetup["Solver"], settings_path)
 println("Loading Inputs")
 myinputs = load_inputs(mysetup, inputs_path)
 
-emiss_lim_list = 100.0 .* [0.5, 1.5, 2.5, 1.0, 2.0]
+# emiss_lim_list = 100.0 .* [0.5, 1.5, 2.5, 1.0, 2.0]
+emiss_lim_list = 100.0 .* [0.5, 1.5, 2.5]
 # emiss_lim_list = 100.0 .* [0.5]
 
 mysetup["CO2Cap"] = 1
@@ -76,29 +75,7 @@ fusion_cap_list = vcat([0.0, 500.0, 1000.0], range(start=2500.0, stop=30000.0, s
 
 mkpath(results_path)
 
-if isfile(dual_results_path)
-    dual_results = CSV.read(dual_results_path, DataFrame)
-else
-    dual_results = DataFrame()
-end
-if isfile(cost_results_path)
-    cost_results = CSV.read(cost_results_path, DataFrame)
-else
-    cost_results = DataFrame()
-end
-println("Starting dual results: ")
-println(dual_results)
-println("Starting cost results: ")
-println(cost_results)
-
 for emiss_lim in emiss_lim_list
-    ## If dual_results[!, string(emiss_lim)] is empty, then initialize it to zeros
-    if !(string(emiss_lim) in names(dual_results))
-        dual_results[!, string(emiss_lim)] = zeros(length(fusion_cap_list))
-    end
-    if !(string(emiss_lim) in names(cost_results))
-        cost_results[!, string(emiss_lim)] = zeros(length(fusion_cap_list))
-    end
     for (cap_idx, fusion_cap) in enumerate(fusion_cap_list)
         # Hard-coded to put all emissions in New Hampshire, but CO2 Cap is set to be system-wide
         myinputs["dfMaxCO2"][2] = emiss_lim * 1e3 / scale_factor
@@ -174,12 +151,8 @@ for emiss_lim in emiss_lim_list
         ## Write outputs
         write_outputs(EP, outputs_path, mysetup, myinputs)
 
-        dual_results[cap_idx, string(emiss_lim)] = dual(EP[:cFusionCap])
-        cost_results[cap_idx, string(emiss_lim)] = objective_value(EP)
-
-        ## Save dual_results to dual_results.csv
-        CSV.write(joinpath(results_path, "dual_results.csv"), dual_results)
-        CSV.write(joinpath(results_path, "cost_results.csv"), cost_results)
+        result_summ = DataFrame(Cost=objective_value(EP), Dual=dual(EP[:cFusionCap]))
+        CSV.write(joinpath(results_path, "fpp_results.csv"), result_summ)
     end
 end
 
