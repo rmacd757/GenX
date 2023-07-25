@@ -77,21 +77,11 @@ function write_outputs(EP::Model, path::AbstractString, setup::Dict, inputs::Dic
 	println(elapsed_time_power_balance)
 
 	if !isempty(inputs["FUSION"])
-		write_fusion_var(path,inputs,setup,EP)
-		println("Fusion variables have been written")
+		write_fusion_summary(path,inputs,setup,EP)
+		println("Fusion summary has been written")
 		write_fusion(path,inputs,setup,EP)
-		println("Fusion time variables have been written")
+		println("Fusion time-dependent results have been written")
 	end
-
-	# if ~isempty(inputs["FUSION"])
-	# 	elapsed_fusion_var = @elapsed write_fusion_var(path,inputs,setup,EP)
-	# 	println("Time elapsed for writing fusion variables is")
-	# 	println(elapsed_fusion_var)
-	# 	elapsed_fusion_time = @elapsed write_fusion(path,inputs,setup,EP)
-	# 	println("Time elapsed for writing fusion time variables is")
-	# 	println(elapsed_fusion_time)
-	# end
-	
 	
 	if inputs["Z"] > 1
 		elapsed_time_flows = @elapsed write_transmission_flows(path, inputs, setup, EP)

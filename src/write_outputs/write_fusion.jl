@@ -28,29 +28,37 @@ function write_fusion(path::AbstractString, inputs::Dict, setup::Dict, EP::Model
     for y in FUSION
         result_filename = string("fusion_time_", y, ".csv")
         fusion_timeseries = OrderedDict{String, Any}(
-            "Imports" => :vfusionimports,
-            "Net Electric" => :eFusionNetElec,
-            "Gross Electric" => :eTurbElec,
-            "Recirc Power" => :eRecircpwr,
-            "Salt Heating" => :vsaltpwr,
-            "Fixed plant power" => :eplantfix,
-            "Var plant power" => :eplantvar,
-            "Reactor Thermal power" => :vThermOutput,
-            "Turbine Thermal input" => :eTurbThermal,
-            "Tritium inventory" => :vtrit_inventory,
-            "Tritium exports" => :vtrit_exports,
-            "Deuterium inventory" => :vdeu_inventory,
-            "Deuterium imports" => :vdeu_imports,
-            "Commitment State" => :eFusionCommit,
-            "Storage Inventory" => :vThermStor,
-            "Charge per Hour" => :vThermChar,
-            "Discharge per Hour" => :vThermDis,
-            "Net discharge rate" => :eThermStorNetDischarge
+            "Reactor Commitment State" => :vFusionReactorCommit,
+            "Turbine Commitment State" => :eFusionTurbCommit,
+            "Reactor Thermal Output MWht" => :vThermOutput,
+            "Turbine Thermal Input MWht" => :eTurbThermal,
+            "Turbine Gross Electric Output MWhe" => :eTurbGrossElec,
+            "Turbine Net Electric Output MWhe" => :eFusionNetElec,
+            "FPP Imports MWhe" => :vFusionElecImports,
+            "Total Recirc Power MWhe" => :eRecircPwr,
+            "Recirc Salt Heating MWhe" => :vSaltElecHeating,
+            "Fixed Recirc Power MWhe" => :ePlantFix,
+            "Var Recirc Power MWhe" => :ePlantVar,
+            "Tritium Inventory kg" => :vTritInventory,
+            "Tritium Breeding kg" => :eTritBreeding,
+            "Tritium Consumption kg" => :eTritConsumption,
+            "Tritium Exports kg" => :vTritExports,
+            "Tritium Decay kg" => :eTritDecay,
+            "Tritium Leakage kg" => :eTritLeakage,
+            "Deuterium Inventory kg" => :vDeuInventory,
+            "Deuterium Imports kg" => :vDeuImports,
+            "Deuterium Consumption kg" => :eDeuConsumption,
+            "Deuterium Leakage kg" => :eDeuLeakage,
+            "Thermal Storage Inventory MWht" => :vThermStor,
+            "Thermal Storage Charging MWht" => :vThermChar,
+            "Thermal Storage Discharging MWht" => :vThermDis,
+            "Thermal Storage Net Discharge MWht" => :eThermStorNetDischarge
         )
         for (name, model_key) in fusion_timeseries
             if haskey(EP, model_key)
                 fusion_timeseries[name] = get_fusion_data_vector(EP[model_key], y, T)
             else
+                println("Can't find key: ", name, " in EP")
                 fusion_timeseries[name] = zeros(T)
             end
         end
@@ -71,7 +79,7 @@ function get_fusion_fleet_data(EP::JuMP.Model, model_key::Symbol, R_ID::Int64)
     return value(EP[model_key][R_ID])
 end
 
-function write_fusion_var(path::AbstractString, inputs::Dict, setup::Dict, EP::Model)
+function write_fusion_summary(path::AbstractString, inputs::Dict, setup::Dict, EP::Model)
     # dfFusion = inputs["dfFusion"]
     FUSION = inputs["FUSION"]
     # dfGen = inputs["dfGen"]
@@ -82,17 +90,25 @@ function write_fusion_var(path::AbstractString, inputs::Dict, setup::Dict, EP::M
     end
 
     fusion_var_names = OrderedDict{String, Any}(
-        "Num_Units" => :num_units,
-        "Reactor Gross Cap" => :eTotalCap,
-        "Total Thermal Output" => :eThermOutputTot,
-        "Turbine Cap" => :vTurbElecCap,
-        "Tritium Cap" => :vTritCap,
-        "Deuterium Cap" => :vDeuCap,
-        "Thermal Storage Cap" => :vThermStorCap,
-        "Thermal Discharge Cap" => :vThermDisCap,
-        "Vessel Fixed Costs" => :eVessel_fix_costs,
-        "Vessel Variable Costs" => :eVessel_var_costs,
-        "Turbine Fixed Costs" => :eturb_final_cost
+        "Reactor Fusion Capacity MWt" => :eFusionFusionCap,
+        "Reactor Thermal Capacity MWt" => :eFusionThermCap,
+        "Turbine Gross Capacity MWe" => :eFusionTurbGrossCap,
+        "Turbine Net Capacity MWe" => :eFusionTurbNetCap,
+        "Num Reactors" => :vFusionNumReactors,
+        "Num Turbines" => :eFusionNumTurbines,
+        "Single Reactor Fusion Capacity MWt" => :eFusionFusionCapSize,
+        "Single Reactor Thermal Capacity MWt" => :eFusionThermCapSize,
+        "Single Turbine Gross Capacity MWe" => :eFusionTurbGrossCapSize,
+        "Single Turbine Net Capacity MWe" => :eFusionTurbNetCapSize,
+        "Total Thermal Output MWht" => :eThermOutputTot,
+        "Total Net Electric Output MWhe" => :vP,
+        "Tritium Storage Capacity kg" => :vTritCap,
+        "Deuterium Storage Capacity kg" => :vDeuCap,
+        "Thermal Storage Energy Capacity MWht" => :vThermStorCap,
+        "Thermal Storage Discharge Capacity MWt" => :vThermDisCap,
+        "Vessel Fixed Cost \$ per period" => :eVesselFixCosts,
+        "Vessel Variable Cost \$ per period" => :eVesselVarCosts,
+        "Turbine Fixed Cost \$ per period" => :eTurbFinalCost
     )
 
     fusion_variables = OrderedDict{String, Vector{Float64}}()
@@ -100,7 +116,7 @@ function write_fusion_var(path::AbstractString, inputs::Dict, setup::Dict, EP::M
         fusion_variables[name] = []
     end
 
-    file_name = string("fusion_var.csv")
+    file_name = string("fusion_summary.csv")
 
     for y in FUSION
         for (name, model_key) in fusion_var_names
@@ -108,6 +124,7 @@ function write_fusion_var(path::AbstractString, inputs::Dict, setup::Dict, EP::M
                 append!(fusion_variables[name], get_fusion_fleet_data(EP, model_key, y))
             else
                 append!(fusion_variables[name], 0.0)
+                println("Can't find key: ", name, " in EP")
             end
         end
         fusion_var_df = DataFrame(fusion_variables)    
