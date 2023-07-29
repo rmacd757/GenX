@@ -5,6 +5,12 @@ using JuMP
 
 case = dirname(@__FILE__)
 
+# Extract the base name of the directory path
+base_name = splitdir(case[end])
+
+# Extract the name of the grandparent folder 
+gp_direc = dirname(dirname(case))
+
 function get_settings_path(case::AbstractString)
     return joinpath(case, "Settings")
 end
@@ -14,7 +20,7 @@ function get_settings_path(case::AbstractString, filename::AbstractString)
 end
 
 function get_default_output_folder(case::AbstractString)
-    return joinpath(case, "Results")
+    return joinpath(case, "results/greenfields/no_fusion")
 end
 
 genx_settings = get_settings_path(case, "genx_settings.yml") #Settings YAML file path
@@ -56,7 +62,8 @@ for emiss_lim in emiss_lim_list
 
     # Hard-coded to put all emissions in New Hampshire, but CO2 Cap is set to be system-wide
     myinputs["dfMaxCO2"][2] = emiss_lim * 1e3 / scale_factor
-    outputs_path = joinpath(case, "Results", "Primal_Capex_8500.0_EmissLevel_" * string(emiss_lim))
+    outputs_path = get_default_output_folder(gp_direc)
+    outputs_path = joinpath(putputs_path * base_name)
 
     if isfile(joinpath(outputs_path, "costs.csv"))
         println("Skipping Case for emiss limit = " * string(emiss_lim) * " because it already exists.")
@@ -85,9 +92,17 @@ for emiss_lim in emiss_lim_list
     # Make sure to correc the line index if the order is changed in Network.csv
     @constraint(EP, cMaine2Quebec[t=1:myinputs["T"]], EP[:vFLOW][2, t] >= -170.0)
 
-    ## Solar <= 22GWe
+    ## Utility Solar <= 22GWe
     solar_rid = findall(x -> startswith(x, "solar"), dfGen[!,:Resource])
     @constraint(EP, cSolarCap, sum(EP[:eTotalCap][y] for y in solar_rid) <= 22e3)
+
+    ## Commercial Solar <= 15GWe
+    com_rid = findall(x -> startswith(x, "commercial"), dfGen[!,:Resource])
+    @constraint(EP, cComCap, sum(EP[:eTotalCap][y] for y in com_rid) <= 15e3)
+
+    ## Residential Solar <= 10GWe
+    res_rid = findall(x -> startswith(x, "residential"), dfGen[!,:Resource])
+    @constraint(EP, cResCap, sum(EP[:eTotalCap][y] for y in res_rid) <= 10e3)
 
     ## Onshore wind <= 10GWe
     onshore_rid = findall(x -> startswith(x, "onshore"), dfGen[!,:Resource])
@@ -120,100 +135,3 @@ for emiss_lim in emiss_lim_list
     write_outputs(EP, outputs_path, mysetup, myinputs)
 
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-### Cluster time series inputs if necessary and if specified by the user
-TDRpath = joinpath(case, mysetup["TimeDomainReductionFolder"])
-
-function time_domain_reduced_files_exist(tdrpath)
-    tdr_load = isfile(joinpath(tdrpath,"Load_data.csv"))
-    tdr_genvar = isfile(joinpath(tdrpath,"Generators_variability.csv"))
-    tdr_fuels = isfile(joinpath(tdrpath,"Fuels_data.csv"))
-    return (tdr_load && tdr_genvar && tdr_fuels)
-end
-
-if mysetup["TimeDomainReduction"] == 1
-    if !time_domain_reduced_files_exist(TDRpath)
-        println("Clustering Time Series Data (Grouped)...")
-        cluster_inputs(inputs_path, settings_path, mysetup)
-    else
-        println("Time Series Data Already Clustered.")
-    end
-end
-
-### Configure solver
-println("Configuring Solver")
-OPTIMIZER = configure_solver(mysetup["Solver"], settings_path)
-
-
-#### Running a case
-
-### Load inputs
-println("Loading Inputs")
-myinputs = load_inputs(mysetup, case)
-
-println("Generating the Optimization Model")
-EP = generate_model(mysetup, myinputs, OPTIMIZER)
-
-########################
-#### Add any additional constraints
-HYDRO_RES = myinputs["HYDRO_RES"]
-dfGen = myinputs["dfGen"]
-
-## Hydro storage <= 0.55 * Existing Capacity at start of May 1st 
-@constraint(EP, cHydroSpring[y in HYDRO_RES], EP[:vS_HYDRO][y, 2879] .<= 0.55 .* EP[:eTotalCap][y] .* dfGen[y,:Hydro_Energy_to_Power_Ratio]) 
-
-## Hydro storage == 0.70 * Existing Capacity at the start of the year
-@constraint(EP, cHydroJan[y in HYDRO_RES], EP[:vS_HYDRO][y, 1]       .== 0.70 .* EP[:eTotalCap][y] .* dfGen[y,:Hydro_Energy_to_Power_Ratio]) 
-
-## Maine -> Quebec transmission limited to 2170MWe.
-# The line is defined as Quebec -> Maine in Network.csv, so these flows will be negative
-# Make sure to correc the line index if the order is changed in Network.csv
-@constraint(EP, cMaine2Quebec[t=1:myinputs["T"]], EP[:vFLOW][2, t] >= -170.0)
-
-## Solar <= 22GWe
-solar_rid = findall(x -> startswith(x, "solar"), dfGen[!,:Resource])
-@constraint(EP, cSolarCap, sum(EP[:eTotalCap][y] for y in solar_rid) <= 22e3)
-
-## Onshore wind <= 10GWe
-onshore_rid = findall(x -> startswith(x, "onshore"), dfGen[!,:Resource])
-@constraint(EP, cOnshoreCap, sum(EP[:eTotalCap][y] for y in onshore_rid) <= 10e3)
-
-## Offshore wind <= 280GWe
-offshore_rid = findall(x -> startswith(x, "offshore"), dfGen[!,:Resource])
-@constraint(EP, cOffshoreCap, sum(EP[:eTotalCap][y] for y in offshore_rid) <= 280e3)
-
-########################
-
-
-println("Solving Model")
-EP, solve_time = solve_model(EP, mysetup)
-myinputs["solve_time"] = solve_time # Store the model solve time in myinputs
-
-# Run MGA if the MGA flag is set to 1 else only save the least cost solution
-println("Writing Output")
-outputs_path = get_default_output_folder(case)
-elapsed_time = @elapsed write_outputs(EP, outputs_path, mysetup, myinputs)
-println("Time elapsed for writing is")
-println(elapsed_time)
-

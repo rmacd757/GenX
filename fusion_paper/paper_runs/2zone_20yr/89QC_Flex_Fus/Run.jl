@@ -61,26 +61,24 @@ EP = generate_model(mysetup, myinputs, OPTIMIZER)
 HYDRO_RES = myinputs["HYDRO_RES"]
 dfGen = myinputs["dfGen"]
 
-## Empty arrays for indexing
+# Empty arrays for indexing
 yr_start = Int[]
 yr_mid = Int[]
 
-## 20 year indexing
+# 20 year indexing
 for i in 1:20
     # Calculate the value for the beginning of the year
-    start_year = (i-1)*8760 + 1
+    start_year = (i-1) * 8760 + 1
     push!(yr_start, start_year)
-   
+
     # Calculate the value for the middle of the year
-    mid_year = (i-1)*8760 + 2879
+    mid_year = (i-1) * 8760 + 2879
     push!(yr_mid, mid_year)
 end
 
-## Hydro storage <= 0.55 * Existing Capacity at start of May 1st of every year
-@constraint(EP, cHydroSpring[y in HYDRO_RES], EP[:vS_HYDRO][y, [i in yr_mid]] .<= 0.55 .* EP[:eTotalCap][y] .* dfGen[y,:Hydro_Energy_to_Power_Ratio]) 
-
-## Hydro storage == 0.70 * Existing Capacity at the start of the year every year
-@constraint(EP, cHydroJan[y in HYDRO_RES], EP[:vS_HYDRO][y, [i in yr_start]]  .== 0.70 .* EP[:eTotalCap][y] .* dfGen[y,:Hydro_Energy_to_Power_Ratio]) 
+# Now define constraints using populated arrays
+@constraint(EP, cHydroSpring[y in HYDRO_RES, i in yr_mid], EP[:vS_HYDRO][y, i] .<= 0.55 .* EP[:eTotalCap][y] .* dfGen[y,:Hydro_Energy_to_Power_Ratio])
+@constraint(EP, cHydroJan[y in HYDRO_RES, i in yr_start], EP[:vS_HYDRO][y, i]  .== 0.70 .* EP[:eTotalCap][y] .* dfGen[y,:Hydro_Energy_to_Power_Ratio])
 
 ## Maine -> Quebec transmission limited to 2170MWe.
 # The line is defined as Quebec -> Maine in Network.csv, so these flows will be negative
@@ -90,6 +88,14 @@ end
 ## Solar <= 22GWe
 solar_rid = findall(x -> startswith(x, "solar"), dfGen[!,:Resource])
 @constraint(EP, cSolarCap, sum(EP[:eTotalCap][y] for y in solar_rid) <= 22e3)
+
+## Commercial Solar <= 15GWe
+com_rid = findall(x -> startswith(x, "commercial"), dfGen[!,:Resource])
+@constraint(EP, cComCap, sum(EP[:eTotalCap][y] for y in com_rid) <= 15e3)
+
+## Residential Solar <= 10GWe
+res_rid = findall(x -> startswith(x, "residential"), dfGen[!,:Resource])
+@constraint(EP, cResCap, sum(EP[:eTotalCap][y] for y in res_rid) <= 10e3)
 
 ## Onshore wind <= 10GWe
 onshore_rid = findall(x -> startswith(x, "onshore"), dfGen[!,:Resource])
@@ -112,7 +118,7 @@ myinputs["solve_time"] = solve_time # Store the model solve time in myinputs
 
 # Run MGA if the MGA flag is set to 1 else only save the least cost solution
 println("Writing Output")
-outputs_path = get_default_output_folder(case)
+outputs_path = "/home/gridsan/nbhatt1/GenX_July22/fusion_paper/paper_runs/results/20yr/fusion"
 elapsed_time = @elapsed write_outputs(EP, outputs_path, mysetup, myinputs)
 println("Time elapsed for writing is")
 println(elapsed_time)
