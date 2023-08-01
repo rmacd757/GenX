@@ -127,12 +127,12 @@ for i in task_id+1:num_tasks:length(emiss_lim_list)
         @constraint(EP, cSolarCap, sum(EP[:eTotalCap][y] for y in solar_rid) <= 22e3)
 
         ## Commercial solar <= 15GWe
-        solar_rid = findall(x -> startswith(x, "comm_solar"), dfGen[!,:Resource])
-        @constraint(EP, cSolarCap, sum(EP[:eTotalCap][y] for y in solar_rid) <= 15e3)
+        comm_solar_rid = findall(x -> startswith(x, "comm_solar"), dfGen[!,:Resource])
+        @constraint(EP, cCommSolarCap, sum(EP[:eTotalCap][y] for y in comm_solar_rid) <= 15e3)
 
         ## Residential solar <= 10GWe
-        solar_rid = findall(x -> startswith(x, "res_solar"), dfGen[!,:Resource])
-        @constraint(EP, cSolarCap, sum(EP[:eTotalCap][y] for y in solar_rid) <= 10e3)
+        res_solar_rid = findall(x -> startswith(x, "res_solar"), dfGen[!,:Resource])
+        @constraint(EP, cResSolarCap, sum(EP[:eTotalCap][y] for y in res_solar_rid) <= 10e3)
 
         ## Onshore wind <= 10GWe
         onshore_rid = findall(x -> startswith(x, "onshore"), dfGen[!,:Resource])
