@@ -118,7 +118,7 @@ myinputs["solve_time"] = solve_time # Store the model solve time in myinputs
 
 # Run MGA if the MGA flag is set to 1 else only save the least cost solution
 println("Writing Output")
-outputs_path = "/home/gridsan/nbhatt1/GenX_July22/fusion_paper/paper_runs/results/20yr/fusion"
+outputs_path = "/home/gridsan/nbhatt1/GenX/fusion_paper/paper_runs/results/20yr/fusion"
 elapsed_time = @elapsed write_outputs(EP, outputs_path, mysetup, myinputs)
 println("Time elapsed for writing is")
 println(elapsed_time)

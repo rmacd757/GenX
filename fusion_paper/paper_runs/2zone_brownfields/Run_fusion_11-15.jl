@@ -6,20 +6,20 @@ using CSV, DataFrames
 
 for i in 2011:2015
 
-    endcap_data = CSV.read("/home/gridsan/nbhatt1/GenX_July22/fusion_paper/paper_runs/2zone_greenfields/fusion/$i/Results_1/capacity.csv", DataFrame)
+    endcap_data = CSV.read("/home/gridsan/nbhatt1/GenX/fusion_paper/paper_runs/results/greenfields/fusion/$i/capacity.csv", DataFrame)
 
     yearly_cap = endcap_data[1:end-1, "EndCap"]
     yearly_mwh = endcap_data[1:end-1, "EndEnergyCap"]
 
-    gen_source = CSV.read("/home/gridsan/nbhatt1/GenX_July22/fusion_paper/paper_runs/2zone_brownfields/data/fusion/Generators_data.csv", DataFrame)
+    gen_source = CSV.read("/home/gridsan/nbhatt1/GenX/fusion_paper/paper_runs/2zone_brownfields/data/fusion/Generators_data.csv", DataFrame)
 
     gen_source[!, "Existing_Cap_MW"] = yearly_cap
     gen_source[!, "Existing_Cap_MWh"] = yearly_mwh
 
-    CSV.write("/home/gridsan/nbhatt1/GenX_July22/fusion_paper/paper_runs/2zone_brownfields/data/fusion/Generators_data.csv", gen_source)
+    CSV.write("/home/gridsan/nbhatt1/GenX/fusion_paper/paper_runs/2zone_brownfields/data/fusion/Generators_data.csv", gen_source)
 
     ##### Modeling starts here #####
-    case = "/home/gridsan/nbhatt1/GenX_July22/fusion_paper/paper_runs/2zone_brownfields/data/fusion"
+    case = "/home/gridsan/nbhatt1/GenX/fusion_paper/paper_runs/2zone_brownfields/data/fusion"
 
     # function get_settings_path(case::AbstractString)
     #     return joinpath(case, "Settings")
@@ -33,12 +33,12 @@ for i in 2011:2015
     #     return joinpath(case, "Results")
     # end
 
-    genx_settings = "/home/gridsan/nbhatt1/GenX_July22/fusion_paper/paper_runs/2zone_brownfields/data/fusion/Settings/genx_settings.yml"
+    genx_settings = "/home/gridsan/nbhatt1/GenX/fusion_paper/paper_runs/2zone_brownfields/data/fusion/Settings/genx_settings.yml"
     # get_settings_path(case, "genx_settings.yml") #Settings YAML file path
     mysetup = configure_settings(genx_settings) # mysetup dictionary stores settings and GenX-specific parameters
 
     inputs_path = case
-    settings_path = "/home/gridsan/nbhatt1/GenX_July22/fusion_paper/paper_runs/2zone_brownfields/data/fusion/Settings"
+    settings_path = "/home/gridsan/nbhatt1/GenX/fusion_paper/paper_runs/2zone_brownfields/data/fusion/Settings"
     #get_settings_path(case)
 
     ### Cluster time series inputs if necessary and if specified by the user
@@ -137,7 +137,7 @@ for i in 2011:2015
 
     # Run MGA if the MGA flag is set to 1 else only save the least cost solution
     println("Writing Output")
-    outputs_path = "/home/gridsan/nbhatt1/GenX_July22/fusion_paper/paper_runs/results/brownfields/fusion/$i"
+    outputs_path = "/home/gridsan/nbhatt1/GenX/fusion_paper/paper_runs/results/brownfields/fusion/$i"
     elapsed_time = @elapsed write_outputs(EP, outputs_path, mysetup, myinputs)
     println("Time elapsed for writing is")
     println(elapsed_time)
