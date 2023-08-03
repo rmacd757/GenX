@@ -56,7 +56,7 @@ OPTIMIZER = configure_solver(mysetup["Solver"], settings_path)
 
 # Turn this setting on if you run into numerical stability issues
 # set_optimizer_attribute(OPTIMIZER, "BarHomogeneous", 1)
-set_optimizer_attribute(OPTIMIZER, "Threads", 12)
+set_optimizer_attribute(OPTIMIZER, "Threads", 16)
 
 #### Running a case
 
