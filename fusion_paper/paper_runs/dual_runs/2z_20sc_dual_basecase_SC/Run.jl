@@ -78,9 +78,9 @@ num_tasks = parse(Int,ARGS[2])
 # Get all cases as tuples of (emiss_lim, fusion_cap)
 all_cases = vcat(collect(Iterators.product(emiss_lim_list, fusion_cap_list))...)
 
-for i in task_id+1:num_tasks:length(all_cases)
-    emiss_lim = all_cases[i][1]
-    fusion_cap = all_cases[i][2]
+for idx in task_id+1:num_tasks:length(all_cases)
+    emiss_lim = all_cases[idx][1]
+    fusion_cap = all_cases[idx][2]
 
     println("Emiss Limit: $emiss_lim, Fusion Cap: $fusion_cap")
 
@@ -115,25 +115,25 @@ for i in task_id+1:num_tasks:length(all_cases)
         HYDRO_RES = myinputs["HYDRO_RES"]
 
         # Empty arrays for indexing
-        yr_start = Int[]
-        yr_mid = Int[]
+        jan1_idxs = Int[]
+        may1_idxs = Int[]
 
         # 20 year indexing
-        for i in 1:20
-            # Calculate the value for the beginning of the year
-            start_year = (i-1) * 8760 + 1
-            push!(yr_start, start_year)
+        for year_num in 1:20
+            # Calculate the index for the beginning of the years
+            start_year = (year_num-1) * 8760 + 1
+            push!(jan1_idxs, start_year)
 
-            # Calculate the value for the middle of the year
-            mid_year = (i-1) * 8760 + 2879
-            push!(yr_mid, mid_year)
+            # Calculate the index for the middle of the years
+            mid_year = (year_num-1) * 8760 + 2879
+            push!(may1_idxs, mid_year)
         end
 
-        ## Hydro storage <= 0.55 * Existing Capacity at start of May 1st 
-        @constraint(EP, cHydroSpring[y in HYDRO_RES, i in yr_mid], EP[:vS_HYDRO][y, i] .<= 0.55 .* EP[:eTotalCap][y] .* dfGen[y,:Hydro_Energy_to_Power_Ratio])
-
         ## Hydro storage == 0.70 * Existing Capacity at the start of the year
-        @constraint(EP, cHydroJan[y in HYDRO_RES, i in yr_start], EP[:vS_HYDRO][y, i]  .== 0.70 .* EP[:eTotalCap][y] .* dfGen[y,:Hydro_Energy_to_Power_Ratio])
+        @constraint(EP, cHydroJan[y in HYDRO_RES, jan1_idx in jan1_idxs], EP[:vS_HYDRO][y, jan1_idx]  .== 0.70 .* EP[:eTotalCap][y] .* dfGen[y,:Hydro_Energy_to_Power_Ratio])
+        
+        ## Hydro storage <= 0.55 * Existing Capacity at start of May 1st 
+        @constraint(EP, cHydroSpring[y in HYDRO_RES, may1_idx in may1_idxs], EP[:vS_HYDRO][y, may1_idx] .<= 0.55 .* EP[:eTotalCap][y] .* dfGen[y,:Hydro_Energy_to_Power_Ratio])
             
         ## Maine -> Quebec transmission limited to 2170MWe.
         # The line is defined as Quebec -> Maine in Network.csv, so these flows will be negative
