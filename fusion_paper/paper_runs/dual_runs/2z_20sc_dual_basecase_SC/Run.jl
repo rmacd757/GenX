@@ -84,6 +84,8 @@ for idx in task_id+1:num_tasks:length(all_cases)
 
     println("Emiss Limit: $emiss_lim, Fusion Cap: $fusion_cap")
 
+    set_optimizer_attribute(OPTIMIZER, "Threads", 12)
+
     try
 
         myinputs["dfMaxCO2"][2] = emiss_lim * 1e3 / scale_factor
