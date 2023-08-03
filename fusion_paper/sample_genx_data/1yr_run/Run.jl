@@ -86,24 +86,28 @@ for emiss_lim in emiss_lim_list
     @constraint(EP, cMaine2Quebec[t=1:myinputs["T"]], EP[:vFLOW][2, t] >= -170.0)
 
     ## Solar <= 22GWe
-    # solar_rid = findall(x -> startswith(x, "solar"), dfGen[!,:Resource])
-    # @constraint(EP, cSolarCap, sum(EP[:eTotalCap][y] for y in solar_rid) <= 22e3)
+    solar_rid = findall(x -> startswith(x, "solar"), dfGen[!,:Resource])
+    @constraint(EP, cSolarCap, sum(EP[:eTotalCap][y] for y in solar_rid) <= 22e3)
 
-    # ## Onshore wind <= 10GWe
-    # onshore_rid = findall(x -> startswith(x, "onshore"), dfGen[!,:Resource])
-    # @constraint(EP, cOnshoreCap, sum(EP[:eTotalCap][y] for y in onshore_rid) <= 10e3)
+    ## Commercial solar <= 12GWe
+    comm_solar_rid = findall(x -> startswith(x, "comm_solar"), dfGen[!,:Resource])
+    @constraint(EP, cCommSolarCap, sum(EP[:eTotalCap][y] for y in comm_solar_rid) <= 12e3)
 
-    # ## Offshore wind <= 280GWe
-    # offshore_rid = findall(x -> startswith(x, "offshore"), dfGen[!,:Resource])
-    # @constraint(EP, cOffshoreCap, sum(EP[:eTotalCap][y] for y in offshore_rid) <= 280e3)
+    ## Residential solar <= 6GWe
+    res_solar_rid = findall(x -> startswith(x, "res_solar"), dfGen[!,:Resource])
+    @constraint(EP, cResSolarCap, sum(EP[:eTotalCap][y] for y in res_solar_rid) <= 6e3)
 
-    ## Offshore_fixed <= 37.5 GWe 
-    offshore_fixed = findall(x -> startswith(x, "fixed_offshore"), dfGen[!,:Resource])
-    @constraint(EP, cOffshoreFixCap, sum(EP[:eTotalCap][y] for y in offshore_fixed) <= 37.5e3)
+    ## Onshore wind <= 10GWe
+    onshore_rid = findall(x -> startswith(x, "onshore"), dfGen[!,:Resource])
+    @constraint(EP, cOnshoreCap, sum(EP[:eTotalCap][y] for y in onshore_rid) <= 10e3)
 
-    ## Offshore_floating <= 275 GWe 
-    offshore_float = findall(x -> startswith(x, "float_offshore"), dfGen[!,:Resource])
-    @constraint(EP, cOffshoreFloatCap, sum(EP[:eTotalCap][y] for y in offshore_float) <= 275e3)
+    ## Fixed offshore wind <= 37.5We
+    fixed_offshore_rid = findall(x -> startswith(x, "fixed_offshore"), dfGen[!,:Resource])
+    @constraint(EP, cFixedOffshoreCap, sum(EP[:eTotalCap][y] for y in fixed_offshore_rid) <= 37.5e3)
+
+    ## Floating offshore wind <= 275GWe
+    floating_offshore_rid = findall(x -> startswith(x, "float_offshore"), dfGen[!,:Resource])
+    @constraint(EP, cFloatOffshoreCap, sum(EP[:eTotalCap][y] for y in floating_offshore_rid) <= 275e3)
 
     ########################
 
