@@ -492,7 +492,7 @@ function fusionfuel!(EP::Model, inputs::Dict, setup::Dict)
     # Tritium molar mass = 3g / mol
     # kg tritium per MWh = 3 / 1000 * (3600 * 1e6 / (14.1e6 * 1.6e-19)) / 6.022e23
     # Extra thermal energy from secondary reactions in the blanket ~ 15%
-    # Adjusted kg tritium per MWh = 3 / 1000 * (3600 * 1e6 / (14.1e6 * 1.6e-19)) / 6.022e23 / 1.15 = 6.96295e-6
+    # Adjusted kg tritium per MWh = 3 / 1000 * (3600 * 1e6 / (14.1e6 * 1.6e-19)) / 6.022e23 / 1.15 = 6.91267e-6
     # We require the same number of mols of deuterium, but that equals 2/3 the mass
 
     TRIT_FUEL_RATIO = 3. / 1000. * (3600. * 1e6 / (14.1e6 * 1.6e-19)) / 6.022e23 ./ dfFusion[!,:Blanket_Power_Mult]
