@@ -613,12 +613,18 @@ function fusionvessel!(EP::Model, inputs::Dict, setup::Dict)
     @expression(EP, eC2[y in FUSION_VESSEL], calc_vacvessel_c2(vessel_inv[y], discount[y], vessel_name[y], reactor_util_guess[y], replace_dur[y]))
 
     ## Constrain annual utilization
-    @constraint(EP, cAnnualUtilMax[y in FUSION_VESSEL], 
+    if "Cap_Fac_Constraint_Type" in names(dfFusion)
+        # FUSION_100 = intersect(FUSION_VESSEL, dfFusion[dfFusion[!,:Cap_Fac_Constraint_Type].==2,:R_ID])
+        FUSION_VESSEL_any = intersect(FUSION_VESSEL, dfFusion[dfFusion[!,:Cap_Fac_Constraint_Type].==1,:R_ID])
+    else 
+        FUSION_VESSEL_any = FUSION_VESSEL
+    end
+    @constraint(EP, cAnnualUtilMax[y in FUSION_VESSEL_any], 
         eThermOutputTot[y] 
         <= 
         EP[:eFusionThermCap][y] * T * calc_fpp_maxutil(vessel_name[y], replace_dur[y])
     )
-    
+
     ## Constrain minimum annual utilization to avoid negative vessel costs
     @constraint(EP, cAnnualUtilMin[y in FUSION_VESSEL], 
         eThermOutputTot[y] 
