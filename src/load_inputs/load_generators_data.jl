@@ -149,8 +149,9 @@ function load_generators_data!(setup::Dict, path::AbstractString, inputs_gen::Di
 	end
 	# possible_resources = union(inputs_gen["NEW_CAP"],inputs_gen["RET_CAP"])
 	# inputs_gen["FUSION"] = intersect(FUSION, possible_resources)
-	inputs_gen["FUSION"] = intersect(FUSION, inputs_gen["NEW_CAP"])
-
+	# inputs_gen["FUSION"] = intersect(FUSION, inputs_gen["NEW_CAP"])
+	inputs_gen["FUSION"] = FUSION
+	
 	if setup["ParameterScale"] == 1  # Parameter scaling turned on - adjust values of subset of parameter values
 
 		# The existing capacity of a power plant in megawatts
