@@ -56,7 +56,6 @@ OPTIMIZER = configure_solver(mysetup["Solver"], settings_path)
 
 # Turn this setting on if you run into numerical stability issues
 # set_optimizer_attribute(OPTIMIZER, "BarHomogeneous", 1)
-set_optimizer_attribute(OPTIMIZER, "Threads", 16)
 
 #### Running a case
 
@@ -75,6 +74,9 @@ mkpath(results_path)
 
 task_id = parse(Int,ARGS[1])
 num_tasks = parse(Int,ARGS[2])
+num_threads = parse(Int,ARGS[3])
+
+set_optimizer_attribute(OPTIMIZER, "Threads", num_threads)
 
 # Get all cases as tuples of (emiss_lim, fusion_cap)
 all_cases = vcat(collect(Iterators.product(emiss_lim_list, fusion_cap_list))...)
