@@ -104,7 +104,7 @@ function fusioninvestment_fpp!(EP::Model, inputs::Dict, setup::Dict)
     @expression(EP, eMaxRecircPwr[y in FUSION], 
         + dfFusion[y,:Mag_Cool] 
         + dfFusion[y,:Plant_fixed_power_MWe]
-        + dfFusion[y,:Plant_var_power_MWeperMWt] * eFusionThermCap[y]
+        + dfFusion[y,:Plant_var_power_MWeperMWt] * eFusionThermCapSize[y]
     )
 
     ## Maximum recirculating power of the FPP fleet in each zone
