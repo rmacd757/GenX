@@ -184,7 +184,7 @@ for idx in task_id+1:num_tasks:length(all_cases)
     @constraint(EP, cFusionCap, sum(EP[:eTotalCap][y] for y in fusion_rid) <= fusion_cap)
 
     
-    @constraint(EP, cBaseloadFPP[y in FUSION], EP[:eThermOutputTot][y] >= 0.9 * EP[:eFusionThermCap][y] * myinputs["T"])
+    @constraint(EP, cBaseloadFPP[y in fusion_rid], EP[:eThermOutputTot][y] >= 0.9 * EP[:eFusionThermCap][y] * myinputs["T"])
     
     ########################
 
