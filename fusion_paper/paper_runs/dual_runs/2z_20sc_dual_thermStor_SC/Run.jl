@@ -180,7 +180,9 @@ for idx in task_id+1:num_tasks:length(all_cases)
     # @constraint(EP, cFloatOffshoreCap, sum(EP[:eTotalCap][y] for y in floating_offshore_rid) <= 275e3)
 
     ## Fusion <= fusion_cap
-    @constraint(EP, cFusionCap, sum(EP[:eTotalCap][y] for y in fusion_rid) <= fusion_cap)
+    # @constraint(EP, cFusionCap, sum(EP[:eTotalCap][y] for y in fusion_rid) <= fusion_cap)
+    turb_efficiency = 3.412 ./ dfGen[!,:Heat_Rate_MMBTU_per_MWh]
+    @constraint(EP, cFusionCap, sum(EP[:eFusionThermCap][y] * turb_efficiency[y] - EP[:eFleetMaxRecircPwr][y] for y in fusion_rid) <= fusion_cap)
     
     ########################
 
