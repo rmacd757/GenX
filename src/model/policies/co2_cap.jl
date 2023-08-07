@@ -82,10 +82,25 @@ function co2_cap!(EP::Model, inputs::Dict, setup::Dict)
 			# Breaking up into the timeseries into CO2CapPeriods periods
 			# If periods are uneven, make the first period longest
 			period_times = timeseries2periods(T, setup["CO2CapPeriods"])
+			if "CO2CapWiggle" in keys(setup) && setup["CO2CapWiggle"] > 0
+				# Each period can deviate by CO2CapWiggle % from the average
+				@constraint(EP, cCO2Emissions_systemwide[cap=1:inputs["NCO2Cap"], p=1:setup["CO2CapPeriods"]],
+					sum(inputs["omega"][t] * EP[:eEmissionsByZone][z,t] for z=findall(x->x==1, inputs["dfCO2CapZones"][:,cap]), t=period_times[p,1]:period_times[p,2]) 
+					<=
+					(1 + setup["CO2CapWiggle"]) * sum(inputs["dfMaxCO2"][z,cap] for z=findall(x->x==1, inputs["dfCO2CapZones"][:,cap])) / setup["CO2CapPeriods"]
+				)
+				# The total must still be less than the cap
+				@constraint(EP, cCO2Emissions_systemwide_tot[cap=1:inputs["NCO2Cap"]],
+					sum(inputs["omega"][t] * EP[:eEmissionsByZone][z,t] for z=findall(x->x==1, inputs["dfCO2CapZones"][:,cap]), t=1:T) <=
+					sum(inputs["dfMaxCO2"][z,cap] for z=findall(x->x==1, inputs["dfCO2CapZones"][:,cap]))
+				)
+			else
+			# Each period must strictly stay within the per-period limit
 			@constraint(EP, cCO2Emissions_systemwide[cap=1:inputs["NCO2Cap"], p=1:setup["CO2CapPeriods"]],
 				sum(inputs["omega"][t] * EP[:eEmissionsByZone][z,t] for z=findall(x->x==1, inputs["dfCO2CapZones"][:,cap]), t=period_times[p,1]:period_times[p,2]) <=
 				sum(inputs["dfMaxCO2"][z,cap] for z=findall(x->x==1, inputs["dfCO2CapZones"][:,cap])) / setup["CO2CapPeriods"]
 			)
+			end
 		end
 
 	## Load + Rate-based: Emissions constraint in terms of rate (tons/MWh)
