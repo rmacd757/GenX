@@ -4,8 +4,8 @@ using OrderedCollections
 using DataFrames
 using CSV
 
-input_name = "2z_20sc_dual_basecase_SC"
-case_name = "2z_20sc_dual_basecase_SC"
+input_name = "2z_20sc_dual_baseload_SC"
+case_name = "2z_20sc_dual_baseload_SC"
 
 case_path = @__DIR__
 results_path = joinpath(case_path, "Results")
@@ -184,7 +184,7 @@ for idx in task_id+1:num_tasks:length(all_cases)
     @constraint(EP, cFusionCap, sum(EP[:eTotalCap][y] for y in fusion_rid) <= fusion_cap)
 
     
-    @constraint(EP, cBaseloadFPP, EP[:eThermOutputTot][y] >= 0.9 * EP[:eFusionThermCap][y] * myinputs["T"])
+    @constraint(EP, cBaseloadFPP[y in FUSION], EP[:eThermOutputTot][y] >= 0.9 * EP[:eFusionThermCap][y] * myinputs["T"])
     
     ########################
 
