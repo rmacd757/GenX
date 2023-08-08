@@ -55,7 +55,7 @@ scale_factor = mysetup["ParameterScale"] == 1 ? ModelScalingFactor : 1
 for emiss_lim in emiss_lim_list
 
     # Hard-coded to put all emissions in New Hampshire, but CO2 Cap is set to be system-wide
-    myinputs["dfMaxCO2"][2] = emiss_lim * 1e3 / scale_factor
+    myinputs["dfMaxCO2"][1] = emiss_lim * 1e3 / scale_factor
     outputs_path = joinpath(case, "Results", "Primal_Capex_8500.0_EmissLevel_" * string(emiss_lim))
 
     if isfile(joinpath(outputs_path, "costs.csv"))
@@ -75,15 +75,15 @@ for emiss_lim in emiss_lim_list
     dfGen = myinputs["dfGen"]
 
     ## Hydro storage <= 0.55 * Existing Capacity at start of May 1st 
-    @constraint(EP, cHydroSpring[y in HYDRO_RES], EP[:vS_HYDRO][y, 2879] .<= 0.55 .* EP[:eTotalCap][y] .* dfGen[y,:Hydro_Energy_to_Power_Ratio]) 
+    # @constraint(EP, cHydroSpring[y in HYDRO_RES], EP[:vS_HYDRO][y, 2879] .<= 0.55 .* EP[:eTotalCap][y] .* dfGen[y,:Hydro_Energy_to_Power_Ratio]) 
 
     ## Hydro storage == 0.70 * Existing Capacity at the start of the year
-    @constraint(EP, cHydroJan[y in HYDRO_RES], EP[:vS_HYDRO][y, 1] .== 0.70 .* EP[:eTotalCap][y] .* dfGen[y,:Hydro_Energy_to_Power_Ratio]) 
+    # @constraint(EP, cHydroJan[y in HYDRO_RES], EP[:vS_HYDRO][y, 1] .== 0.70 .* EP[:eTotalCap][y] .* dfGen[y,:Hydro_Energy_to_Power_Ratio]) 
 
     ## Maine -> Quebec transmission limited to 2170MWe.
     # The line is defined as Quebec -> Maine in Network.csv, so these flows will be negative
     # Make sure to correc the line index if the order is changed in Network.csv
-    @constraint(EP, cMaine2Quebec[t=1:myinputs["T"]], EP[:vFLOW][2, t] >= -170.0)
+    # @constraint(EP, cMaine2Quebec[t=1:myinputs["T"]], EP[:vFLOW][2, t] >= -170.0)
 
     ## Solar <= 22GWe
     solar_rid = findall(x -> startswith(x, "solar"), dfGen[!,:Resource])
