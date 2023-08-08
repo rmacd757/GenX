@@ -74,16 +74,20 @@ function co2_cap!(EP::Model, inputs::Dict, setup::Dict)
 	if setup["CO2Cap"] == 1
 		if setup["CO2CapPeriods"] <= 1
 			# CO2 cap based on a single period
+			println("Using a single period for CO2 cap")
 			@constraint(EP, cCO2Emissions_systemwide[cap=1:inputs["NCO2Cap"]],
-				sum(inputs["omega"][t] * EP[:eEmissionsByZone][z,t] for z=findall(x->x==1, inputs["dfCO2CapZones"][:,cap]), t=1:T) <=
+				sum(inputs["omega"][t] * EP[:eEmissionsByZone][z,t] for z=findall(x->x==1, inputs["dfCO2CapZones"][:,cap]), t=1:T) 
+				<=
 				sum(inputs["dfMaxCO2"][z,cap] for z=findall(x->x==1, inputs["dfCO2CapZones"][:,cap]))
 			)
 		else
+			println("Using $(setup["CO2CapPeriods"]) periods for CO2 cap")
 			# Breaking up into the timeseries into CO2CapPeriods periods
 			# If periods are uneven, make the first period longest
 			period_times = timeseries2periods(T, setup["CO2CapPeriods"])
 			if "CO2CapWiggle" in keys(setup) && setup["CO2CapWiggle"] > 0
 				# Each period can deviate by CO2CapWiggle % from the average
+				println("Allowing $(1+setup["CO2CapWiggle"])% deviation from average CO2 cap in each period")
 				@constraint(EP, cCO2Emissions_systemwide[cap=1:inputs["NCO2Cap"], p=1:setup["CO2CapPeriods"]],
 					sum(inputs["omega"][t] * EP[:eEmissionsByZone][z,t] for z=findall(x->x==1, inputs["dfCO2CapZones"][:,cap]), t=period_times[p,1]:period_times[p,2]) 
 					<=
@@ -91,13 +95,15 @@ function co2_cap!(EP::Model, inputs::Dict, setup::Dict)
 				)
 				# The total must still be less than the cap
 				@constraint(EP, cCO2Emissions_systemwide_tot[cap=1:inputs["NCO2Cap"]],
-					sum(inputs["omega"][t] * EP[:eEmissionsByZone][z,t] for z=findall(x->x==1, inputs["dfCO2CapZones"][:,cap]), t=1:T) <=
+					sum(inputs["omega"][t] * EP[:eEmissionsByZone][z,t] for z=findall(x->x==1, inputs["dfCO2CapZones"][:,cap]), t=1:T) 
+					<=
 					sum(inputs["dfMaxCO2"][z,cap] for z=findall(x->x==1, inputs["dfCO2CapZones"][:,cap]))
 				)
 			else
 			# Each period must strictly stay within the per-period limit
 			@constraint(EP, cCO2Emissions_systemwide[cap=1:inputs["NCO2Cap"], p=1:setup["CO2CapPeriods"]],
-				sum(inputs["omega"][t] * EP[:eEmissionsByZone][z,t] for z=findall(x->x==1, inputs["dfCO2CapZones"][:,cap]), t=period_times[p,1]:period_times[p,2]) <=
+				sum(inputs["omega"][t] * EP[:eEmissionsByZone][z,t] for z=findall(x->x==1, inputs["dfCO2CapZones"][:,cap]), t=period_times[p,1]:period_times[p,2]) 
+				<=
 				sum(inputs["dfMaxCO2"][z,cap] for z=findall(x->x==1, inputs["dfCO2CapZones"][:,cap])) / setup["CO2CapPeriods"]
 			)
 			end
