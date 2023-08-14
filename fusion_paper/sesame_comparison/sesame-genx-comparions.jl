@@ -49,6 +49,6 @@ for x in dir_2_run
     df_2_save["$(case_name)_power"] = power_df
 end
 
-XLSX.writetable(joinpath(current_dir,"comparison-genx.xlsx"), overwrite=true, 
+XLSX.writetable(joinpath(current_dir,"comparison-genx-v2.xlsx"), overwrite=true, 
         df_2_save...
     )
