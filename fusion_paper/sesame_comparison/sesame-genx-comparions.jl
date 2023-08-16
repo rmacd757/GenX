@@ -8,9 +8,11 @@ current_dir = @__DIR__
 dir_2_run = [
     # [joinpath(current_dir,"isone_1yr"), 0],
     # [joinpath(current_dir,"isone_1yr_simpleFusion"), 0],
-    [joinpath(current_dir,"isone_1yr_noVRECap"), 0],
+    # [joinpath(current_dir,"isone_1yr_noVRECap"), 0],
     [joinpath(current_dir,"isone_1yr_simpleFusion_noVRECap"), 0],
-    [joinpath(current_dir,"isone_1yr_semiFusion_noVRECap"), 0],
+    # [joinpath(current_dir,"isone_1yr_semiFusion_noVRECap"), 0],
+    [joinpath(current_dir,"isone_1yr_noVRECap_reducedCap"), 0],
+    [joinpath(current_dir,"isone_1yr_semiFusion_noVRECap_reducedCap"), 0],
 ]
 
 df_2_save = OrderedDict{String,DataFrame}()
@@ -49,6 +51,6 @@ for x in dir_2_run
     df_2_save["$(case_name)_power"] = power_df
 end
 
-XLSX.writetable(joinpath(current_dir,"comparison-genx-v2.xlsx"), overwrite=true, 
+XLSX.writetable(joinpath(current_dir,"comparison-genx-v3-reducedCap.xlsx"), overwrite=true, 
         df_2_save...
     )
