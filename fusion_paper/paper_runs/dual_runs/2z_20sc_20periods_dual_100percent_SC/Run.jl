@@ -63,7 +63,7 @@ OPTIMIZER = configure_solver(mysetup["Solver"], settings_path)
 println("Loading Inputs")
 myinputs = load_inputs(mysetup, inputs_path)
 
-emiss_lim_list = 20.0 .* 100.0 .* range(start=0.5, stop=2.5, step=0.5)
+emiss_lim_list = 20.0 .* 100.0 .* vcat(range(start=0.5, stop=2.5, step=0.5), [5.0, 7.5, 10.0])
 
 mysetup["CO2Cap"] = 1
 scale_factor = mysetup["ParameterScale"] == 1 ? ModelScalingFactor : 1
