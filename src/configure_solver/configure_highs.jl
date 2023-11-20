@@ -257,10 +257,6 @@ The HiGHS optimizer instance is configured with the following default parameters
 	# [type: HighsInt, advanced: true, range: {0, 20}, default: 0]
 	allowed_cost_scale_factor: 0
 	
-	# Strategy for dualising before simplex
-	# [type: HighsInt, advanced: true, range: {-1, 1}, default: -1]
-	simplex_dualise_strategy: -1
-	
 	# Strategy for permuting before simplex
 	# [type: HighsInt, advanced: true, range: {-1, 1}, default: -1]
 	simplex_permute_strategy: -1
@@ -478,8 +474,6 @@ function configure_highs(solver_settings_path::String)
 		if(haskey(solver_settings, "allowed_matrix_scale_factor")) Myallowed_matrix_scale_factor = solver_settings["allowed_matrix_scale_factor"] end
 	Myallowed_cost_scale_factor = 0 
 		if(haskey(solver_settings, "allowed_cost_scale_factor")) Myallowed_cost_scale_factor = solver_settings["allowed_cost_scale_factor"] end
-	Mysimplex_dualise_strategy = -1
-		if(haskey(solver_settings, "simplex_dualise_strategy")) Mysimplex_dualise_strategy = solver_settings["simplex_dualise_strategy"] end
 	Mysimplex_permute_strategy = -1
 		if(haskey(solver_settings, "simplex_permute_strategy")) Mysimplex_permute_strategy = solver_settings["simplex_permute_strategy"] end
 	Mymax_dual_simplex_cleanup_level = 1
@@ -588,7 +582,6 @@ function configure_highs(solver_settings_path::String)
 		"cost_scale_factor" => Mycost_scale_factor,
 		"allowed_matrix_scale_factor" => Myallowed_matrix_scale_factor,
 		"allowed_cost_scale_factor" => Myallowed_cost_scale_factor,
-		"simplex_dualise_strategy" => Mysimplex_dualise_strategy,
 		"simplex_permute_strategy" => Mysimplex_permute_strategy,
 		"max_dual_simplex_cleanup_level" => Mymax_dual_simplex_cleanup_level,
 		"max_dual_simplex_phase1_cleanup_level" => Mymax_dual_simplex_phase1_cleanup_level,
