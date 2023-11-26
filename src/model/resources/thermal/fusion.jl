@@ -388,11 +388,11 @@ function fusionthermalbalance!(EP::Model, inputs::Dict, setup::Dict)
     ## FPP fleet thermal output
     @variable(EP, vThermOutput[y in FUSION,t=1:T] >= 0)
 
-    # Thermal power <= thermal capacity
+    # Thermal power <= thermal capacity of non-standby units
     @constraint(EP, [y in FUSION,t=1:T], 
         vThermOutput[y,t] 
         <= 
-        EP[:eFusionThermCap][y]
+        EP[eFusionThermCapSize][y] * EP[vFusionReactorCommit][y,t]
     )
 
     ### Calculation for the thermal balance of the salt loop
