@@ -392,7 +392,7 @@ function fusionthermalbalance!(EP::Model, inputs::Dict, setup::Dict)
     @constraint(EP, [y in FUSION,t=1:T], 
         vThermOutput[y,t] 
         <= 
-        EP[eFusionThermCapSize][y] * EP[vFusionReactorCommit][y,t]
+        EP[:eFusionThermCapSize][y] * EP[:vFusionReactorCommit][y,t]
     )
 
     ### Calculation for the thermal balance of the salt loop
