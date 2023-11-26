@@ -132,11 +132,12 @@ function fusioninvestment_fpp!(EP::Model, inputs::Dict, setup::Dict)
 
     @expression(EP, eFusionTurbGrossCap[y in FUSION], eFusionNumTurbines[y] * eFusionTurbGrossCapSize[y])
 
-    # Calculate the annuity for the turbine costs, based on the gross capacity of the turbine
+    # Calculate the annuity for the turbine costs, based on the net capacity of a turbine which matches the reactor capacity
     turb_cost = dfFusion[!,:Turb_CAPEX] .* dfFusion[!,:Dis_Rate] ./ (1 .- (1 .+ dfFusion[!,:Dis_Rate]).^(-dfFusion[!,:Plant_Life]))
 
-    # Calculate the total 
-    @expression(EP, eTurbFinalCost[y in FUSION], eFusionTurbGrossCap[y] * turb_cost[y])
+    # Calculate the total cost of the turbines
+    # The cost is input as a net-MWe cost.
+    @expression(EP, eTurbFinalCost[y in FUSION], turb_cost[y] * eFusionNumTurbines[y] * eFusionTurbNetCapSize[y])
 
     for y in FUSION
         if dfFusion[y,:Var_Turb_Cap] == 1
@@ -243,7 +244,12 @@ function fusioninvestment_vessel(EP::Model, inputs::Dict, setup::Dict)
 
     @expression(EP, eC1[y in FUSION_VESSEL], calc_vacvessel_c1(vessel_inv[y], discount[y], vessel_name[y], reactor_util_guess[y], replace_dur[y]))
 
-    @expression(EP, eVesselFixCosts[y in FUSION_VESSEL], eC1[y] * EP[:eTotalCap][y])
+    # The vessel capex is input based on the net-electric power of a matched turbine + reactor
+    # However, the turbine and reactor capacity are not fixed,
+    # so we need to calculate the total cost based on the equivalent reactor capacity
+    # Reactor gross-elec cap 
+    # Units: $/year/MW-net * (# reactors) * (MW-net / reactor) = $/year
+    @expression(EP, eVesselFixCosts[y in FUSION_VESSEL], eC1[y] * EP[:eFusionTurbNetCapSize][y] * EP[:vFusionNumReactors][y])
 
     for y in FUSION_VESSEL
         update_fixed_cost!(EP, eVesselFixCosts[y], y)
@@ -336,12 +342,33 @@ function fusionthermalstorage!(EP::Model, inputs::Dict, setup::Dict)
     @constraint(EP, [y in FUSION_ThermStor,t=1:T], vThermChar[y,t] <= EP[:vThermDisCap][y])
     @constraint(EP, [y in FUSION_ThermStor,t=1:T], vThermDis[y,t] + vThermChar[y,t] <= EP[:vThermDisCap][y])
 
+    if "Therm_Stor_Leakage_Daily_Frac" in names(dfFusion)
+        hourly_leakage = dfFusion[!,:Therm_Stor_Leakage_Daily_Frac] ./ 24.
+    else
+        hourly_leakage = zeros(length(FUSION_ThermStor))
+    end 
+
+    if "Therm_Stor_Charge_Eff_Frac" in names(dfFusion)
+        charging_efficiency = dfFusion[!,:Therm_Stor_Charge_Eff_Frac]
+    else
+        charging_efficiency = ones(length(FUSION_ThermStor))
+    end 
+
+    if "Therm_Stor_Discharge_Eff_Frac" in names(dfFusion)
+        discharging_efficiency = dfFusion[!,:Therm_Stor_Discharge_Eff_Frac]
+    else
+        discharging_efficiency = ones(length(FUSION_ThermStor))
+    end
+
     ## Calculate the net discharge rate
-    @expression(EP, eThermStorNetDischarge[y in FUSION_ThermStor, t=1:T], vThermDis[y,t] - vThermChar[y,t])
+    # This calculation is done from the turbines point of view,
+    # so the discharge energy is after storage -> discharge losses
+    # and the charge energy is before charge -> storage losses
+    @expression(EP, eThermStorNetDischarge[y in FUSION_ThermStor, t=1:T], vThermDis[y,t]  - vThermChar[y,t])
 
     ## Change in stored energy == net discharge rate
     ## Later, we can add losses or other factors which differentiate these two terms
-    @constraint(EP, [y in FUSION_ThermStor,t=1:T], vThermStor[y,cyclicindex(t-1,T)] - vThermStor[y,t] == eThermStorNetDischarge[y,t])
+    @constraint(EP, [y in FUSION_ThermStor,t=1:T], (1 - hourly_leakage[y]) * vThermStor[y,cyclicindex(t-1,T)] - vThermStor[y,t] == vThermDis[y,t] / discharging_efficiency[y] - vThermChar[y,t] * charging_efficiency[y])
 end
 
 function fusionthermalbalance!(EP::Model, inputs::Dict, setup::Dict)
@@ -635,7 +662,10 @@ function fusionvessel!(EP::Model, inputs::Dict, setup::Dict)
     turb_efficiency = MMBTU_PER_MWH ./ dfGen[!,:Heat_Rate_MMBTU_per_MWh]
 
     ## Add Vessel Investment Costs to Var Costs
-    @expression(EP, eVesselVarCosts[y in FUSION_VESSEL], (eC2[y] / T) * eThermOutputTot[y] * turb_efficiency[y])
+    @expression(EP, 
+        eVesselVarCosts[y in FUSION_VESSEL], 
+        eC2[y] / T * eThermOutputTot[y] * EP[:eFusionTurbNetCapSize][y] / EP[:eFusionThermCapSize][y]
+    )
 
     for y in FUSION_VESSEL
         update_var_cost!(EP, eVesselVarCosts[y], y)
@@ -660,7 +690,8 @@ function vessel_degradation_taylor_first(discount_rate::Float64, nom_lifetime::F
     return (
         nom_lifetime * log(1 + discount_rate) * (1 + discount_rate)^vessel_lifetime
         / 
-        ((1 + discount_rate)^vessel_lifetime - 1)^2 / util_guess^2
+        ((1 + discount_rate)^vessel_lifetime - 1)^2 
+        / util_guess^2
     )
 end
 
