@@ -75,8 +75,8 @@ emiss_lim_list = [12.0] .* 4827887023.0 ./ 1e6
 
 fusion_cost_list = [6000.0]
 
-vessel_nameplate_lifetime_list = [1.0, 3.0, 4.0]
-vessel_replacement_time_list = [1.0/12, 1.0/6, 0.5]
+vessel_nameplate_lifetime_list = [1.0, 2.0, 3.0, 4.0]
+vessel_replacement_time_list = [1.0/12, 0.25, 1.0/6, 0.5]
 
 mysetup["CO2Cap"] = 1
 scale_factor = mysetup["ParameterScale"] == 1 ? ModelScalingFactor : 1
