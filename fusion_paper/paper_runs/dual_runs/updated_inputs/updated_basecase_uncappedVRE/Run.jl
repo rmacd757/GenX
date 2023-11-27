@@ -112,20 +112,21 @@ for idx in task_id+1:num_tasks:length(all_cases)
     outputs_path = joinpath(results_path, "Cost_$(fusion_cost)_EmissLevel_$(emiss_lim)")
 
     discount_factor = 0.06
-    num_years = 40.0
-    annuity = discount_factor / (1.0 - (1.0 + discount_factor)^(-num_years))
+    lifetime = 40.0
+    annuity = discount_factor / (1.0 - (1.0 + discount_factor)^(-lifetime))
     turb_cost = 1700.0
     vessel_cost = 150.0
     location_adjustment = 1.12
     fixed_cost_ratio = 0.15
-    fusion_annual_cost = (fusion_cost .- turb_cost .- vessel_cost) .* annuity .* num_years .* 1000 .* location_adjustment
-    fusion_fixed_cost = fusion_cost .* annuity .* num_years .* 1000 .* fixed_cost_ratio
+    fusion_annual_cost = (fusion_cost .- turb_cost .- vessel_cost) .* annuity .* myinputs["T"] .* 1000 .* location_adjustment
+    fusion_fixed_cost = fusion_cost .* annuity .* myinputs["T"] .* 1000 .* fixed_cost_ratio
 
     # Find all the fusion resources in the model
     # and set their investment and fixed O&M costs to zero
     dfGen = myinputs["dfGen"]
     fusion_rid = findall(x -> startswith(x, "fusion"), dfGen[!,:Resource])
     for y in fusion_rid
+        println("Running FPP at R_ID $y with investment costs: $(fusion_annual_cost) and fixed costs: $(fusion_fixed_cost)")
         dfGen[y,:Inv_Cost_per_MWyr] = fusion_annual_cost 
         dfGen[y,:Fixed_OM_Cost_per_MWyr] = fusion_fixed_cost
     end
