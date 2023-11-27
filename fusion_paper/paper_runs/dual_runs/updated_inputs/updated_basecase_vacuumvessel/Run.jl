@@ -97,8 +97,8 @@ reduced_cases = []
 for idx in task_id+1:num_tasks:length(all_cases)
     emiss_lim = all_cases[idx][1]
     fusion_cost = all_cases[idx][2]
-    vessel_nameplate_lifetime = vessel_nameplate_lifetime_list[idx][3]
-    vessel_replacement_time = vessel_replacement_time_list[idx][4]
+    vessel_nameplate_lifetime = all_cases[idx][3]
+    vessel_replacement_time = all_cases[idx][4]
     outputs_path = joinpath(results_path, "Cost_$(fusion_cost)_EmissLevel_$(emiss_lim)_Nameplate_$(vessel_nameplate_lifetime)_Replacement_$(vessel_replacement_time)")
     if !isfile(joinpath(outputs_path, "costs.csv"))
         println("Including Case for emiss limit = $emiss_lim, fusion cap = $fusion_cost, vessel nameplate lifetime = $vessel_nameplate_lifetime, vessel replacement time = $vessel_replacement_time")
@@ -110,6 +110,8 @@ end
 for idx in task_id+1:num_tasks:length(all_cases)
     emiss_lim = all_cases[idx][1]
     fusion_cost = all_cases[idx][2]
+    vessel_nameplate_lifetime = all_cases[idx][3]
+    vessel_replacement_time = all_cases[idx][4]
 
     println("Emiss Limit: $emiss_lim, Fusion Cost: $fusion_cost")
 
