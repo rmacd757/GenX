@@ -74,7 +74,8 @@ myinputs = load_inputs(mysetup, inputs_path)
 # emiss_lim_list = [4.0, 12.0, 50.0] .* 4827887023.0 ./ 1e6
 emiss_lim_list = [12.0] .* 4827887023.0 ./ 1e6
 
-fusion_cost_list = [8500.0, 3000.0, 6000.0, 12000.0]
+# fusion_cost_list = [8500.0, 3000.0, 6000.0, 12000.0]
+fusion_cost_list = [8500.0, 3000.0, 6000.0]
 
 emission_banking_fraction = [0.05, 0.1, 0.2, 0.5, 0.75]
 
