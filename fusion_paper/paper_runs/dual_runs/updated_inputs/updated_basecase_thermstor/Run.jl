@@ -118,8 +118,9 @@ for idx in task_id+1:num_tasks:length(all_cases)
     vessel_cost = 150.0
     location_adjustment = 1.12
     fixed_cost_ratio = 0.15
-    fusion_annual_cost = (fusion_cost .- turb_cost .- vessel_cost) .* annuity .* myinputs["T"] .* 1000 .* location_adjustment
-    fusion_fixed_cost = fusion_cost .* annuity .* myinputs["T"] .* 1000 .* fixed_cost_ratio
+    num_years = 20.0
+    fusion_annual_cost = (fusion_cost .- turb_cost .- vessel_cost) .* annuity .* num_years .* 1000 .* location_adjustment
+    fusion_fixed_cost = fusion_cost .* annuity .* num_years .* 1000 .* fixed_cost_ratio
 
     # Find all the fusion resources in the model
     # and set their investment and fixed O&M costs to zero
