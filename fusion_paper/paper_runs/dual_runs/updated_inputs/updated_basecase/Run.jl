@@ -4,8 +4,8 @@ using OrderedCollections
 using DataFrames
 using CSV
 
-input_name = "update_2z_20sc_20periods_dual_100percent_SC"
-case_name = "update_2z_20sc_20periods_dual_100percent_SC"
+input_name = "updated_basecase"
+case_name = "updated_basecase"
 
 case_path = @__DIR__
 results_path = joinpath(case_path, "Results")
@@ -73,11 +73,10 @@ myinputs = load_inputs(mysetup, inputs_path)
 # total = 4,827,887,023 * limit / 1e9
 emiss_lim_list = [4.0, 12.0, 50.0] .* 4827887023.0 ./ 1e6
 
+fusion_cost_list = [8500.0, 3000.0, 6000.0, 12000.0]
+
 mysetup["CO2Cap"] = 1
 scale_factor = mysetup["ParameterScale"] == 1 ? ModelScalingFactor : 1
-
-# fusion_cap_list = vcat([0.0, 500.0, 1000.0], range(start=2500.0, stop=30000.0, step=2500.0))
-fusion_cap_list = vcat(range(start=0.0, stop=2000.0, step=500.0), range(start=2500.0, stop=30000.0, step=2500.0))
 
 mkpath(results_path)
 
@@ -87,39 +86,47 @@ num_threads = parse(Int,ARGS[3])
 
 set_optimizer_attribute(OPTIMIZER, "Threads", num_threads)
 
-# Get all cases as tuples of (emiss_lim, fusion_cap)
-all_cases = vcat(collect(Iterators.product(emiss_lim_list, fusion_cap_list))...)
+all_cases = vcat(collect(Iterators.product(emiss_lim_list, fusion_cost_list))...)
 
 reduced_cases = []
 
 # Go through the cases and add any where !isfile(joinpath(outputs_path, "costs.csv"))
 for idx in task_id+1:num_tasks:length(all_cases)
     emiss_lim = all_cases[idx][1]
-    fusion_cap = all_cases[idx][2]
-    outputs_path = joinpath(results_path, "Dual_" * string(fusion_cap) * "mw_EmissLevel_" * string(emiss_lim))
+    fusion_cost = all_cases[idx][2]
+    outputs_path = joinpath(results_path, "Cost_$(fusion_cost)_EmissLevel_$(emiss_lim)")
     if !isfile(joinpath(outputs_path, "costs.csv"))
-        println("Including Case for emiss limit = $emiss_lim, fusion cap = $fusion_cap")
-        push!(reduced_cases, (emiss_lim, fusion_cap))
+        println("Including Case for emiss limit = $emiss_lim, fusion cap = $fusion_cost")
+        push!(reduced_cases, (emiss_lim, fusion_cost))
         rm(outputs_path, force=true, recursive=true)
     end
 end
 
-for idx in task_id+1:num_tasks:length(all_cases)
+for idx in task_id+1:num_tasks:length(emiss_lim_list)
     emiss_lim = all_cases[idx][1]
-    fusion_cap = all_cases[idx][2]
+    fusion_cost = all_cases[idx][2]
 
-    println("Emiss Limit: $emiss_lim, Fusion Cap: $fusion_cap")
+    println("Emiss Limit: $emiss_lim, Fusion Cost: $fusion_cost")
 
     myinputs["dfMaxCO2"][2] = emiss_lim * 1e3 / scale_factor
-    outputs_path = joinpath(results_path, "Dual_" * string(fusion_cap) * "mw_EmissLevel_" * string(emiss_lim))
+    outputs_path = joinpath(results_path, "Cost_$(fusion_cost)_EmissLevel_$(emiss_lim)")
+
+    annuity = 0.06 / (1.0 - (1.0 + 0.06)^(-40.0))
+    num_years = 40.0
+    turb_cost = 1700.0
+    vessel_cost = 150.0
+    location_adjustment = 1.12
+    fixed_cost_ratio = 0.15
+    fusion_annual_cost = (fusion_cost .- turb_cost .- vessel_cost) .* annuity .* num_years .* 1000 .* location_adjustment
+    fusion_fixed_cost = fusion_cost .* annuity .* num_years .* 1000 .* fixed_cost_ratio
 
     # Find all the fusion resources in the model
     # and set their investment and fixed O&M costs to zero
     dfGen = myinputs["dfGen"]
     fusion_rid = findall(x -> startswith(x, "fusion"), dfGen[!,:Resource])
     for y in fusion_rid
-        dfGen[y,:Inv_Cost_per_MWyr] = 0.0
-        dfGen[y,:Fixed_OM_Cost_per_MWyr] = 0.0
+        dfGen[y,:Inv_Cost_per_MWyr] = fusion_annual_cost 
+        dfGen[y,:Fixed_OM_Cost_per_MWyr] = fusion_fixed_cost
     end
 
     # This check will cause the case to be skipped if the results already exist
@@ -164,9 +171,6 @@ for idx in task_id+1:num_tasks:length(all_cases)
     # Make sure to correc the line index if the order is changed in Network.csv
     @constraint(EP, cMaine2Quebec[t=1:myinputs["T"]], EP[:vFLOW][2, t] >= -170.0)
 
-    ## Fusion <= fusion_cap
-    @constraint(EP, cFusionCap, sum(EP[:eTotalCap][y] for y in fusion_rid) <= fusion_cap)
-    
     ########################
 
     ## Solve model
@@ -181,7 +185,7 @@ for idx in task_id+1:num_tasks:length(all_cases)
     ## Write outputs
     write_outputs(EP, outputs_path, mysetup, myinputs)
 
-    result_summ = DataFrame(Cost=objective_value(EP), Dual=dual(EP[:cFusionCap]))
+    result_summ = DataFrame(Cost=objective_value(EP), Dual=0.0)
     CSV.write(joinpath(outputs_path, "fpp_results.csv"), result_summ)
 
 end

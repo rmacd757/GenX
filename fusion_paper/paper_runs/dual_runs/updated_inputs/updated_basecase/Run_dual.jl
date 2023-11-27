@@ -4,8 +4,8 @@ using OrderedCollections
 using DataFrames
 using CSV
 
-input_name = "test_updated_basecase_cost3000"
-case_name = "test_updated_basecase_cost3000"
+input_name = "updated_basecase_cost8500"
+case_name = "updated_basecase_cost8500"
 
 case_path = @__DIR__
 results_path = joinpath(case_path, "Results")
@@ -71,24 +71,56 @@ myinputs = load_inputs(mysetup, inputs_path)
 # kWh / MWh = 1e3
 # total = 4,827,887,023[MWh] * limit[g/kWh] * 1e3[kWh/MWh] / 1e6[tonne/g] / 1e6[MMT / tonne]
 # total = 4,827,887,023 * limit / 1e9
-emiss_lim_list = [4.0, 12.0, 50.0] .* 478904640.7 ./ 1e6
+emiss_lim_list = [4.0, 12.0, 50.0] .* 4827887023.0 ./ 1e6
 
 mysetup["CO2Cap"] = 1
 scale_factor = mysetup["ParameterScale"] == 1 ? ModelScalingFactor : 1
 
+# fusion_cap_list = vcat([0.0, 500.0, 1000.0], range(start=2500.0, stop=30000.0, step=2500.0))
+fusion_cap_list = vcat(range(start=0.0, stop=2000.0, step=500.0), range(start=2500.0, stop=30000.0, step=2500.0))
+
 mkpath(results_path)
 
-for idx in 1:1:length(emiss_lim_list)
-    emiss_lim = emiss_lim_list[idx]
+task_id = parse(Int,ARGS[1])
+num_tasks = parse(Int,ARGS[2])
+num_threads = parse(Int,ARGS[3])
 
-    println("Emiss Limit: $emiss_lim")
+set_optimizer_attribute(OPTIMIZER, "Threads", num_threads)
+
+# Get all cases as tuples of (emiss_lim, fusion_cap)
+all_cases = vcat(collect(Iterators.product(emiss_lim_list, fusion_cap_list))...)
+
+reduced_cases = []
+
+# Go through the cases and add any where !isfile(joinpath(outputs_path, "costs.csv"))
+for idx in task_id+1:num_tasks:length(all_cases)
+    emiss_lim = all_cases[idx][1]
+    fusion_cap = all_cases[idx][2]
+    outputs_path = joinpath(results_path, "Dual_" * string(fusion_cap) * "mw_EmissLevel_" * string(emiss_lim))
+    if !isfile(joinpath(outputs_path, "costs.csv"))
+        println("Including Case for emiss limit = $emiss_lim, fusion cap = $fusion_cap")
+        push!(reduced_cases, (emiss_lim, fusion_cap))
+        rm(outputs_path, force=true, recursive=true)
+    end
+end
+
+for idx in task_id+1:num_tasks:length(all_cases)
+    emiss_lim = all_cases[idx][1]
+    fusion_cap = all_cases[idx][2]
+
+    println("Emiss Limit: $emiss_lim, Fusion Cap: $fusion_cap")
 
     myinputs["dfMaxCO2"][2] = emiss_lim * 1e3 / scale_factor
-    outputs_path = joinpath(results_path, "Cost_3000_EmissLevel_" * string(emiss_lim))
+    outputs_path = joinpath(results_path, "Dual_" * string(fusion_cap) * "mw_EmissLevel_" * string(emiss_lim))
 
     # Find all the fusion resources in the model
     # and set their investment and fixed O&M costs to zero
     dfGen = myinputs["dfGen"]
+    fusion_rid = findall(x -> startswith(x, "fusion"), dfGen[!,:Resource])
+    for y in fusion_rid
+        dfGen[y,:Inv_Cost_per_MWyr] = 0.0
+        dfGen[y,:Fixed_OM_Cost_per_MWyr] = 0.0
+    end
 
     # This check will cause the case to be skipped if the results already exist
     if isfile(joinpath(outputs_path, "costs.csv"))
@@ -111,7 +143,7 @@ for idx in 1:1:length(emiss_lim_list)
     may1_idxs = Int[]
 
     # 20 year indexing
-    for year_num in 1:2
+    for year_num in 1:20
         # Calculate the index for the beginning of the years
         start_year = (year_num-1) * 8760 + 1
         push!(jan1_idxs, start_year)
@@ -132,6 +164,9 @@ for idx in 1:1:length(emiss_lim_list)
     # Make sure to correc the line index if the order is changed in Network.csv
     @constraint(EP, cMaine2Quebec[t=1:myinputs["T"]], EP[:vFLOW][2, t] >= -170.0)
 
+    ## Fusion <= fusion_cap
+    @constraint(EP, cFusionCap, sum(EP[:eTotalCap][y] for y in fusion_rid) <= fusion_cap)
+    
     ########################
 
     ## Solve model
@@ -146,7 +181,7 @@ for idx in 1:1:length(emiss_lim_list)
     ## Write outputs
     write_outputs(EP, outputs_path, mysetup, myinputs)
 
-    result_summ = DataFrame(Cost=objective_value(EP), Dual=0.0)
+    result_summ = DataFrame(Cost=objective_value(EP), Dual=dual(EP[:cFusionCap]))
     CSV.write(joinpath(outputs_path, "fpp_results.csv"), result_summ)
 
 end

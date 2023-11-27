@@ -4,8 +4,8 @@ using OrderedCollections
 using DataFrames
 using CSV
 
-input_name = "test_updated_basecase_cost8500"
-case_name = "test_updated_basecase_cost8500"
+input_name = "test_updated_basecase_cost8500_thermstor"
+case_name = "test_updated_basecase_cost8500_thermstor"
 
 case_path = @__DIR__
 results_path = joinpath(case_path, "Results")
@@ -84,7 +84,7 @@ for idx in 1:1:length(emiss_lim_list)
     println("Emiss Limit: $emiss_lim")
 
     myinputs["dfMaxCO2"][2] = emiss_lim * 1e3 / scale_factor
-    outputs_path = joinpath(results_path, "Cost_8500_EmissLevel_" * string(emiss_lim))
+    outputs_path = joinpath(results_path, "Cost_8500_EmissLevel_" * string(emiss_lim) * "_thermstor")
 
     # Find all the fusion resources in the model
     # and set their investment and fixed O&M costs to zero
