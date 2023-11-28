@@ -74,10 +74,10 @@ function co2_cap!(EP::Model, inputs::Dict, setup::Dict)
 	if setup["CO2Cap"] == 1
 		if setup["CO2CapPeriods"] <= 1
 			# CO2 cap based on a single period
-			println("-- Using a single period for CO2 cap")
+			println("-- Using a single period for mass-based CO2 cap")
 			EP[:cCO2Emissions_systemwide] = single_mass_cap(EP, inputs, 1:T)
 		else
-			println("-- Using $(setup["CO2CapPeriods"]) periods for CO2 cap")
+			println("-- Using $(setup["CO2CapPeriods"]) periods for mass-based CO2 cap")
 			# Breaking up into the timeseries into CO2CapPeriods periods
 			# If periods are uneven, make the first period longest
 			period_times = timeseries2periods(T, setup["CO2CapPeriods"])
@@ -97,11 +97,14 @@ function co2_cap!(EP::Model, inputs::Dict, setup::Dict)
 	## Load + Rate-based: Emissions constraint in terms of rate (tons/MWh)
 	elseif setup["CO2Cap"] == 2 ##This part moved to non_served_energy.jl
 		if setup["CO2CapPeriods"] <= 1
-			EP[:cCO2Emissions_systemwide] = single_intensity_cap_load(EP, inputs, 1:T)
+			println("-- Using a single period for load-based emissions intensity CO2 cap")
+			EP[:cCO2Emissions_systemwide] = single_intensity_cap_load(EP, inputs, 1:T, setup["StorageLosses"])
 		else
+			println("-- Using $(setup["CO2CapPeriods"]) periods for load-based emissions intensity CO2 cap")
 			period_times = timeseries2periods(T, setup["CO2CapPeriods"])
 			time_ranges = [p[1]:p[2] for p in eachrow(period_times)]
 			if "CO2CapWiggle" in keys(setup) && setup["CO2CapWiggle"] > 0
+				println("-- Allowing $(100*setup["CO2CapWiggle"])% deviation from average CO2 cap in each period")
 				EP[:cCO2Emissions_systemwide] = multi_intensity_cap_load(EP, inputs, time_ranges, setup["CO2CapWiggle"], setup["StorageLosses"])
 				EP[:cCO2Emissions_systemwide_tot] = single_intensity_cap_load(EP, inputs, 1:T, setup["StorageLosses"])
 			else
@@ -111,6 +114,7 @@ function co2_cap!(EP::Model, inputs::Dict, setup::Dict)
 	## Generation + Rate-based: Emissions constraint in terms of rate (tons/MWh)
 	elseif (setup["CO2Cap"]==3)
 		if setup["CO2CapPeriods"] <= 1
+
 			EP[:cCO2Emissions_systemwide] = single_intensity_cap_gen(EP, inputs, 1:T)
 		else
 			period_times = timeseries2periods(T, setup["CO2CapPeriods"])
@@ -168,6 +172,7 @@ function single_intensity_cap_load(EP::Model, inputs::Dict, time_range::Abstract
 		) 
 	)
 	if include_stor_losses == 1
+		println("-- Including storage losses in load-based emissions constraint")
 		storage_losses = @expression(EP, [cap=1:inputs["NCO2Cap"]], 
 			(1 + period_deviation) * sum(inputs["dfMaxCO2Rate"][z,cap] * EP[:eELOSSByZone][z] for z=findall(x->x==1, inputs["dfCO2CapZones"][:,cap]))
 		)
@@ -192,6 +197,7 @@ function multi_intensity_cap_load(EP::Model, inputs::Dict, time_ranges::Vector{<
 		) / num_periods
 	)
 	if include_stor_losses == 1
+		println("-- Including storage losses in load-based emissions constraint")
 		storage_losses = @expression(EP, [cap=1:inputs["NCO2Cap"], p=1:num_periods], 
 			(1 + period_deviation) * sum(inputs["dfMaxCO2Rate"][z,cap] * EP[:eELOSSByZone][z] for z=findall(x->x==1, inputs["dfCO2CapZones"][:,cap])) / num_periods
 		)
