@@ -76,7 +76,7 @@ emiss_lim_list = [4.0, 12.0, 50.0]
 # fusion_cost_list = [8500.0, 3000.0, 6000.0, 12000.0]
 fusion_cost_list = [8500.0, 6000.0]
 
-mysetup["CO2Cap"] = 1
+mysetup["CO2Cap"] = 2
 scale_factor = mysetup["ParameterScale"] == 1 ? ModelScalingFactor : 1
 
 mkpath(results_path)
