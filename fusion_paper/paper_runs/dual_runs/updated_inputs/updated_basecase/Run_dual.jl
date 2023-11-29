@@ -71,7 +71,7 @@ myinputs = load_inputs(mysetup, inputs_path)
 # kWh / MWh = 1e3
 # total = 4,827,887,023[MWh] * limit[g/kWh] * 1e3[kWh/MWh] / 1e6[tonne/g] / 1e6[MMT / tonne]
 # total = 4,827,887,023 * limit / 1e9
-emiss_lim_list = [4.0, 12.0, 50.0]
+emiss_lim_list = [2.5, 4.0, 12.0, 50.0] .* 4827887023.0 ./ 1e6
 
 mysetup["CO2Cap"] = 1
 scale_factor = mysetup["ParameterScale"] == 1 ? ModelScalingFactor : 1
@@ -96,7 +96,7 @@ reduced_cases = []
 for idx in task_id+1:num_tasks:length(all_cases)
     emiss_lim = all_cases[idx][1]
     fusion_cap = all_cases[idx][2]
-    outputs_path = joinpath(results_path, "Dual_$(fusion_cap)_mw_EmissLevel_$(emiss_lim)")
+    outputs_path = joinpath(results_path, "Dual_$(fusion_cap)mw_EmissLevel_$(emiss_lim)")
     if !isfile(joinpath(outputs_path, "costs.csv"))
         println("Including Case for emiss limit = $emiss_lim, fusion cap = $fusion_cap")
         push!(reduced_cases, (emiss_lim, fusion_cap))
@@ -110,8 +110,8 @@ for idx in task_id+1:num_tasks:length(all_cases)
 
     println("Emiss Limit: $emiss_lim, Fusion Cap: $fusion_cap")
 
-    myinputs["dfMaxCO2"][2] = emiss_lim * 4827887023.0 / 1e6 * 1e3 / scale_factor
-    outputs_path = joinpath(results_path, "Dual_$(fusion_cap)_mw_EmissLevel_$(emiss_lim)")
+    myinputs["dfMaxCO2"][2] = emiss_lim * 1e3 / scale_factor
+    outputs_path = joinpath(results_path, "Dual_$(fusion_cap)mw_EmissLevel_$(emiss_lim)")
 
     # Find all the fusion resources in the model
     # and set their investment and fixed O&M costs to zero
