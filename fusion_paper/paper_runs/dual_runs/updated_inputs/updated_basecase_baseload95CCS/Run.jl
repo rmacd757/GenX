@@ -80,9 +80,9 @@ scale_factor = mysetup["ParameterScale"] == 1 ? ModelScalingFactor : 1
 
 mkpath(results_path)
 
-task_id = 1
-num_tasks = 1
-num_threads = 1
+task_id = parse(Int,ARGS[1])
+num_tasks = parse(Int,ARGS[2])
+num_threads = parse(Int,ARGS[3])
 
 set_optimizer_attribute(OPTIMIZER, "Threads", num_threads)
 
