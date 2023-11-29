@@ -175,7 +175,7 @@ for idx in task_id+1:num_tasks:length(all_cases)
     @constraint(EP, cMaine2Quebec[t=1:myinputs["T"]], EP[:vFLOW][2, t] >= -170.0)
 
     ngcc_ccs_rid = findall(x -> startswith(x, "natural_gas_ccs"), dfGen[!,:Resource])
-    period_times = timeseries2periods(T, mysetup["CO2CapPeriods"])
+    period_times = GenX.timeseries2periods(T, mysetup["CO2CapPeriods"])
     @constraint(EP, cBaseloadCCS[y in fusion_rid, p=1:20], sum(EP[:vP][y,t] for t in period_times[p,1]:period_times[p,2]) <= 0.85 * EP[:eTotalCap][y] * myinputs["T"])
 
     ########################
