@@ -71,9 +71,10 @@ myinputs = load_inputs(mysetup, inputs_path)
 # kWh / MWh = 1e3
 # total = 4,827,887,023[MWh] * limit[g/kWh] * 1e3[kWh/MWh] / 1e6[tonne/g] / 1e6[MMT / tonne]
 # total = 4,827,887,023 * limit / 1e9
-emiss_lim_list = [2.5, 4.0, 12.0, 50.0] .* 4827887023.0 ./ 1e6
+# emiss_lim_list = [2.5, 4.0, 12.0, 50.0] .* 4827887023.0 ./ 1e6
+emiss_lim_list = [2.5, 4.0, 12.0, 50.0]
 
-mysetup["CO2Cap"] = 1
+mysetup["CO2Cap"] = 2
 scale_factor = mysetup["ParameterScale"] == 1 ? ModelScalingFactor : 1
 
 # fusion_cap_list = vcat([0.0, 500.0, 1000.0], range(start=2500.0, stop=30000.0, step=2500.0))
@@ -110,7 +111,7 @@ for idx in task_id+1:num_tasks:length(all_cases)
 
     println("Emiss Limit: $emiss_lim, Fusion Cap: $fusion_cap")
 
-    myinputs["dfMaxCO2"][2] = emiss_lim * 1e3 / scale_factor
+    myinputs["dfMaxCO2Rate"][2] = emiss_lim / scale_factor .* 20.0 ./ 1e3
     outputs_path = joinpath(results_path, "Dual_$(fusion_cap)mw_EmissLevel_$(emiss_lim)")
 
     # Find all the fusion resources in the model
