@@ -98,7 +98,7 @@ function co2_cap!(EP::Model, inputs::Dict, setup::Dict)
 	elseif setup["CO2Cap"] == 2 ##This part moved to non_served_energy.jl
 		if setup["CO2CapPeriods"] <= 1
 			println("-- Using a single period for load-based emissions intensity CO2 cap")
-			EP[:cCO2Emissions_systemwide] = single_intensity_cap_load(EP, inputs, 1:T, setup["StorageLosses"])
+			EP[:cCO2Emissions_systemwide] = single_intensity_cap_load(EP, inputs, 1:T, 0.0, setup["StorageLosses"])
 		else
 			println("-- Using $(setup["CO2CapPeriods"]) periods for load-based emissions intensity CO2 cap")
 			period_times = timeseries2periods(T, setup["CO2CapPeriods"])
@@ -106,7 +106,7 @@ function co2_cap!(EP::Model, inputs::Dict, setup::Dict)
 			if "CO2CapWiggle" in keys(setup) && setup["CO2CapWiggle"] > 0
 				println("-- Allowing $(100*setup["CO2CapWiggle"])% deviation from average CO2 cap in each period")
 				EP[:cCO2Emissions_systemwide] = multi_intensity_cap_load(EP, inputs, time_ranges, setup["CO2CapWiggle"], setup["StorageLosses"])
-				EP[:cCO2Emissions_systemwide_tot] = single_intensity_cap_load(EP, inputs, 1:T, setup["StorageLosses"])
+				EP[:cCO2Emissions_systemwide_tot] = single_intensity_cap_load(EP, inputs, 1:T, 0.0, setup["StorageLosses"])
 			else
 				EP[:cCO2Emissions_systemwide] = multi_intensity_cap_load(EP, inputs, time_ranges, 0.0, setup["StorageLosses"])
 			end
