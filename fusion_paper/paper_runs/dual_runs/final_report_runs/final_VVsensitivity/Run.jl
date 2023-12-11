@@ -133,6 +133,7 @@ for idx in task_id+1:num_tasks:length(all_cases)
     # Find all the fusion resources in the model
     # and set their investment and fixed O&M costs to zero
     dfGen = myinputs["dfGen"]
+    dfFusion = myinputs["dfFusion"]
     fusion_rid = findall(x -> startswith(x, "fusion"), dfGen[!,:Resource])
     for y in fusion_rid
         println("Running FPP at R_ID $y with investment costs: $(fusion_annual_cost) and fixed costs: $(fusion_fixed_cost)")
