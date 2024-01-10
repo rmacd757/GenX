@@ -106,7 +106,7 @@ for idx in task_id+1:num_tasks:length(all_cases)
     end
 end
 
-prev_mult = 1.0
+const prev_mult = 1.0
 
 for idx in task_id+1:num_tasks:length(all_cases)
     emiss_lim = all_cases[idx][1]
