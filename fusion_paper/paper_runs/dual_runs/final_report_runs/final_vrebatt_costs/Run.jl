@@ -106,7 +106,7 @@ for idx in task_id+1:num_tasks:length(all_cases)
     end
 end
 
-const prev_mult = 1.0
+dfGen_original = copy(myinputs["dfGen"])
 
 for idx in task_id+1:num_tasks:length(all_cases)
     emiss_lim = all_cases[idx][1]
@@ -154,12 +154,11 @@ for idx in task_id+1:num_tasks:length(all_cases)
         append!(vre_stor_rids, findall(x -> startswith(x, name_root), dfGen[!,:Resource]))
     end
     for y in vre_stor_rids
-        dfGen[y,:Inv_Cost_per_MWyr] = dfGen[y,:Inv_Cost_per_MWyr] .* vrebatt_cost_mult ./ prev_mult
-        dfGen[y,:Fixed_OM_Cost_per_MWyr] = dfGen[y,:Fixed_OM_Cost_per_MWyr] .* vrebatt_cost_mult./ prev_mult
-        dfGen[y,:Inv_Cost_per_MWhyr] = dfGen[y,:Inv_Cost_per_MWhyr] .* vrebatt_cost_mult./ prev_mult
-        dfGen[y,:Fixed_OM_Cost_per_MWhyr] = dfGen[y,:Fixed_OM_Cost_per_MWhyr] .* vrebatt_cost_mult ./ prev_mult
+        dfGen[y,:Inv_Cost_per_MWyr] = dfGen_original[y,:Inv_Cost_per_MWyr] .* vrebatt_cost_mult 
+        dfGen[y,:Fixed_OM_Cost_per_MWyr] = dfGen_original[y,:Fixed_OM_Cost_per_MWyr] .* vrebatt_cost_mult
+        dfGen[y,:Inv_Cost_per_MWhyr] = dfGen_original[y,:Inv_Cost_per_MWhyr] .* vrebatt_cost_mult
+        dfGen[y,:Fixed_OM_Cost_per_MWhyr] = dfGen_original[y,:Fixed_OM_Cost_per_MWhyr] .* vrebatt_cost_mult 
     end
-    prev_mult = vrebatt_cost_mult
 
     # This check will cause the case to be skipped if the results already exist
     if isfile(joinpath(outputs_path, "costs.csv"))
