@@ -107,8 +107,7 @@ for idx in task_id+1:num_tasks:length(all_cases)
     end
 end
 
-# for idx in task_id+1:num_tasks:length(all_cases)
-for idx in [1]
+for idx in task_id+1:num_tasks:length(all_cases)
     emiss_lim = all_cases[idx][1]
     fusion_cost = all_cases[idx][2]
     emiss_bank_frac = all_cases[idx][3]
@@ -185,7 +184,7 @@ for idx in [1]
 
     ########################
 
-    # Solve model
+    ## Solve model
     println("Solving Model")
     EP, solve_time = solve_model(EP, mysetup)
     myinputs["solve_time"] = solve_time # Store the model solve time in myinputs
