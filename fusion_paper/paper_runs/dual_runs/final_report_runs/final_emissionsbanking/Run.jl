@@ -107,14 +107,15 @@ for idx in task_id+1:num_tasks:length(all_cases)
     end
 end
 
-for idx in task_id+1:num_tasks:length(all_cases)
+# for idx in task_id+1:num_tasks:length(all_cases)
+for idx in [1]
     emiss_lim = all_cases[idx][1]
     fusion_cost = all_cases[idx][2]
     emiss_bank_frac = all_cases[idx][3]
 
     println("Emiss Limit: $emiss_lim, Fusion Cost: $fusion_cost, Emiss Banking Fraction: $emiss_bank_frac")
 
-    myinputs["dfMaxCO2Rate"][2] = emiss_lim / scale_factor .* 20.0 ./ 1e3
+    myinputs["dfMaxCO2Rate"][2] = emiss_lim / scale_factor ./ 1e3
     outputs_path = joinpath(results_path, "Cost_$(fusion_cost)_EmissLevel_$(emiss_lim)_gCO2perkWh_Banking_$(emiss_bank_frac))")
 
     discount_factor = 0.06
@@ -184,7 +185,7 @@ for idx in task_id+1:num_tasks:length(all_cases)
 
     ########################
 
-    ## Solve model
+    # Solve model
     println("Solving Model")
     EP, solve_time = solve_model(EP, mysetup)
     myinputs["solve_time"] = solve_time # Store the model solve time in myinputs

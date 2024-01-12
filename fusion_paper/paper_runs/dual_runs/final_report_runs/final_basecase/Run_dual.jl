@@ -111,7 +111,7 @@ for idx in task_id+1:num_tasks:length(all_cases)
 
     println("Emiss Limit: $emiss_lim, Fusion Cap: $fusion_cap")
 
-    myinputs["dfMaxCO2Rate"][2] = emiss_lim / scale_factor .* 20.0 ./ 1e3
+    myinputs["dfMaxCO2Rate"][2] = emiss_lim / scale_factor ./ 1e3
     outputs_path = joinpath(results_path, "Dual_$(fusion_cap)mw_EmissLevel_$(emiss_lim)")
 
     # Find all the fusion resources in the model

@@ -194,12 +194,12 @@ function multi_intensity_cap_load(EP::Model, inputs::Dict, time_ranges::Vector{<
 				for t in time_ranges[p]
 			) 
 			for z = findall(x->x==1, inputs["dfCO2CapZones"][:,cap])
-		) / num_periods
+		) 
 	)
 	if include_stor_losses == 1
 		println("-- Including storage losses in load-based emissions constraint")
 		storage_losses = @expression(EP, [cap=1:inputs["NCO2Cap"], p=1:num_periods], 
-			(1 + period_deviation) * sum(inputs["dfMaxCO2Rate"][z,cap] * EP[:eELOSSByZone][z] for z=findall(x->x==1, inputs["dfCO2CapZones"][:,cap])) / num_periods
+			(1 + period_deviation) * sum(inputs["dfMaxCO2Rate"][z,cap] * EP[:eELOSSByZone][z] for z=findall(x->x==1, inputs["dfCO2CapZones"][:,cap]))
 		)
 		add_to_expression!(load_emissions, storage_losses)
 	end
@@ -223,6 +223,6 @@ function multi_intensity_cap_gen(EP::Model, inputs::Dict, time_ranges::Vector{<:
 	return @constraint(EP, [cap=1:inputs["NCO2Cap"], p=1:num_periods],
 		sum(inputs["omega"][t] * EP[:eEmissionsByZone][z,t] for z=findall(x->x==1, inputs["dfCO2CapZones"][:,cap]), t in time_ranges[p]) 
 		<=
-		(1 + period_deviation) * sum(inputs["dfMaxCO2Rate"][z,cap] * inputs["omega"][t] * EP[:eGenerationByZone][z,t] for t in time_ranges[p], z=findall(x->x==1, inputs["dfCO2CapZones"][:,cap])) / num_periods
+		(1 + period_deviation) * sum(inputs["dfMaxCO2Rate"][z,cap] * inputs["omega"][t] * EP[:eGenerationByZone][z,t] for t in time_ranges[p], z=findall(x->x==1, inputs["dfCO2CapZones"][:,cap]))
 	)
 end
