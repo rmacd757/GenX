@@ -72,7 +72,7 @@ myinputs = load_inputs(mysetup, inputs_path)
 # total = 4,827,887,023[MWh] * limit[g/kWh] * 1e3[kWh/MWh] / 1e6[tonne/g] / 1e6[MMT / tonne]
 # total = 4,827,887,023 * limit / 1e9
 # emiss_lim_list = [2.5, 4.0, 12.0, 50.0] .* 4827887023.0 ./ 1e6
-emiss_lim_list = [4.0, 50.0]
+emiss_lim_list = [4.0, 12.0, 50.0]
 
 mysetup["CO2Cap"] = 2
 scale_factor = mysetup["ParameterScale"] == 1 ? ModelScalingFactor : 1
