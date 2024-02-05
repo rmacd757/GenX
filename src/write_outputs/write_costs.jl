@@ -113,7 +113,11 @@ function write_costs(path::AbstractString, inputs::Dict, setup::Dict, EP::Model)
 		end
 
 		if setup["UCommit"] >= 1
-			eCStart = sum(value.(EP[:eCStart][COMMIT_ZONE,:]))
+			if !isempty(COMMIT_ZONE)
+				eCStart = sum(value.(EP[:eCStart][COMMIT_ZONE,:]))
+			else
+				eCStart = 0.0
+			end
 			tempCStart += eCStart
 			tempCTotal += eCStart
 		end

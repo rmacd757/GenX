@@ -368,7 +368,12 @@ function fusionthermalstorage!(EP::Model, inputs::Dict, setup::Dict)
 
     ## Change in stored energy == net discharge rate
     ## Later, we can add losses or other factors which differentiate these two terms
-    @constraint(EP, [y in FUSION_ThermStor,t=1:T], (1 - hourly_leakage[y]) * vThermStor[y,cyclicindex(t-1,T)] - vThermStor[y,t] == vThermDis[y,t] / discharging_efficiency[y] - vThermChar[y,t] * charging_efficiency[y])
+    @constraint(EP, [y in FUSION_ThermStor,t=1:T], 
+        (1 - hourly_leakage[y]) * vThermStor[y,cyclicindex(t-1,T)] 
+        - vThermStor[y,t] 
+        == 
+        vThermDis[y,t] / discharging_efficiency[y] 
+        - vThermChar[y,t] * charging_efficiency[y])
 end
 
 function fusionthermalbalance!(EP::Model, inputs::Dict, setup::Dict)
