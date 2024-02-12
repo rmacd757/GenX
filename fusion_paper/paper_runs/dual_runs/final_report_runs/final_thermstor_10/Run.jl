@@ -112,7 +112,7 @@ for idx in task_id+1:num_tasks:length(all_cases)
 
     println("Emiss Limit: $emiss_lim, Fusion Cost: $fusion_cost")
 
-    myinputs["dfMaxCO2Rate"][2] = emiss_lim / scale_factor .* 20.0 ./ 1e3
+    myinputs["dfMaxCO2Rate"][2] = emiss_lim / scale_factor ./ 1e3
     outputs_path = joinpath(results_path, "Cost_$(fusion_cost)_EmissLevel_$(emiss_lim)_gCO2perkWh")
 
     discount_factor = 0.06

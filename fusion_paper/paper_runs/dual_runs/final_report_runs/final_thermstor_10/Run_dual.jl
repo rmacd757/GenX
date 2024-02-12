@@ -111,6 +111,7 @@ for idx in task_id+1:num_tasks:length(all_cases)
     fusion_cap = all_cases[idx][2]
 
     println("Emiss Limit: $emiss_lim, Fusion Cap: $fusion_cap")
+    GC.gc()
 
     myinputs["dfMaxCO2Rate"][2] = emiss_lim / scale_factor ./ 1e3
     outputs_path = joinpath(results_path, "Dual_$(fusion_cap)mw_EmissLevel_$(emiss_lim)")

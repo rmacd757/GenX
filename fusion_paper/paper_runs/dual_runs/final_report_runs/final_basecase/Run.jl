@@ -72,7 +72,7 @@ myinputs = load_inputs(mysetup, inputs_path)
 # total = 4,827,887,023[MWh] * limit[g/kWh] * 1e3[kWh/MWh] / 1e6[tonne/g] / 1e6[MMT / tonne]
 # total = 4,827,887,023 * limit / 1e9
 # emiss_lim_list = [2.5, 4.0, 12.0, 50.0]
-emiss_lim_list = [2.5, 4.0, 12.0, 50.0]
+emiss_lim_list = [4.0, 12.0, 50.0]
 
 fusion_cost_list = [8500.0, 3000.0, 6000.0, 12000.0]
 # fusion_cost_list = [8500.0, 6000.0]
@@ -105,12 +105,14 @@ for idx in task_id+1:num_tasks:length(all_cases)
 end
 
 for idx in task_id+1:num_tasks:length(all_cases)
+    GC.gc()
+    
     emiss_lim = all_cases[idx][1]
     fusion_cost = all_cases[idx][2]
 
     println("Emiss Limit: $emiss_lim, Fusion Cost: $fusion_cost")
 
-    myinputs["dfMaxCO2Rate"][2] = emiss_lim / scale_factor .* 20.0 ./ 1e3
+    myinputs["dfMaxCO2Rate"][2] = emiss_lim / scale_factor ./ 1e3
     outputs_path = joinpath(results_path, "Cost_$(fusion_cost)_EmissLevel_$(emiss_lim)_gCO2perkWh")
 
     discount_factor = 0.06
