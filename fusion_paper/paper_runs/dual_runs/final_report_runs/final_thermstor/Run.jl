@@ -72,7 +72,7 @@ myinputs = load_inputs(mysetup, inputs_path)
 # total = 4,827,887,023[MWh] * limit[g/kWh] * 1e3[kWh/MWh] / 1e6[tonne/g] / 1e6[MMT / tonne]
 # total = 4,827,887,023 * limit / 1e9
 # emiss_lim_list = [2.5, 4.0, 12.0, 50.0]
-emiss_lim_list = [2.5, 4.0, 12.0, 50.0]
+emiss_lim_list = [4.0, 12.0, 50.0]
 
 fusion_cost_list = [8500.0, 3000.0, 6000.0, 12000.0]
 # fusion_cost_list = [8500.0, 6000.0]
@@ -105,6 +105,8 @@ for idx in task_id+1:num_tasks:length(all_cases)
 end
 
 for idx in task_id+1:num_tasks:length(all_cases)
+    GC.gc()
+    
     emiss_lim = all_cases[idx][1]
     fusion_cost = all_cases[idx][2]
 
