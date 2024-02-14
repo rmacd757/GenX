@@ -118,7 +118,7 @@ for idx in task_id+1:num_tasks:length(all_cases)
     discount_factor = 0.06
     lifetime = 40.0
     annuity = discount_factor / (1.0 - (1.0 + discount_factor)^(-lifetime))
-    turb_cost = 1700.0
+    turb_cost = 1000.0
     vessel_cost = 150.0
     location_adjustment = 1.12
     fixed_cost_ratio = 0.15
