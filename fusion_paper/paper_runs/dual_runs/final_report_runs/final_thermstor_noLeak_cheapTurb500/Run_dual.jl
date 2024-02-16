@@ -95,18 +95,18 @@ all_cases = vcat(collect(Iterators.product(emiss_lim_list, fusion_cap_list))...)
 reduced_cases = []
 
 # Go through the cases and add any where !isfile(joinpath(outputs_path, "costs.csv"))
-for idx in task_id+1:num_tasks:length(all_cases)
+for idx in eachindex(all_cases)
     emiss_lim = all_cases[idx][1]
-    fusion_cap = all_cases[idx][2]
-    outputs_path = joinpath(results_path, "Dual_$(fusion_cap)mw_EmissLevel_$(emiss_lim)")
+    fusion_cost = all_cases[idx][2]
+    outputs_path = joinpath(results_path, "Cost_$(fusion_cost)_EmissLevel_$(emiss_lim)_gCO2perkWh")
     if !isfile(joinpath(outputs_path, "costs.csv"))
-        println("Including Case for emiss limit = $emiss_lim, fusion cap = $fusion_cap")
-        push!(reduced_cases, (emiss_lim, fusion_cap))
+        println("Including Case for emiss limit = $emiss_lim, fusion cap = $fusion_cost")
+        push!(reduced_cases, (emiss_lim, fusion_cost))
         rm(outputs_path, force=true, recursive=true)
     end
 end
 
-for idx in task_id+1:num_tasks:length(all_cases)
+for idx in task_id+1:num_tasks:length(reduced_cases)
     emiss_lim = all_cases[idx][1]
     fusion_cap = all_cases[idx][2]
 
