@@ -89,8 +89,8 @@ include(joinpath(home_dir,"run_helpers.jl"))
 # kWh / MWh = 1e3
 # total = 4,827,887,023[MWh] * limit[g/kWh] * 1e3[kWh/MWh] / 1e6[tonne/g] / 1e6[MMT / tonne]
 # total = 4,827,887,023 * limit / 1e9
-# emiss_lim_list = [2.5, 4.0, 12.0, 50.0]
-emiss_lim_list = [4.0]
+# emiss_lim_list = [4.0, 12.0, 50.0]
+emiss_lim_list = [0.0, 2.5]
 
 fusion_cost_list = [8500.0, 3000.0, 6000.0, 12000.0]
 
