@@ -105,9 +105,9 @@ thermstor_type_list = [
 
 scenario_list = 0:1:19
 
-task_id = 1
-num_tasks = 1
-num_threads = 8
+task_id = parse(Int,ARGS[1])
+num_tasks = parse(Int,ARGS[2])
+num_threads = parse(Int,ARGS[3])
 
 all_cases = vcat(collect(Iterators.product(emiss_lim_list, fusion_cost_list, thermstor_type_list, scenario_list))...)
 
