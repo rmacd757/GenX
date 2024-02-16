@@ -48,6 +48,12 @@ function set_thermstor_prop!(dfFusion::DataFrame, y::Int, thermstor_type::String
         dfFusion[y,:Therm_Stor_Leakage_Daily_Frac] = 0.0
         turb_cost = 1000.0
         dfFusion[y,:Turb_CAPEX] = turb_cost .* 1000.0 .* location_adjustment
+    elseif thermstor_type == "final_thermstor_noLeak_cheapTurb750"
+        dfFusion[y,:Stor_Cost_per_MWht] = 891.9610585 
+        dfFusion[y,:Dis_Cost_per_MWht] = 7433.00882
+        dfFusion[y,:Therm_Stor_Leakage_Daily_Frac] = 0.0
+        turb_cost = 750.0
+        dfFusion[y,:Turb_CAPEX] = turb_cost .* 1000.0 .* location_adjustment
     elseif thermstor_type == "final_thermstor_10"
         dfFusion[y,:Stor_Cost_per_MWht] = 89.19610585 
         dfFusion[y,:Dis_Cost_per_MWht] = 743.300882
@@ -65,6 +71,12 @@ function set_thermstor_prop!(dfFusion::DataFrame, y::Int, thermstor_type::String
         dfFusion[y,:Dis_Cost_per_MWht] = 743.300882
         dfFusion[y,:Therm_Stor_Leakage_Daily_Frac] = 0.0
         turb_cost = 1000.0
+        dfFusion[y,:Turb_CAPEX] = turb_cost .* 1000.0 .* location_adjustment
+    elseif thermstor_type == "final_thermstor_10_noLeak_cheapTurb750"
+        dfFusion[y,:Stor_Cost_per_MWht] = 89.19610585 
+        dfFusion[y,:Dis_Cost_per_MWht] = 743.300882
+        dfFusion[y,:Therm_Stor_Leakage_Daily_Frac] = 0.0
+        turb_cost = 750.0
         dfFusion[y,:Turb_CAPEX] = turb_cost .* 1000.0 .* location_adjustment
     else
         println("Thermstor type not recognized")
@@ -98,9 +110,12 @@ thermstor_type_list = [
     "final_thermstor",
     "final_thermstor_noLeak",
     "final_thermstor_noLeak_cheapTurb",
+    "final_thermstor_noLeak_cheapTurb750",
     "final_thermstor_10",
     "final_thermstor_10_noLeak",
-    "final_thermstor_10_noLeak_cheapTurb"
+    "final_thermstor_10_noLeak_cheapTurb",
+    "final_thermstor_10_noLeak_cheapTurb750"
+    
 ]
 
 scenario_list = 0:1:19
