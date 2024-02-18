@@ -323,6 +323,10 @@ function fusionthermalstorage!(EP::Model, inputs::Dict, setup::Dict)
     FUSION = inputs["FUSION"]
     FUSION_ThermStor = intersect(FUSION, dfFusion[dfFusion[!,:Add_Therm_Stor].>0,:R_ID])
 
+    START_SUBPERIODS = inputs["START_SUBPERIODS"]
+    INTERIOR_SUBPERIODS = inputs["INTERIOR_SUBPERIODS"]
+    hours_per_subperiod = inputs["hours_per_subperiod"]
+
     ##############################################################################
 
     ## Discharge per hour [MWht]
@@ -368,12 +372,21 @@ function fusionthermalstorage!(EP::Model, inputs::Dict, setup::Dict)
 
     ## Change in stored energy == net discharge rate
     ## Later, we can add losses or other factors which differentiate these two terms
-    @constraint(EP, [y in FUSION_ThermStor,t=1:T], 
+    @constraint(EP, [y in FUSION_ThermStor,t in START_SUBPERIODS], 
+        (1 - hourly_leakage[y]) * vThermStor[y,cyclicindex(t+hours_per_subperiod-1,T)] 
+        - vThermStor[y,t] 
+        == 
+        vThermDis[y,t] / discharging_efficiency[y] 
+        - vThermChar[y,t] * charging_efficiency[y])
+
+    @constraint(EP, [y in FUSION_ThermStor,t in INTERIOR_SUBPERIODS], 
         (1 - hourly_leakage[y]) * vThermStor[y,cyclicindex(t-1,T)] 
         - vThermStor[y,t] 
         == 
         vThermDis[y,t] / discharging_efficiency[y] 
         - vThermChar[y,t] * charging_efficiency[y])
+
+
 end
 
 function fusionthermalbalance!(EP::Model, inputs::Dict, setup::Dict)
@@ -503,6 +516,10 @@ function fusionfuel!(EP::Model, inputs::Dict, setup::Dict)
     FUSION = inputs["FUSION"]
     dfFusion = inputs["dfFusion"]
 
+    START_SUBPERIODS = inputs["START_SUBPERIODS"]
+    INTERIOR_SUBPERIODS = inputs["INTERIOR_SUBPERIODS"]
+    hours_per_subperiod = inputs["hours_per_subperiod"]
+
     ##############################################################################
 
     ##### Tritium Balance #####
@@ -550,7 +567,18 @@ function fusionfuel!(EP::Model, inputs::Dict, setup::Dict)
     )
 
     ## Hourly tritium balance
-    @constraint(EP, cTrit_balance[y in FUSION, t=1:T], 
+    @constraint(EP, cTrit_balance_start[y in FUSION, t in START_SUBPERIODS], 
+        vTritInventory[y,t] 
+        == 
+        + vTritInventory[y, cyclicindex(t+hours_per_subperiod-1, T)]
+        + eTritBreeding[y,t]
+        - eTritConsumption[y,t]
+        - eTritDecay[y,cyclicindex(t+hours_per_subperiod-1, T)]
+        - eTritLeakage[y,cyclicindex(t+hours_per_subperiod-1, T)]
+        - vTritExports[y,t]
+    )
+
+    @constraint(EP, cTrit_balance_interior[y in FUSION, t in INTERIOR_SUBPERIODS], 
         vTritInventory[y,t] 
         == 
         + vTritInventory[y, cyclicindex(t-1, T)]
@@ -561,7 +589,13 @@ function fusionfuel!(EP::Model, inputs::Dict, setup::Dict)
         - vTritExports[y,t]
     )
 
-    @constraint(EP, [y in FUSION,t=1:T], 
+    @constraint(EP, [y in FUSION,t in START_SUBPERIODS], 
+        vTritInventory[y,cyclicindex(t, T)] 
+        >= 
+        eTritConsumption[y,cyclicindex(t+hours_per_subperiod-1, T)]
+    )
+
+    @constraint(EP, [y in FUSION,t in INTERIOR_SUBPERIODS], 
         vTritInventory[y,cyclicindex(t, T)] 
         >= 
         eTritConsumption[y,cyclicindex(t-1, T)]
@@ -587,7 +621,16 @@ function fusionfuel!(EP::Model, inputs::Dict, setup::Dict)
     )
 
     # Deuterium balance
-    @constraint(EP, cDeu_balance[y in FUSION, t=1:T], 
+    @constraint(EP, cDeu_balance_start[y in FUSION, t in START_SUBPERIODS], 
+        vDeuInventory[y,t] 
+        == 
+        + vDeuInventory[y, cyclicindex(t+hours_per_subperiod-1, T)]
+        + vDeuImports[y,t]
+        - eDeuConsumption[y,t]
+        - eDeuLeakage[y,cyclicindex(t+hours_per_subperiod-1, T)]
+    )
+
+    @constraint(EP, cDeu_balance_interior[y in FUSION, t in INTERIOR_SUBPERIODS], 
         vDeuInventory[y,t] 
         == 
         + vDeuInventory[y, cyclicindex(t-1, T)]
@@ -596,7 +639,13 @@ function fusionfuel!(EP::Model, inputs::Dict, setup::Dict)
         - eDeuLeakage[y,cyclicindex(t-1, T)]
     )
 
-    @constraint(EP, [y in FUSION,t=1:T], 
+    @constraint(EP, [y in FUSION,t in START_SUBPERIODS], 
+        vDeuInventory[y,cyclicindex(t, T)] 
+        >= 
+        DEU_FUEL_RATIO[y] * EP[:vThermOutput][y,cyclicindex(t+hours_per_subperiod-1, T)] * dfFusion[y,:Deu_Fuel]
+    )
+
+    @constraint(EP, [y in FUSION,t in INTERIOR_SUBPERIODS], 
         vDeuInventory[y,cyclicindex(t, T)] 
         >= 
         DEU_FUEL_RATIO[y] * EP[:vThermOutput][y,cyclicindex(t-1, T)] * dfFusion[y,:Deu_Fuel]
