@@ -82,6 +82,7 @@ function run_ddp(models_d::Dict, setup::Dict, inputs_d::Dict)
 
     # Step a.i) Initialize cost-to-go function for t = 1:num_stages
     for t in 1:num_stages
+	settings_d["CurStage"] = t;
         models_d[t] = initialize_cost_to_go(settings_d, models_d[t], inputs_d[t])
     end
 
@@ -293,11 +294,14 @@ function fix_initial_investments(EP_prev::Model, EP_cur::Model, start_cap_d::Dic
     # and the associated linking constraint name (c) as a value
     for (e, c) in start_cap_d
         for y in keys(EP_cur[c])
-	    if y[1] in RET_CAP # extract resource integer index value from key
-                # Set the right hand side value of the linking initial capacity constraint in the current
-                # stage to the value of the available capacity variable solved for in the previous stages
-                set_normalized_rhs(EP_cur[c][y], value(EP_prev[e][y]))
-            end
+                # Set the right hand side value of the linking initial capacity constraint in the current stage to the value of the available capacity variable solved for in the previous stages
+                if c == :cExistingTransCap
+                    set_normalized_rhs(EP_cur[c][y], value(EP_prev[e][y]))
+                else
+	                if y[1] in RET_CAP # extract resource integer index value from key
+                        set_normalized_rhs(EP_cur[c][y], value(EP_prev[e][y]))
+                    end
+                end
         end
     end
     return EP_cur
