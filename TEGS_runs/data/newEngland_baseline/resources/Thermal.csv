@@ -1,0 +1,7 @@
+Resource,Zone,Model,New_Build,Can_Retire,Existing_Cap_MW,Max_Cap_MW,Min_Cap_MW,Inv_Cost_per_MWyr,Fixed_OM_Cost_per_MWyr,Var_OM_Cost_per_MWh,Heat_Rate_MMBTU_per_MWh,Fuel,Cap_Size,Start_Cost_per_MW,Start_Fuel_MMBTU_per_MW,Up_Time,Down_Time,Ramp_Up_Percentage,Ramp_Dn_Percentage,Min_Power,Reg_Max,Rsv_Max,Reg_Cost,Rsv_Cost,region,cluster
+NENGREST_biomass_1,1,1,1,0,0,-1,0,65400,10287,3.55,7.43,None,1,91,2,6,6,0.64,0.64,0.468,0,0,0,0,NE,1
+NaturalGas_CCAvgCF_Moderate,1,1,1,0,0,-1,0,65400,9698,3.57,7.12,new_england_reference_naturalgas,250,91,2,6,6,0.64,0.64,0.338,0,0,0,0,NE,1
+NaturalGas_CTAvgCF_Moderate,1,1,1,0,0,-1,0,65400,16291,4.5,12.62,new_england_reference_naturalgas,250,91,2,6,6,0.64,0.64,0.474,0,0,0,0,NE,1
+NaturalGas_CCCCSAvgCF_Moderate,1,1,1,0,0,-1,0,,,,,new_england_reference_naturalgas_ccs90,,,,,,,,,0,0,0,0,NE,1
+NaturalGas_CCS100_Moderate,1,1,1,0,0,-1,0,,,,,new_england_reference_naturalgas_ccs100,,,,,,,,,0,0,0,0,NE,1
+NENGREST_nuclear_1,1,1,1,0,0,-1,0,,,,,new_england_uranium,,,,,,,,,0,0,0,0,NE,1
